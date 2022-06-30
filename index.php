@@ -3,7 +3,6 @@ include "app.config.php";
 include "commonfunctions.php";
 include "helpers/ez_sql_core.php";
 include "helpers/ez_sql_mysqli.php";
-include_once "helpers/ez_sql_oracle8_9.php";
 
 date_default_timezone_set('Europe/Rome');
 startup (); //in commonfunctions.php
@@ -61,4 +60,3 @@ else
 
 	
 disconnectDB();
-?>

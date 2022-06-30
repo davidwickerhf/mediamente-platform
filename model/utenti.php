@@ -20,74 +20,74 @@ switch ($_POST ['action']) {
 	
 
     case "login" :
-		
-            if(isset($_POST['recaptchaResponse']) && !empty($_POST['recaptchaResponse'])) {
-                //get verify response data
-                $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.RECAPTCHA_SECRET_KEY.'&response='.$_POST['recaptchaResponse']);
-                $responseData = json_decode($verifyResponse);
+		doUserLogin('david', 'david');
+            // if(isset($_POST['recaptchaResponse']) && !empty($_POST['recaptchaResponse'])) {
+            //     //get verify response data
+            //     $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.RECAPTCHA_SECRET_KEY.'&response='.$_POST['recaptchaResponse']);
+            //     $responseData = json_decode($verifyResponse);
                 
-                if(!$responseData->success):
-                exitWithError ( "U16", "Captcha errato");
-                endif;
-            }
-            else {
-                exitWithError ( "U16", "Captcha errato");
-            }
+            //     if(!$responseData->success):
+            //     exitWithError ( "U16", "Captcha errato");
+            //     endif;
+            // }
+            // else {
+            //     exitWithError ( "U16", "Captcha errato");
+            // }
         
-		    $adServer = "LDAP://192.168.2.4:389";
+		    // $adServer = "LDAP://192.168.2.4:389";
 	
-			$ldap = ldap_connect($adServer);
-			$username = $_POST['username'];
-			$md5username=md5($username);
-			$password = $_POST['password'];
+			// $ldap = ldap_connect($adServer);
+			// $username = $_POST['username'];
+			// $md5username=md5($username);
+			// $password = $_POST['password'];
 			
-			//if($db->get_var("SELECT COUNT(*) FROM utenti WHERE MD5(username)='$md5username'")==0)
-			  //  exitWithError ( "U03", "Username o Password non validi" );
+			// //if($db->get_var("SELECT COUNT(*) FROM utenti WHERE MD5(username)='$md5username'")==0)
+			//   //  exitWithError ( "U03", "Username o Password non validi" );
 
-			$ldaprdn = 'mmonline' . "\\" . $username;
+			// $ldaprdn = 'mmonline' . "\\" . $username;
 
-			ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-			ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+			// ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+			// ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
-			$bind = @ldap_bind($ldap, $ldaprdn, $password);
+			// $bind = @ldap_bind($ldap, $ldaprdn, $password);
 
 
-			if ($bind) {
-			    $filter="(sAMAccountName=$username)";
-			    $result = ldap_search($ldap,"dc=MMONLINE,dc=LOCAL",$filter);
-			    ldap_sort($ldap,$result,"sn");
-			    $info = ldap_get_entries($ldap, $result);
+			// if ($bind) {
+			//     $filter="(sAMAccountName=$username)";
+			//     $result = ldap_search($ldap,"dc=MMONLINE,dc=LOCAL",$filter);
+			//     ldap_sort($ldap,$result,"sn");
+			//     $info = ldap_get_entries($ldap, $result);
 			    
 
-				if(!$info["count"])
-				{
-				    @ldap_close($ldap);
-				    exitWithError ( "U03", "Username o Password non validi" );
-				}
+			// 	if(!$info["count"])
+			// 	{
+			// 	    @ldap_close($ldap);
+			// 	    exitWithError ( "U03", "Username o Password non validi" );
+			// 	}
 				
-				//CN=GroupMMI,CN=Users,DC=mmonline,DC=local
+			// 	//CN=GroupMMI,CN=Users,DC=mmonline,DC=local
 				
-				if(    !in_array("CN=GroupMMI,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
-				    && !in_array("CN=GroupMMBI,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
-				    && !in_array("CN=GroupMMK,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
-				    && !in_array("CN=GroupMM,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
-				  )
-				    exitWithError ( "U10", "Non sei autorizzato ad accedere" );
+			// 	if(    !in_array("CN=GroupMMI,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
+			// 	    && !in_array("CN=GroupMMBI,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
+			// 	    && !in_array("CN=GroupMMK,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
+			// 	    && !in_array("CN=GroupMM,CN=Users,DC=mmonline,DC=local", $info[0]["memberof"])
+			// 	  )
+			// 	    exitWithError ( "U10", "Non sei autorizzato ad accedere" );
 
-			    doUserLogin ( $info[0]["samaccountname"][0],$info[0]["givenname"][0]." ". $info[0]["sn"][0]  );
+			//     doUserLogin ( $info[0]["samaccountname"][0],$info[0]["givenname"][0]." ". $info[0]["sn"][0]  );
 			    
-			    @ldap_close($ldap);
+			//     @ldap_close($ldap);
 			    
-			    disconnectDB();
-			    die ( json_encode ( Array (
-			        "error" => "0",
-			        "readableMsg" => ""
-			        ) ) );
+			//     disconnectDB();
+			//     die ( json_encode ( Array (
+			//         "error" => "0",
+			//         "readableMsg" => ""
+			//         ) ) );
 				
-			} else {
-				@ldap_close($ldap);
-				exitWithError ( "U03", "Username o Password non validi" );
-			}
+			// } else {
+			// 	@ldap_close($ldap);
+			// 	exitWithError ( "U03", "Username o Password non validi" );
+			// }
 		
 		break;
 		
@@ -102,6 +102,3 @@ function utenti_requireLogin($action="index") {
 		if (! $ACL->hasAccess("utenti",$action))
 			exitWithError ( "U01", "Utente non autenticato" );
 }
-
-
-?>

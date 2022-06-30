@@ -72,7 +72,7 @@ function startup() {
 	// INIZIALIZZAZIONE ORACLE
 	// Initialise database object and establish a connection
 	// at the same time - db_user / db_password / db_name
-	$orcldb = new ezSQL_oracle8_9(ORACLE_DBUSER,ORACLE_DBPASS,ORACLE_DBHOST.'/'.ORACLE_DBNAME);
+	//TODO $orcldb = new ezSQL_oracle8_9(ORACLE_DBUSER,ORACLE_DBPASS,ORACLE_DBHOST.'/'.ORACLE_DBNAME);
 	
 	//file_put_contents(ROOT_PATH."logs/errors.log",date("Y-m-d H:i:s",time())." - Can't connect to AMS Oracle DB ".$orcldb->get_var("SELECT * FROM dual;")."\n",FILE_APPEND);
 	
@@ -1078,4 +1078,3 @@ function dateSovrapposte($data,$start,$end)
         return true;
       return false;
 }
-?>

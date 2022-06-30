@@ -7,7 +7,7 @@ function login() {
 	$view = ROOT_PATH . "views/utenti/login.php"; // includo la view
 	$layout = ROOT_PATH . "layout/login.php"; // includo il layout
 	
-	$var_in_view ['server']="(".$_SERVER['SERVER_ADDR'].")";
+	$var_in_view ['server']="(localhost)"; //".$_SERVER['SERVER_ADDR']."
 	
 	generate_view ( $view, $layout, $var_in_view );
 }
@@ -60,5 +60,3 @@ function associaTelegram($params) {
     }
     
 }
-
-?>
