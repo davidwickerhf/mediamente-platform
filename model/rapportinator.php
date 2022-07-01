@@ -3,7 +3,6 @@ include "../app.config.php";
 include "../commonfunctions.php";
 include "../helpers/ez_sql_core.php";
 include "../helpers/ez_sql_mysqli.php";
-include_once "../helpers/ez_sql_oracle8_9.php";
 require_once "../acl.php";
 require_once(INCLUDE_PATH."helpers/phpspreadsheet/vendor/autoload.php");
 
@@ -236,6 +235,3 @@ function unxtst($data)
         return 0;
     return $date->format("U");
 }
-
-
-?>

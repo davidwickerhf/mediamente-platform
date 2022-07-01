@@ -5,7 +5,6 @@ include "/var/www/vhosts/apps.mmonline.it/app.config.php";
 include "/var/www/vhosts/apps.mmonline.it/commonfunctions.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_core.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_mysqli.php";
-include_once "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_oracle8_9.php";
 
 startup ();
 
@@ -51,4 +50,3 @@ $turnistica->pianificaSettimana();
 
 
 $turnistica->approvaBozza();
-?>

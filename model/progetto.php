@@ -3,7 +3,6 @@ include "../app.config.php";
 include "../commonfunctions.php";
 include "../helpers/ez_sql_core.php";
 include "../helpers/ez_sql_mysqli.php";
-include_once "../helpers/ez_sql_oracle8_9.php";
 require_once "../acl.php";
 
 //ini_set("display_errors",1);
@@ -169,6 +168,3 @@ function progetto_requireLogin($action="index") {
 		if (! $ACL->hasAccess("progetto",$action))
 			exitWithError ( "U01", "Utente non autenticato" );
 }
-
-
-?>
