@@ -10,6 +10,7 @@ class Macchine extends Controller
 
     public function index()
     {
+        requireLogin(); // Richiedo login
         $var_in_view['macchine'] = array();
 
         // TODO Remove comment line below when refactoring to class structure
@@ -17,5 +18,25 @@ class Macchine extends Controller
 
         $view = ROOT_PATH . 'views/macchine/index.php';
         require_once ROOT_PATH . 'layout/default.php';
+    }
+
+    public function macchine()
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function statistiche()
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function prenotazioni()
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function nuovaPrenotazione()
+    {
+        throw new Exception('Not implemented');
     }
 }
