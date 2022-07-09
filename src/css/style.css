@@ -1,0 +1,137 @@
+.macchine-calendario h1 {
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 800;
+  color: rgba(51, 65, 81, 0.66);
+  font-size: 32px;
+}
+.macchine-calendario h2 {
+  margin: 0;
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 700;
+  color: rgb(46, 61, 77);
+  font-size: 18px;
+}
+.macchine-calendario .banner {
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(245, 245, 245);
+  border-radius: 20px;
+  display: grid;
+  column-count: 5;
+  grid-template-columns: auto 2px auto 2px auto;
+}
+.macchine-calendario .banner .divider {
+  height: 100%;
+  width: 2px;
+  background-color: rgb(245, 245, 245);
+}
+.macchine-calendario .banner .banner-section {
+  display: inline;
+  padding-left: 33px;
+  padding-right: 33px;
+  padding-top: 21px;
+  padding-bottom: 21px;
+}
+.macchine-calendario .banner .section-head {
+  min-height: 38.5px;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  align-items: center;
+}
+.macchine-calendario .banner .space {
+  border: 0px;
+  padding: 0px;
+  margin: 9px 0px 0px 0px;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown h2 {
+  display: inline-block;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown:hover {
+  color: rgb(116, 154, 197);
+  cursor: pointer;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown:hover h2 {
+  color: rgb(116, 154, 197);
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown:hover .dropdown-content {
+  display: block;
+  cursor: pointer;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content {
+  border-radius: 16px;
+  padding-left: 18px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 280px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content a {
+  margin: 20px;
+  display: block;
+  margin-left: 12px;
+  color: rgba(51, 65, 81, 0.66);
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content a:hover {
+  text-decoration: none;
+  color: rgb(116, 154, 197);
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown h2 {
+  display: inline-block;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown:hover {
+  color: rgb(116, 154, 197);
+  cursor: pointer;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown:hover h2 {
+  color: rgb(116, 154, 197);
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown:hover .dropdown-content {
+  display: block;
+  cursor: pointer;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown .button-dropdown-button {
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(245, 245, 245);
+  border-radius: 7px;
+  padding: 7px 11px;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content {
+  border-radius: 16px;
+  padding-left: 18px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content a {
+  margin: 20px;
+  display: block;
+  margin-left: 12px;
+  color: rgba(51, 65, 81, 0.66);
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content a:hover {
+  text-decoration: none;
+  color: rgb(116, 154, 197);
+}
+
+/*# sourceMappingURL=style.css.map */
