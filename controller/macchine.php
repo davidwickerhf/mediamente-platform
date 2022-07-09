@@ -11,6 +11,7 @@ class Macchine extends Controller
     public function index()
     {
         requireLogin(); // Richiedo login
+        $var_in_view['pageTitle'] = 'Macchine';
         $var_in_view['macchine'] = array();
 
         // TODO Remove comment line below when refactoring to class structure
