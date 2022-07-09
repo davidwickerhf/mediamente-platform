@@ -61,7 +61,7 @@ if (function_exists($ACTION)) {
 	} else
 		throw_404("Funzione " . $ACTION . " inesistente");
 }
-// include "layout/default.php";
+// include "views/inc/default.php";
 if ($_SERVER['REQUEST_URI'] != URL_BASE_PATH . "utenti/login")
 	$_SESSION['lastVisitedPage'] = $_SERVER['REQUEST_URI'];
 else

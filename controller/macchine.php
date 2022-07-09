@@ -18,7 +18,7 @@ class Macchine extends Controller
         // $this->view('macchine/index'); | Class constructor, incompatible with function constructors in place.
 
         $view = ROOT_PATH . 'views/macchine/index.php';
-        require_once ROOT_PATH . 'layout/default.php';
+        require_once ROOT_PATH . 'views/inc/default.php';
     }
 
     public function macchine()

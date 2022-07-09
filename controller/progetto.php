@@ -18,7 +18,7 @@ function index($params) {
 	$var_in_view ['printDebugQuery'] =  $db->captured_errors;
 	// GENERO VIEW
 	$view = ROOT_PATH . "views/progetto/index.php"; // includo la view
-	$layout = ROOT_PATH . "layout/default.php"; // includo il layout
+	$layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
 	
 	generate_view ( $view, $layout, $var_in_view );
 }
@@ -69,7 +69,7 @@ function visualizza($params) {
     $var_in_view ['printDebugQuery'] =  $db->captured_errors;
     // GENERO VIEW
     $view = ROOT_PATH . "views/progetto/visualizza.php"; // includo la view
-    $layout = ROOT_PATH . "layout/default.php"; // includo il layout
+    $layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
     
     generate_view ( $view, $layout, $var_in_view );
 }
@@ -120,10 +120,7 @@ function aggiungi($params) {
     $var_in_view ['printDebugQuery'] =  $db->captured_errors;
     // GENERO VIEW
     $view = ROOT_PATH . "views/progetto/aggiungi.php"; // includo la view
-    $layout = ROOT_PATH . "layout/default.php"; // includo il layout
+    $layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
     
     generate_view ( $view, $layout, $var_in_view );
 }
-
-
-?>

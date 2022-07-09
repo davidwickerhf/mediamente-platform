@@ -22,7 +22,7 @@ function index($params) {
 	$var_in_view ['printDebugQuery'] =  $db->captured_errors;
 	// GENERO VIEW
 	$view = ROOT_PATH . "views/turni/index.php"; // includo la view
-	$layout = ROOT_PATH . "layout/default.php"; // includo il layout
+	$layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
 	
 	generate_view ( $view, $layout, $var_in_view );
 }
@@ -56,7 +56,7 @@ function visualizza($params) {
     $var_in_view ['openBozzaModal'] = ($params[1]=='generaBozza' ? true : false);
     // GENERO VIEW
     $view = ROOT_PATH . "views/turni/visualizza.php"; // includo la view
-    $layout = ROOT_PATH . "layout/default.php"; // includo il layout
+    $layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
     
     generate_view ( $view, $layout, $var_in_view );
 }
@@ -96,7 +96,7 @@ function aggiungiGruppoTurni($params) {
     $var_in_view ['printDebugQuery'] =  $db->captured_errors;
     // GENERO VIEW
     $view = ROOT_PATH . "views/turni/aggiungiGruppoTurni.php"; // includo la view
-    $layout = ROOT_PATH . "layout/default.php"; // includo il layout
+    $layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
     
     generate_view ( $view, $layout, $var_in_view );
 }
@@ -132,10 +132,7 @@ function bozzaTurni($params) {
     $var_in_view ['printDebugQuery'] =  $db->captured_errors;
     // GENERO VIEW
     $view = ROOT_PATH . "views/turni/bozzaTurni.php"; // includo la view
-    $layout = ROOT_PATH . "layout/default.php"; // includo il layout
+    $layout = ROOT_PATH . "views/inc/default.php"; // includo il layout
     
     generate_view ( $view, $layout, $var_in_view );
 }
-
-
-?>
