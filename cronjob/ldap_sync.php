@@ -1,16 +1,16 @@
-<?php 
+<?php
 
 set_time_limit(60);
 include "/var/www/vhosts/apps.mmonline.it/app.config.php";
-include "/var/www/vhosts/apps.mmonline.it/commonfunctions.php";
+include "/var/www/vhosts/apps.mmonline.it/libraries/commonfunctions.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_core.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_mysqli.php";
 
-startup ();
+startup();
 
 
-require_once CLASS_PATH.'utente.class.php';
+require_once CLASS_PATH . 'utente.class.php';
 
-$utente=new Utente();
+$utente = new Utente();
 
 $utente->ldapSync();

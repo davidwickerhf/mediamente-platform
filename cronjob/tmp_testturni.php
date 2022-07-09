@@ -1,15 +1,15 @@
-<?php 
+<?php
 
 set_time_limit(60);
 include "/var/www/vhosts/apps.mmonline.it/app.config.php";
-include "/var/www/vhosts/apps.mmonline.it/commonfunctions.php";
+include "/var/www/vhosts/apps.mmonline.it/libraries/ctions.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_core.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_mysqli.php";
 
-startup ();
+startup();
 
 
-require_once CLASS_PATH.'turnistica.class.php';
+require_once CLASS_PATH . 'turnistica.class.php';
 
 
 /*
@@ -19,8 +19,7 @@ require_once CLASS_PATH.'turnistica.class.php';
         $this->anno= $array['anno'] ?  $array['anno'] : null;
         $this->id_progetto= $array['id_progetto'] ?  $array['id_progetto'] : null;
  */
-$turnistica=new Turnistica(Array(
-    ));
+$turnistica = new Turnistica(array());
 
 $turnistica->enableDebug();
 
