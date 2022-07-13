@@ -18,7 +18,7 @@
     padding: 6px 14px;
     z-index: 99;
     transition: all 0.5s ease;
-
+    
     * {
             margin: 0;
             padding: 0;
@@ -35,10 +35,10 @@
 
         .icon {
             opacity: 0;
-            transition: all 0.5s ease;
             max-width: calc(100% - 70px);
             margin-left: 20px;
             cursor: pointer;
+            transition: all 0.5s ease;
         }
 
         #btn {
@@ -47,7 +47,6 @@
             right: 0;
             transform: translateY(-50%);
             font-size: 22px;
-            transition: all 0.4s ease;
             font-size: 23px;
             text-align: center;
             cursor: pointer;
@@ -70,6 +69,7 @@
     }
 
     li {
+        display: flex;
         position: relative;
         margin: 8px 0;
         list-style: none;
@@ -110,8 +110,8 @@
             border-radius: 12px;
             align-items: center;
             text-decoration: none;
-            transition: all 0.4s ease;
             background: $primary-blue;
+            transition: all 0.5s ease;
 
             &:hover {
                 background: #FFF;
@@ -134,7 +134,7 @@
                 white-space: nowrap;
                 opacity: 0;
                 pointer-events: none;
-                transition: 0.4s;
+                transition: all 0.5s ease;
             }
 
             
@@ -174,7 +174,7 @@
         }
     }
 
-    li.profile {
+    .profile {
         position: fixed;
         height: 60px;
         width: calc($sidebar-width - 2px);
@@ -182,8 +182,8 @@
         bottom: -8px;
         padding: 10px 14px;
         background: $primary-blue-dark;
-        transition: all 0.5s ease;
         overflow: hidden;
+        transition: all 0.5s ease;
 
         .name {
             font-size: 15px;
@@ -199,9 +199,10 @@
             white-space: nowrap;
             font-size: 12px;
         }
+
+        
     }
 
-    .profile {
         #log_out {
             position: absolute;
             top: 50%;
@@ -214,7 +215,6 @@
             border-radius: 0px;
             transition: all 0.5s ease;
         }
-    }
 }
 
 .sidebar.open {

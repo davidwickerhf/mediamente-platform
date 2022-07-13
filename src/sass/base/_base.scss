@@ -18,6 +18,13 @@ html {
     /* Optional: just make scrollbar invisible */
 }
 
+.notransition {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
 body{
     padding-top: 0;
 

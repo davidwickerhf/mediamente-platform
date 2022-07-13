@@ -104,11 +104,11 @@ let logoutBtn = document.querySelector("#log_out");
 // Load sidebar state when page is loaded
 if (!(window.localStorage.getItem("sidebar-state") === null)) {
     if (window.localStorage.getItem("sidebar-state") === "open") {
+        sidebar.classList.add('notransition');
         sidebar.classList.add("open");
         closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
-    } else {
-        sidebar.classList.remove("open");
-        closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+        sidebar.offsetHeight;
+        sidebar.classList.remove('notransition');
     }
 }
 
