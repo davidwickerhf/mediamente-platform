@@ -1,8 +1,10 @@
 // COLORS
-$primary-blue: rgba(46, 61, 77, 1);
-$primary-blue-selected: rgba(116, 154, 197, 1);
+$primary-blue: rgba(51, 65, 81, 1);
 $primary-blue-transparent: rgba(51, 65, 81, 0.66);
-$primary-flamingo: rgba(239, 83, 80, 0.88);
+$primary-blue-dark: rgba(46, 61, 77, 1);
+$accent-flamingo: rgba(239, 83, 80, 1);
+$accent-flamingo-transparent: rgba(239, 83, 80, 0.88);
+$accent-background: rgba(239, 83, 80, 0.19);
 $super-light-grey: rgba(245, 245, 245, 1);
 $light-grey: rgba(237, 237, 237, 1);
 $medium-grey: rgba(217, 217, 217, 1);
@@ -17,9 +19,25 @@ $normal: 400;
 $semibold: 600;
 $bold: 700;
 $extrabold: 800;
-// Sizes
-$heading-fsize: 32px;
+// SIZES
+// Mobile
+$border-width-m: 1.8px;
+$heading-fsize-m: 22px;
+$section-heading-fsize-m: 18px;
+$content-fsize-m: 10px;
+$button-fsize-m: 12px;
+$subtitle-fsize-m: 14px;
+$padding-m: 24px;
+// Web
+$border-width: 2px;
+$heading-fsize: 28px;
 $section-heading-fsize: 18px;
-$subtitle: 16px;
+$content-fsize: 12px;
+$button-fsize: 14px;
+$subtitle-fsize: 16px;
+$padding: 33px;
+
+$sidebar-width: 78px;
+$sidebar-width-open: 250px;
 
 

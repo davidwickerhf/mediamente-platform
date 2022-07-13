@@ -1,0 +1,78 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+
+*, *:before, *:after{
+    box-sizing: border-box;
+}
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    /* Remove scrollbar space */
+    background: transparent;
+    /* Optional: just make scrollbar invisible */
+}
+
+body{
+    padding-top: 0;
+
+    .page-heading, h1, .page-header{
+        font-size: $heading-fsize-m;
+        font-family: $body-font;
+        font-weight: $bold ;
+        color: $primary-blue;
+        border-bottom: none;
+        margin-top: 0;
+
+        @include medium-up {
+            font-size: $heading-fsize;
+        }
+    }
+
+    .section-heading {
+        font-family: $body-font;
+        font-weight: $bold;
+        color: $primary-blue;
+        font-size: $section-heading-fsize-m;
+        margin: 0;
+        
+
+        @include medium-up {
+            font-size: $section-heading-fsize;
+        }
+    }
+
+    .page {
+        position: relative;
+        background: white;
+        min-height: 100vh;
+        top: 0;
+        left: 0;
+        width: 100%;
+        transition: all 0.5s ease;
+        z-index: 2;
+        padding: $padding-m;
+        margin-top: $sidebar-width;
+
+        .text {
+            display: inline-block;
+            color: $primary-blue;
+            font-size: 25px;
+            font-weight: 500;
+            margin: 18px;
+        }
+
+        @include medium-up {
+            padding: $padding;
+            left: $sidebar-width;
+            width: calc(100% - $sidebar-width);
+            margin-top: 0;
+        }
+    }
+}
+

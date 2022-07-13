@@ -1,0 +1,274 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+@use "../base/base" as *;
+
+
+.banner {
+    border-style: solid;
+    border-width: $border-width-m;
+    border-color: $super-light-grey;
+    border-radius: 11px;
+
+    display: grid;
+    column-count: 1;
+    grid-template-rows: auto $border-width-m auto $border-width-m auto;
+
+    @include medium-up {
+        column-count: 5;
+        grid-template-columns: auto $border-width auto $border-width auto;
+        grid-template-rows: 1;
+    }
+
+    &__divider {
+        width: 100%;
+        height: $border-width-m;
+        background-color: $super-light-grey;
+
+        @include medium-up {
+            width: $border-width;
+            height: 100%;
+        }
+    }
+
+    &__section {
+        display: inline;
+        padding: calc($padding-m - 2px) $padding-m;
+
+        @include medium-up {
+            padding: calc($padding - 8px) $padding;
+        }
+    }
+
+    .section {
+        &__head {
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+
+    &:hover &__content {
+        display: block;
+    }
+
+    &__button {
+        color: $primary-blue-transparent;
+        border-color: $super-light-grey;
+        border-style: solid;
+        border-radius: 7px;
+        border-width: 1.8px;
+    }
+    
+    &__title {
+        display: inline-block;
+        font-family: $body-font;
+        font-size: $button-fsize-m;
+        font-weight: $bold;
+        margin: 0;
+    }
+
+    &__icon { 
+        font-size: $button-fsize-m;
+    }
+
+    &__content {
+        border-radius: 10px;
+        padding-left: 11px;
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    &__item {
+        margin: 20px;
+        display: block;
+        margin-left: 12px;
+        color: $primary-blue-transparent;
+        font-family: $body-font;
+        font-size: 16px;
+        font-weight: $semibold;
+
+        &:hover {
+            text-decoration: none;
+            color: $primary-blue;
+        }
+    }
+}
+
+
+// .macchine-calendario {
+    
+//     h1 {
+//         font-family: $body-font;
+//         font-weight: $extrabold;
+//         color: $primary-blue-transparent;
+//         font-size: $heading-fsize;
+//     }
+
+//     h2 {
+//         margin: 0;
+//         font-family: $body-font;
+//         font-weight: $bold;
+//         color: $primary-blue;
+//         font-size: $section-heading-fsize;
+//     }
+        
+//     .banner {
+//         border-style: solid;
+//         border-width: 2px;
+//         border-color: $super-light-grey;
+//         border-radius: 20px;
+//         display: grid;
+//         column-count: 5;
+//         grid-template-columns: auto 2px auto 2px auto;
+
+//         .divider {
+//             height: 100%;
+//             width: 2px;
+//             background-color: $super-light-grey;
+//         }
+
+//         .banner-section {
+//             display: inline;
+//             padding-left: 33px;
+//             padding-right: 33px;
+//             padding-top: 21px;
+//             padding-bottom: 21px;
+//         }
+
+//         .section-head {
+//             min-height: 38.5px;
+//             display: grid;
+//             grid-template-columns: auto auto;
+//             justify-content: space-between;
+//             align-items: center;
+//         }
+
+//         .space {
+//             border: 0px;
+//             padding: 0px;
+//             margin: 9px 0px 0px 0px;
+//         }
+
+//         .banner-prossime {
+//             .title-dropdown {
+//                 position: relative;
+//                 display: inline-block;
+
+//                 h2 {
+//                     display: inline-block;
+//                 }
+
+//                 &:hover {
+//                     color: $primary-blue-selected;
+//                     cursor: pointer;
+
+//                     h2 {
+//                         color: $primary-blue-selected;
+//                     }
+//                 }
+
+//                 &:hover .dropdown-content{
+//                     display: block;
+//                     cursor: pointer;
+//                 }
+        
+//                 .dropdown-content {
+//                     border-radius: 16px;
+//                     padding-left: 18px;
+//                     display: none;
+//                     position: absolute;
+//                     background-color: white;
+//                     min-width: 280px;
+//                     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+//                     z-index: 1;
+
+//                     a {
+//                         margin: 20px;
+//                         display: block;
+//                         margin-left: 12px;
+//                         color: $primary-blue-transparent;
+//                         font-family: $body-font;
+//                         font-size: 16px;
+//                         font-weight: $semibold;
+//                         &:hover {
+//                             text-decoration: none;
+//                             color: $primary-blue-selected;
+//                         }
+//                     }
+                    
+        
+//                 }
+//             }
+//         }
+
+//         .banner-statistiche {
+//             .button-dropdown {
+//                 position: relative;
+//                 display: inline-block;
+        
+//                 h2 {
+//                     display: inline-block;
+//                 }
+        
+//                 &:hover {
+//                     color: $primary-blue-selected;
+//                     cursor: pointer;
+        
+//                     h2 {
+//                         color: $primary-blue-selected;
+//                     }
+//                 }
+        
+//                 &:hover .dropdown-content {
+//                     display: block;
+//                     cursor: pointer;
+//                 }
+
+//                 .button-dropdown-button {
+//                     border-style: solid;
+//                     border-width: 2px;
+//                     border-color: $super-light-grey;
+//                     border-radius: 7px;
+//                     padding: 7px 11px;
+//                 }
+        
+//                 .dropdown-content {
+//                     border-radius: 16px;
+//                     padding-left: 18px;
+//                     display: none;
+//                     position: absolute;
+//                     background-color: white;
+//                     min-width: 180px;
+//                     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+//                     z-index: 1;
+        
+//                     a {
+//                         margin: 20px;
+//                         display: block;
+//                         margin-left: 12px;
+//                         color: $primary-blue-transparent;
+//                         font-family: $body-font;
+//                         font-size: 16px;
+//                         font-weight: $semibold;
+        
+//                         &:hover {
+//                             text-decoration: none;
+//                             color: $primary-blue-selected;
+//                         }
+//                     }
+        
+        
+//                 }
+//              }
+//         }
+//     }
+// }

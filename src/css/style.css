@@ -1,126 +1,536 @@
-.macchine-calendario h1 {
-  font-family: "Nunito Sans", sans-serif;
-  font-weight: 800;
-  color: rgba(51, 65, 81, 0.66);
-  font-size: 32px;
+*, *:before, *:after {
+  box-sizing: border-box;
 }
-.macchine-calendario h2 {
-  margin: 0;
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  /* Remove scrollbar space */
+  background: transparent;
+  /* Optional: just make scrollbar invisible */
+}
+
+body {
+  padding-top: 0;
+}
+body .page-heading, body h1, body .page-header {
+  font-size: 22px;
   font-family: "Nunito Sans", sans-serif;
   font-weight: 700;
-  color: rgb(46, 61, 77);
+  color: rgb(51, 65, 81);
+  border-bottom: none;
+  margin-top: 0;
+}
+@media (min-width: 768px) {
+  body .page-heading, body h1, body .page-header {
+    font-size: 28px;
+  }
+}
+body .section-heading {
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 700;
+  color: rgb(51, 65, 81);
   font-size: 18px;
+  margin: 0;
 }
-.macchine-calendario .banner {
-  border-style: solid;
-  border-width: 2px;
-  border-color: rgb(245, 245, 245);
-  border-radius: 20px;
-  display: grid;
-  column-count: 5;
-  grid-template-columns: auto 2px auto 2px auto;
+@media (min-width: 768px) {
+  body .section-heading {
+    font-size: 18px;
+  }
 }
-.macchine-calendario .banner .divider {
-  height: 100%;
-  width: 2px;
-  background-color: rgb(245, 245, 245);
+body .page {
+  position: relative;
+  background: white;
+  min-height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: all 0.5s ease;
+  z-index: 2;
+  padding: 24px;
+  margin-top: 78px;
 }
-.macchine-calendario .banner .banner-section {
-  display: inline;
-  padding-left: 33px;
-  padding-right: 33px;
-  padding-top: 21px;
-  padding-bottom: 21px;
+body .page .text {
+  display: inline-block;
+  color: rgb(51, 65, 81);
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px;
 }
-.macchine-calendario .banner .section-head {
-  min-height: 38.5px;
+@media (min-width: 768px) {
+  body .page {
+    padding: 33px;
+    left: 78px;
+    width: calc(100% - 78px);
+    margin-top: 0;
+  }
+}
+
+.cnavbar {
+  transition: all 0.5s ease;
+}
+.cnavbar__bar {
+  overflow: hidden;
+  background-color: rgb(51, 65, 81);
+  position: fixed;
+  top: 0;
+  z-index: 2000;
+  width: 100%;
+  height: 78px;
+  padding: 11px 24px;
   display: grid;
   grid-template-columns: auto auto;
   justify-content: space-between;
   align-items: center;
 }
-.macchine-calendario .banner .space {
-  border: 0px;
-  padding: 0px;
-  margin: 9px 0px 0px 0px;
-}
-.macchine-calendario .banner .banner-prossime .title-dropdown {
-  position: relative;
-  display: inline-block;
-}
-.macchine-calendario .banner .banner-prossime .title-dropdown h2 {
-  display: inline-block;
-}
-.macchine-calendario .banner .banner-prossime .title-dropdown:hover {
-  color: rgb(116, 154, 197);
+.cnavbar__logo {
+  width: 151px;
+  height: 38px;
   cursor: pointer;
 }
-.macchine-calendario .banner .banner-prossime .title-dropdown:hover h2 {
-  color: rgb(116, 154, 197);
-}
-.macchine-calendario .banner .banner-prossime .title-dropdown:hover .dropdown-content {
-  display: block;
+.cnavbar__hamburger {
+  color: white;
+  font-size: 26px;
   cursor: pointer;
 }
-.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content {
-  border-radius: 16px;
-  padding-left: 18px;
-  display: none;
+.cnavbar__navlist-wrapper {
+  visibility: hidden;
+  transition: visibility 0s;
+}
+.cnavbar__background {
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  height: 0;
+  transition: all 0.4s ease;
+  background-color: rgb(51, 65, 81);
+}
+.cnavbar__navlist {
   position: absolute;
-  background-color: white;
-  min-width: 280px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  z-index: 1001;
+  width: 100%;
+  padding: 24px;
+  padding-bottom: 78px;
+  opacity: 0;
+  transition: all 0.2s ease;
 }
-.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content a {
-  margin: 20px;
-  display: block;
-  margin-left: 12px;
-  color: rgba(51, 65, 81, 0.66);
-  font-family: "Nunito Sans", sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+.cnavbar__navlist li {
+  list-style: none;
+  height: auto;
+  transition: 0.4s;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
-.macchine-calendario .banner .banner-prossime .title-dropdown .dropdown-content a:hover {
+.cnavbar__navlist li i {
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 18px;
+  text-align: center;
+  line-height: 60px;
+}
+.cnavbar__navlist li a {
   text-decoration: none;
-  color: rgb(116, 154, 197);
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  align-items: center;
+  width: 100%;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown {
+.cnavbar__navlist .nav_item {
+  cursor: pointer;
+  border-radius: 11px;
+  margin: 8px 0;
+}
+.cnavbar__navlist .nav_item:hover {
+  background-color: white;
+}
+.cnavbar__navlist .nav_item:hover a {
+  transition: all 0.5s ease;
+  color: rgb(51, 65, 81);
+}
+.cnavbar__navlist .nav_item:hover i {
+  transition: all 0.5s ease;
+  color: rgb(51, 65, 81);
+}
+.cnavbar__navlist .li--active {
+  background: #FFF;
+}
+.cnavbar__navlist .li--active a {
+  color: rgb(51, 65, 81);
+}
+.cnavbar__navlist .li--active i {
+  color: rgb(51, 65, 81);
+}
+.cnavbar__profile {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2000;
+  height: 60px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 10px 24px;
+  background: rgb(46, 61, 77);
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.1s ease;
+  transition-delay: 0s;
+}
+.cnavbar__profile .profile__name {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.cnavbar__profile .profile__email {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.cnavbar__profile #nav_log_out {
+  cursor: pointer;
   position: relative;
-  display: inline-block;
+  right: 0;
+  border-radius: 0px;
+  font-size: 20px;
+  color: white;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown h2 {
-  display: inline-block;
+@media (min-width: 768px) {
+  .cnavbar {
+    display: none;
+  }
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown:hover {
-  color: rgb(116, 154, 197);
+
+.cnavbar.open .cnavbar__navlist-wrapper {
+  visibility: visible;
+}
+.cnavbar.open .cnavbar__navlist-wrapper .cnavbar__background {
+  height: 100%;
+  transition: all 0.2s ease;
+}
+.cnavbar.open .cnavbar__navlist-wrapper .cnavbar__navlist {
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+.cnavbar.open .cnavbar__navlist-wrapper .cnavbar__profile {
+  opacity: 1;
+  transition: all 2s ease;
+}
+
+.sidebar::--webkit-scrollbar {
+  display: none;
+}
+
+.sidebar {
+  scrollbar-width: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 78px;
+  background: rgb(51, 65, 81);
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+}
+.sidebar * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito Sans", sans-serif;
+}
+.sidebar .logo-details {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar .logo-details .icon {
+  opacity: 0;
+  transition: all 0.5s ease;
+  max-width: calc(100% - 70px);
+  margin-left: 20px;
   cursor: pointer;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown:hover h2 {
-  color: rgb(116, 154, 197);
+.sidebar .logo-details #btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: all 0.4s ease;
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown:hover .dropdown-content {
-  display: block;
+.sidebar i {
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+}
+.sidebar .nav-list {
+  margin-top: 20px;
+  height: 100%;
+}
+.sidebar li {
+  position: relative;
+  margin: 8px 0;
+  list-style: none;
+  height: auto;
+}
+.sidebar li .tooltip {
+  overflow: visible;
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 30px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sidebar li a {
+  display: flex;
+  width: 100%;
+  border-radius: 12px;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  background: rgb(51, 65, 81);
+}
+.sidebar li a:hover {
+  background: #FFF;
+}
+.sidebar li a:hover .links_name {
+  transition: all 0.5s ease;
+  color: rgb(51, 65, 81);
+}
+.sidebar li a:hover i {
+  transition: all 0.5s ease;
+  color: rgb(51, 65, 81);
+}
+.sidebar li a .links_name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+.sidebar li .a--active {
+  background: #FFF;
+}
+.sidebar li .a--active .links_name {
+  color: rgb(51, 65, 81);
+}
+.sidebar li .a--active i {
+  color: rgb(51, 65, 81);
+}
+.sidebar li i {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+.sidebar li .profile-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.sidebar li img {
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+.sidebar li.profile {
+  position: fixed;
+  height: 60px;
+  width: 76px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: rgb(46, 61, 77);
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+.sidebar li.profile .name {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.sidebar li.profile .email {
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.sidebar .profile #log_out {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: rgb(46, 61, 77);
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+}
+
+.sidebar.open {
+  width: 250px;
+}
+.sidebar.open .logo-details .icon {
+  opacity: 1;
+}
+.sidebar.open .logo-details #btn {
+  text-align: right;
+}
+.sidebar.open li .tooltip {
+  display: none;
+}
+.sidebar.open li a .links_name {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar.open li.profile {
+  width: 248px;
+}
+.sidebar.open .profile #log_out {
+  width: 50px;
+  background: none;
   cursor: pointer;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown .button-dropdown-button {
+
+.sidebar.open ~ .page {
+  left: 0;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .sidebar.open ~ .page {
+    left: 250px;
+    width: calc(100% - 250px);
+  }
+}
+
+@media (max-width: 420px) {
+  .sidebar li .tooltip {
+    display: none;
+  }
+}
+.banner {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1.8px;
   border-color: rgb(245, 245, 245);
-  border-radius: 7px;
-  padding: 7px 11px;
+  border-radius: 11px;
+  display: grid;
+  column-count: 1;
+  grid-template-rows: auto 1.8px auto 1.8px auto;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content {
-  border-radius: 16px;
-  padding-left: 18px;
+@media (min-width: 768px) {
+  .banner {
+    column-count: 5;
+    grid-template-columns: auto 2px auto 2px auto;
+    grid-template-rows: 1;
+  }
+}
+.banner__divider {
+  width: 100%;
+  height: 1.8px;
+  background-color: rgb(245, 245, 245);
+}
+@media (min-width: 768px) {
+  .banner__divider {
+    width: 2px;
+    height: 100%;
+  }
+}
+.banner__section {
+  display: inline;
+  padding: 22px 24px;
+}
+@media (min-width: 768px) {
+  .banner__section {
+    padding: 25px 33px;
+  }
+}
+.banner .section__head {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown:hover .dropdown__content {
+  display: block;
+}
+.dropdown__button {
+  color: rgba(51, 65, 81, 0.66);
+  border-color: rgb(245, 245, 245);
+  border-style: solid;
+  border-radius: 7px;
+  border-width: 1.8px;
+}
+.dropdown__title {
+  display: inline-block;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+}
+.dropdown__icon {
+  font-size: 12px;
+}
+.dropdown__content {
+  border-radius: 10px;
+  padding-left: 11px;
   display: none;
   position: absolute;
   background-color: white;
-  min-width: 180px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content a {
+.dropdown__item {
   margin: 20px;
   display: block;
   margin-left: 12px;
@@ -129,9 +539,9 @@
   font-size: 16px;
   font-weight: 600;
 }
-.macchine-calendario .banner .banner-statistiche .button-dropdown .dropdown-content a:hover {
+.dropdown__item:hover {
   text-decoration: none;
-  color: rgb(116, 154, 197);
+  color: rgb(51, 65, 81);
 }
 
 /*# sourceMappingURL=style.css.map */

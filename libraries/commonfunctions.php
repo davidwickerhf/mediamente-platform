@@ -1,5 +1,5 @@
 <?php
-require "libraries/emailfunctions.php";
+require ROOT_PATH . "libraries/emailfunctions.php";
 function throw_error($text)
 {
 	header("HTTP/1.0 500 Internal Server Error");

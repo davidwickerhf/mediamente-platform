@@ -1,60 +1,83 @@
-<!-- Banner  -->
-<?php function createBanner()
+<?php
+
+/**
+ * Banner Component
+ * PHP Version 7.4.
+ *
+ * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ */
+
+
+/**
+ * Generate banner html
+ */
+function renderBanner()
 { ?>
+
 <div class="banner">
     <!-- Section Prossime Prenotazioni -->
-    <div class="banner-section banner-prossime">
-        <div class="section-head">
-            <div class="title-dropdown">
-                <div class="title-dropdown-button">
-                    <h2 class="section-title">
-                        Prossime prenotazioni
+    <div class="banner__section">
+        <div class="section__head">
+            <h2 class="section-heading">
+                Le tue prenotazioni
+            </h2>
+            <div class="dropdown">
+                <div class="dropdown__button">
+                    <h2 class="dropdown__title">
+                        Prossime
                     </h2>
-                    <i class="fa fa-solid fa-angle-down icon-white"></i>
+                    <i class="fa fa-solid fa-angle-down dropdown__icon"></i>
                 </div>
-                <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">
-                        Prossime prenotazioni
+                <div class="dropdown__content">
+                    <a href="#" class="dropdown__item">
+                        Prossime
                     </a>
-                    <a href="#" class="dropdown-item">
-                        Prenotazioni in corso
+                    <a href="#" class="dropdown__item">
+                        In corso
                     </a>
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="divider"></div>
+
+    <div class="banner__divider"></div>
 
     <!-- Section Statistiche  -->
-    <div class="banner-section banner-statistiche">
-        <div class="section-head">
-            <h2 class="section-title">Prenotazioni</h2>
-            <div class="button-dropdown">
-                <div class="button-dropdown-button">
-                    <h2 class="section-title">
-                        Mesi
-                    </h2>
-                    <i class="fa fa-solid fa-angle-down icon-white"></i>
-                </div>
-                <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">
-                        Mesi
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        Anni
-                    </a>
+    <div class="banner__section">
+        <div class="section">
+            <div class="section__head">
+                <h2 class="section-heading">Prenotazioni</h2>
+                <div class="button-dropdown">
+                    <div class="dropdown__button">
+                        <h2 class="dropdown__title">
+                            Mesi
+                        </h2>
+                        <i class="fa fa-solid fa-angle-down dropdown__icon"></i>
+                    </div>
+                    <div class="dropdown__content">
+                        <a href="#" class="dropdown__item">
+                            Mesi
+                        </a>
+                        <a href="#" class="dropdown__item">
+                            Anni
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="divider"></div>
+
+    <div class="banner__divider"></div>
 
     <!-- Section Disponibilita -->
-    <div class="banner-section banner-disponibilita">
-        <div class="section-head">
-            <h2 class="section-title">Disponibilita'</h2>
+    <div class="banner__section">
+        <div class="section">
+            <div class="section__head">
+                <h2 class="section-heading">Disponibilita'</h2>
+            </div>
         </div>
     </div>
 </div>
-<? } ?>
+<?php } ?>
