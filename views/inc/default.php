@@ -67,7 +67,6 @@ global $CONTROLLER;
     require_once ROOT_PATH . 'views/inc/navbar.php';
     renderNavbar($CONTROLLER);
     ?>
-    <!-- End Navbar -->
     <!-- Sidebar  -->
     <?php
     require_once ROOT_PATH . 'views/inc/sidebar.php';

@@ -63,7 +63,7 @@ body .page .text {
 }
 @media (min-width: 768px) {
   body .page {
-    padding: 33px;
+    padding: 24px 33px 33px 33px;
     left: 78px;
     width: calc(100% - 78px);
     margin-top: 0;

@@ -68,7 +68,7 @@ body{
         }
 
         @include medium-up {
-            padding: $padding;
+            padding: 24px $padding $padding $padding ;
             left: $sidebar-width;
             width: calc(100% - $sidebar-width);
             margin-top: 0;
