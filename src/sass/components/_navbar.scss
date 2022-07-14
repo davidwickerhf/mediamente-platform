@@ -112,15 +112,15 @@
         }
 
         .li--active {
+            transition: all 0.5s ease;
+            background: $accent-flamingo-super-transparent;
 
-            background: #FFF;
-
-            a {
-                color: $primary-blue;
+            .links_name {
+                color: $accent-flamingo;
             }
 
             i {
-                color: $primary-blue;
+                color: $accent-flamingo;
             }
         }
     }
