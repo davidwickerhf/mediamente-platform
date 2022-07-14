@@ -8,16 +8,18 @@
     border-width: $border-width-m;
     border-color: $super-light-grey;
     border-radius: 11px;
+    justify-content: space-between;
+    gap: $border-width-m;
+    display: flex;
+    flex-wrap: wrap;
+    --multiplier: calc(calc(370px * 3) - 100%);
+    //grid-template-rows: auto $border-width-m auto $border-width-m auto;
 
-    display: grid;
-    column-count: 1;
-    grid-template-rows: auto $border-width-m auto $border-width-m auto;
-
-    @include medium-up {
-        column-count: 5;
-        grid-template-columns: auto $border-width auto $border-width auto;
-        grid-template-rows: 1;
-    }
+    // @include medium-up {
+    //     column-count: 5;
+    //     grid-template-columns: auto $border-width auto $border-width auto;
+    //     grid-template-rows: 1;
+    // }
 
     &__divider {
         width: 100%;
@@ -31,8 +33,11 @@
     }
 
     &__section {
-        display: inline;
+        min-width: 33%;
+        max-width: 100%;
         padding: calc($padding-m - 2px) $padding-m;
+        flex-grow: 1;
+        flex-basis: calc(var(--multiplier) * 999);
 
         @include medium-up {
             padding: calc($padding - 8px) $padding;

@@ -14,6 +14,13 @@ html {
   /* Optional: just make scrollbar invisible */
 }
 
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
 body {
   padding-top: 0;
 }
@@ -261,10 +268,10 @@ body .page .text {
 }
 .sidebar .logo-details .icon {
   opacity: 0;
-  transition: all 0.5s ease;
   max-width: calc(100% - 70px);
   margin-left: 20px;
   cursor: pointer;
+  transition: all 0.5s ease;
 }
 .sidebar .logo-details #btn {
   position: absolute;
@@ -272,7 +279,6 @@ body .page .text {
   right: 0;
   transform: translateY(-50%);
   font-size: 22px;
-  transition: all 0.4s ease;
   font-size: 23px;
   text-align: center;
   cursor: pointer;
@@ -291,6 +297,7 @@ body .page .text {
   height: 100%;
 }
 .sidebar li {
+  display: flex;
   position: relative;
   margin: 8px 0;
   list-style: none;
@@ -326,8 +333,8 @@ body .page .text {
   border-radius: 12px;
   align-items: center;
   text-decoration: none;
-  transition: all 0.4s ease;
   background: rgb(51, 65, 81);
+  transition: all 0.5s ease;
 }
 .sidebar li a:hover {
   background: #FFF;
@@ -347,7 +354,7 @@ body .page .text {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: 0.4s;
+  transition: all 0.5s ease;
 }
 .sidebar li .a--active {
   background: #FFF;
@@ -376,7 +383,7 @@ body .page .text {
   border-radius: 6px;
   margin-right: 10px;
 }
-.sidebar li.profile {
+.sidebar .profile {
   position: fixed;
   height: 60px;
   width: 76px;
@@ -384,23 +391,23 @@ body .page .text {
   bottom: -8px;
   padding: 10px 14px;
   background: rgb(46, 61, 77);
-  transition: all 0.5s ease;
   overflow: hidden;
+  transition: all 0.5s ease;
 }
-.sidebar li.profile .name {
+.sidebar .profile .name {
   font-size: 15px;
   font-weight: 400;
   color: #fff;
   white-space: nowrap;
 }
-.sidebar li.profile .email {
+.sidebar .profile .email {
   font-size: 15px;
   font-weight: 400;
   color: #fff;
   white-space: nowrap;
   font-size: 12px;
 }
-.sidebar .profile #log_out {
+.sidebar #log_out {
   position: absolute;
   top: 50%;
   right: 0;
@@ -459,16 +466,11 @@ body .page .text {
   border-width: 1.8px;
   border-color: rgb(245, 245, 245);
   border-radius: 11px;
-  display: grid;
-  column-count: 1;
-  grid-template-rows: auto 1.8px auto 1.8px auto;
-}
-@media (min-width: 768px) {
-  .banner {
-    column-count: 5;
-    grid-template-columns: auto 2px auto 2px auto;
-    grid-template-rows: 1;
-  }
+  justify-content: space-between;
+  gap: 1.8px;
+  display: flex;
+  flex-wrap: wrap;
+  --multiplier: calc(calc(370px * 3) - 100%);
 }
 .banner__divider {
   width: 100%;
@@ -482,8 +484,11 @@ body .page .text {
   }
 }
 .banner__section {
-  display: inline;
+  min-width: 33%;
+  max-width: 100%;
   padding: 22px 24px;
+  flex-grow: 1;
+  flex-basis: calc(var(--multiplier) * 999);
 }
 @media (min-width: 768px) {
   .banner__section {

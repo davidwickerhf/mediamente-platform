@@ -42,7 +42,7 @@ function renderBanner()
 
     </div>
 
-    <div class="banner__divider"></div>
+    <!-- <div class="banner__divider"></div> -->
 
     <!-- Section Statistiche  -->
     <div class="banner__section">
@@ -69,7 +69,7 @@ function renderBanner()
         </div>
     </div>
 
-    <div class="banner__divider"></div>
+    <!-- <div class="banner__divider"></div> -->
 
     <!-- Section Disponibilita -->
     <div class="banner__section">
