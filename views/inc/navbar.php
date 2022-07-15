@@ -48,7 +48,7 @@ function renderNavbar(string $controller, string $name = null, $surname = null, 
                 </a>
 
             </li>
-            <li class="nav_item <?= $controller == "progetti" ? 'li--active' : '' ?>">
+            <li class="nav_item <?= $controller == "progetto" ? 'li--active' : '' ?>">
                 <a href="<?= SERV_URL ?>progetto">
                     <i class='bx bx-task'></i>
                     <span class="links_name">Progetti</span>

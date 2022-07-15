@@ -1,6 +1,14 @@
 // sass --watch src/sass/main.sc ss src/css/style.css
+
+// Load Base
 @use "abstracts/variables" as *;
 @use 'base/base' as *;
+
+// Load Components
 @use 'components/navbar' as *;
 @use 'components/sidebar' as *;
+@use 'components/dropdown' as *;
+@use 'components/banner' as *;
+
+// Load Pages
 @use 'pages/macchine_index' as *;

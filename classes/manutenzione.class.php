@@ -1,25 +1,19 @@
 <?php
 
-enum Tipologia
-{
-    case CambioGomme;
-    case Tagliando;
-    case Revisione;
-}
-
 /**
- * Class mirrows a row in the database table 'manutenzioni'
+ * Class mirrows table `manutenzioni` in the database.
+ * PHP Version 7.4.
  *
- * @author  David Henry Francis Wicker @ Mediamente Consulting
- * @license MIT
+ * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-class Manutenzione
+class CManutenzione
 {
     public int $id;
     public int $id_macchina;
     public int $username;
     public DateTime $data;
-    public Tipologia $tipologia;
+    public string $tipologia;
     public string $luogo;
     public int $chilometri;
 

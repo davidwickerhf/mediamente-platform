@@ -52,6 +52,10 @@ global $CONTROLLER;
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/fh-3.1.3/sl-1.2.5/datatables.min.js">
     </script>
 
+    <!-- Custom Functions for Ajax Responses for dynamic UI  -->
+    <script src="<?= SERV_URL ?>views/macchine/js/macchine-index.js"></script>
+
+
 </head>
 
 <body>

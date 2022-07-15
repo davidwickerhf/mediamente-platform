@@ -1,35 +1,21 @@
 <?php
 
-enum Sede
-{
-    case Torino;
-    case Bologna;
-    case Milano;
-    case Empoli;
-}
-
-
-enum Motivazione
-{
-    case Aziendale;
-    case Personale;
-}
-
 /**
- * Class mirrows a row in the database table 'prenotazioni'
+ * Class mirrows table `prenotazioni` in the database.
+ * PHP Version 7.4.
  *
- * @author  David Henry Francis Wicker @ Mediamente Consulting
- * @license MIT
+ * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-class Prenotazione
+class CPrenotazione
 {
     public int $id;
     public int $id_macchina;
     public string $username;
     public DateTime $from_date;
     public DateTime $to_date;
-    public Sede $sede;
-    public Motivazione $motivazione;
+    public string $sede;
+    public string $motivazione;
     public string $note;
 
     /**

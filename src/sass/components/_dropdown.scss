@@ -1,0 +1,108 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    //width: 160px;
+    //max-width: 160px;
+
+
+    &__button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: $body-font;
+        font-weight: $semibold;
+        color: $primary-blue-transparent;
+        font-size: $button-fsize;
+        text-decoration: none;
+        border-radius: 7px;
+        background-color: white;
+        padding: 6px 14px;
+
+        border-style: solid;
+        border-width: $border-width;
+        border-color: $super-light-grey;
+
+        width: 100%;
+
+        &:focus {
+            outline: none;
+            color: $primary-blue;
+            text-decoration: none;
+        }
+
+        &:hover {
+            color: $primary-blue;
+            text-decoration: none;
+        }
+    }
+
+    &__icon-wrapper {
+        padding-left: $padding-m
+    }
+
+
+    &__icon {
+        transition: transform 0.2s ease;
+        font-size: $button-fsize-m;
+    }
+
+    &__content {
+        visibility: hidden;
+        opacity: 0;
+
+        border-radius: 10px;
+        position: fixed;
+        background-color: white;
+        border: 2px solid $super-light-grey;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+
+        width: inherit;
+        max-width: inherit;
+
+        transition: all 0.2s ease;
+    }
+
+    &__item {
+        padding: 16px;
+        display: block;
+        border-radius: 10px;
+
+        font-family: $body-font;
+        font-weight: $semibold;
+        font-family: $body-font;
+        font-weight: $semibold;
+        color: $primary-blue-transparent;
+        font-size: $button-fsize;
+        text-decoration: none;
+
+
+        &:focus {
+            text-decoration: none;
+            color: $primary-blue;
+        }
+
+        &:hover {
+            text-decoration: none;
+            color: $primary-blue;
+            background: $super-light-grey;
+        }
+    }
+
+    &:focus-within {
+        .dropdown__content {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dropdown__icon {
+            transform: rotate(180deg);
+        }
+
+    }
+}

@@ -8,74 +8,52 @@
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
+require_once ROOT_PATH . 'controller/macchine.php';
 
 /**
  * Generate banner html
  */
 function renderBanner()
-{ ?>
 
+{
+    require_once ROOT_PATH . 'views/macchine/components/dropdown.php';
+?>
 <div class="banner">
     <!-- Section Prossime Prenotazioni -->
-    <div class="banner__section">
-        <div class="section__head">
-            <h2 class="section-heading">
-                Le tue prenotazioni
-            </h2>
-            <div class="dropdown">
-                <div class="dropdown__button">
-                    <h2 class="dropdown__title">
-                        Prossime
-                    </h2>
-                    <i class="fa fa-solid fa-angle-down dropdown__icon"></i>
-                </div>
-                <div class="dropdown__content">
-                    <a href="#" class="dropdown__item">
-                        Prossime
-                    </a>
-                    <a href="#" class="dropdown__item">
-                        In corso
-                    </a>
+    <div class="banner__wrapper">
+        <div class="banner__section">
+            <div class="section__head">
+                <h2 class="section-heading">
+                    Le tue prenotazioni
+                </h2>
+                <?php
+                    renderDropdown('Prossime', 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_PRENOTAZIONI, array('prossime' => 'Prossime', 'incorso' => 'In corso'));
+                    ?>
+            </div>
+
+        </div>
+
+
+        <!-- Section Statistiche  -->
+        <div class="banner__section">
+            <div class="section">
+                <div class="section__head">
+                    <h2 class="section-heading">Prenotazioni</h2>
+
+                    <?php
+                        renderDropdown('Mensilmente', 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_STATISTICHE, array('mensilmente' => 'Mensilmente', 'annualmente' => 'Annualmente'));
+                        ?>
                 </div>
             </div>
         </div>
 
-    </div>
 
-    <!-- <div class="banner__divider"></div> -->
-
-    <!-- Section Statistiche  -->
-    <div class="banner__section">
-        <div class="section">
-            <div class="section__head">
-                <h2 class="section-heading">Prenotazioni</h2>
-                <div class="button-dropdown">
-                    <div class="dropdown__button">
-                        <h2 class="dropdown__title">
-                            Mesi
-                        </h2>
-                        <i class="fa fa-solid fa-angle-down dropdown__icon"></i>
-                    </div>
-                    <div class="dropdown__content">
-                        <a href="#" class="dropdown__item">
-                            Mesi
-                        </a>
-                        <a href="#" class="dropdown__item">
-                            Anni
-                        </a>
-                    </div>
+        <!-- Section Disponibilita -->
+        <div class="banner__section">
+            <div class="section">
+                <div class="section__head section__head--manual-wide">
+                    <h2 class="section-heading">Disponibilita'</h2>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- <div class="banner__divider"></div> -->
-
-    <!-- Section Disponibilita -->
-    <div class="banner__section">
-        <div class="section">
-            <div class="section__head">
-                <h2 class="section-heading">Disponibilita'</h2>
             </div>
         </div>
     </div>

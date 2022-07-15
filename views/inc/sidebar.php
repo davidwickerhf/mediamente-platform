@@ -46,7 +46,7 @@ function renderSidebar(string $controller, string $name = null, string $email = 
             <span class="tooltip">Calendario</span>
         </li>
         <li>
-            <a <?= $controller == "progetti" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>progetto">
+            <a <?= $controller == "progetto" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>progetto">
                 <i class='bx bx-task'></i>
                 <span class="links_name">Progetti</span>
             </a>

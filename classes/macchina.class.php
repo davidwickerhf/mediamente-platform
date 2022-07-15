@@ -1,24 +1,18 @@
 <?php
 
-enum Sede
-{
-    case Torino;
-    case Bologna;
-    case Milano;
-    case Empoli;
-}
-
 /**
- * Class mirrows a row in the database table 'macchine'
+ * Class mirrows table `macchine` in the database.
+ * PHP Version 7.4.
  *
- * @author  David Henry Francis Wicker @ Mediamente Consulting
- * @license MIT
+ * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-class Macchina
+
+class CMacchina
 {
     public int $id;
     public string $modello;
-    public Sede $sede;
+    public string $sede;
     public bool $disponibile;
     public bool $archiviata;
     public DateTime $ultima_revisione;

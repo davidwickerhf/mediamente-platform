@@ -1,8 +1,11 @@
 <?php
-/*
-   * Base Controller
-   * Loads the models and views
-   */
+
+/**
+ * Base controller class. Loads models and views.
+ *
+ * @author  David Henry Francis Wicker @ Mediamente Consulting
+ * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License.
+ */
 class Controller
 {
   // Load model
@@ -20,7 +23,9 @@ class Controller
   {
     // Check for view file
     if (file_exists(ROOT_PATH . 'views/' . $view . '.php')) {
-      require_once ROOT_PATH . 'views/' . $view . '.php';
+      $var_in_view = $data;
+      $view = ROOT_PATH . 'views/macchine/index.php';
+      require_once ROOT_PATH . 'views/inc/default.php';
     } else {
       // View does not exist
       die('View does not exist');
