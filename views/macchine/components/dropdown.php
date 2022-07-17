@@ -51,17 +51,19 @@ function renderDropdown(string $title, string $controller, string $method, strin
 </div>
 <script>
 $('#<?= $action ?>').find('.dropdown__item').click(function() {
+    // Get chosen component state
     var state = $(this).text().toLowerCase().replace(/\s+/g, '');
-
     // Get csrf token
     token = <?php
                     $token = generateDynamicComponentToken($controller, $action);
                     echo json_encode($token);
                     ?>;
+    // load data
     data = {};
     data.items = <?php echo json_encode($items) ?>;
     // launch ajax request
     updateComponent("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $action ?>", state, token, data);
+    // remove focus from component
     $(this).blur();
 });
 </script>

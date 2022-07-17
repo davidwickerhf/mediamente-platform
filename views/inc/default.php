@@ -19,21 +19,21 @@ global $CONTROLLER;
 
     <!-- FlatIcon -->
     <style>
-        @font-face {
-            font-family: "Flaticon";
-            src: url("<?= SERV_URL ?>dist/css/flaticon/flaticon.eot?v=<?= VERSION ?>");
-            src: url("<?= SERV_URL ?>dist/css/flaticon/flaticon.eot?v=<?= VERSION ?>#iefix") format("embedded-opentype"),
-                url("<?= SERV_URL ?>dist/css/flaticon/flaticon.woff?v=<?= VERSION ?>") format("woff"),
-                url("<?= SERV_URL ?>dist/css/flaticon/flaticon.ttf?v=<?= VERSION ?>") format("truetype"),
-                url("<?= SERV_URL ?>dist/css/flaticon/flaticon.svg?v=<?= VERSION ?>") format("svg");
-            font-weight: normal;
-            font-style: normal;
-        }
+    @font-face {
+        font-family: "Flaticon";
+        src: url("<?= SERV_URL ?>dist/css/flaticon/flaticon.eot?v=<?= VERSION ?>");
+        src: url("<?= SERV_URL ?>dist/css/flaticon/flaticon.eot?v=<?= VERSION ?>#iefix") format("embedded-opentype"),
+            url("<?= SERV_URL ?>dist/css/flaticon/flaticon.woff?v=<?= VERSION ?>") format("woff"),
+            url("<?= SERV_URL ?>dist/css/flaticon/flaticon.ttf?v=<?= VERSION ?>") format("truetype"),
+            url("<?= SERV_URL ?>dist/css/flaticon/flaticon.svg?v=<?= VERSION ?>") format("svg");
+        font-weight: normal;
+        font-style: normal;
+    }
     </style>
     <link rel="stylesheet" type="text/css" href="<?= SERV_URL ?>dist/css/flaticon/flaticon.css?v=<?= VERSION ?>">
     <!-- Custom Fonts  -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap');
     </style>
     <!-- Custom Icons  -->
     <script src="https://kit.fontawesome.com/47b9f31c47.js" crossorigin="anonymous"></script>
@@ -47,11 +47,13 @@ global $CONTROLLER;
 
     <!-- JQuery -->
     <script src="<?= SERV_URL ?>dist/js/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/fh-3.1.3/sl-1.2.5/datatables.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs/dt-1.10.16/fh-3.1.3/sl-1.2.5/datatables.min.css" />
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/fh-3.1.3/sl-1.2.5/datatables.min.js">
     </script>
 
     <!-- Custom Javascript Functions for Ajax Responses for dynamic UI  -->
+    <script defer src="<?= SERV_URL ?>src/js/functions.js"></script>
     <script defer src="<?= SERV_URL ?>src/js/elements.js"></script>
     <script defer src="<?= SERV_URL ?>src/js/macchine-index.js"></script>
 
@@ -60,11 +62,11 @@ global $CONTROLLER;
 
 <body>
     <script>
-        function decodeEntities(encodedString) {
-            var textArea = document.createElement('textarea');
-            textArea.innerHTML = encodedString;
-            return textArea.value;
-        }
+    function decodeEntities(encodedString) {
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = encodedString;
+        return textArea.value;
+    }
     </script>
     <!-- Navbar -->
     <?php
