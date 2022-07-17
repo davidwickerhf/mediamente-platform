@@ -305,6 +305,14 @@ function generateUniqueId($maxLength = null)
 
 
 // AJAX FUNCTIONS
+function generateDynamicComponentToken($controller, $action)
+{
+	$csrfToken = sha1(SECURITY_SALT . $controller . $action . generateUniqueId());
+	$csrfTokenID = generateUniqueId();
+	$_SESSION['csrfToken-' . $action . $csrfTokenID] = $csrfToken;
+	return array('csrfToken' => $csrfToken, 'csrfTokenID' => $csrfTokenID);
+}
+
 function ajaxSubmit($id, $model, $action, $params, $firedBy, $success = null, $error = null, $askConfirm = null)
 {
 	$csrfToken = sha1(SECURITY_SALT . $model . $action . generateUniqueId());
