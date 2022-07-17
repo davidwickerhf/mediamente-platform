@@ -1,5 +1,5 @@
 /**
- * Functions needed to dynamically update specific components.
+ * Utility functions for dynamic components
  *
  * @author David Henry Francis Wicker.
  * Contact davidwickerhf@gmail.com for information.

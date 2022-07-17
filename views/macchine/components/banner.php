@@ -48,11 +48,13 @@ function renderBanner()
 
 
         <!-- Section Disponibilita -->
-        <div class="banner__section">
+        <div class="banner__section banner__section--no-growth">
             <div class="section">
                 <div class="section__head section__head--manual-wide">
                     <h2 class="section-heading">Disponibilita'</h2>
                 </div>
+
+
             </div>
         </div>
     </div>

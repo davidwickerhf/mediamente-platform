@@ -556,7 +556,7 @@ body .page .text {
   justify-content: space-between;
   display: flex;
   flex-wrap: wrap;
-  --multiplier: calc(calc(370px * 3) - 100%);
+  --multiplier: calc(calc(310px * 3) - 100%);
   gap: 2px;
   overflow: hidden;
 }
@@ -567,6 +567,10 @@ body .page .text {
   flex-grow: 1;
   flex-basis: calc(var(--multiplier) * 999);
   background-color: white;
+}
+.banner__section--no-growth {
+  flex-grow: 0;
+  min-width: 25%;
 }
 .banner .section__head {
   display: grid;

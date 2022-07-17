@@ -28,4 +28,11 @@ function updateDropdownState(action, state, items) {
     .find(".dropdown__button")
     .find(".dropdown__title")
     .text(title);
+
+  // Resize content after width change
+  $("#" + action)
+    .find(".dropdown__content")
+    .css({
+      width: $("#" + action).width() + "px",
+    });
 }

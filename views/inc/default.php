@@ -35,8 +35,7 @@ global $CONTROLLER;
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap');
     </style>
-    <!-- Custom Icons  -->
-    <script src="https://kit.fontawesome.com/47b9f31c47.js" crossorigin="anonymous"></script>
+
     <!-- Boxicons CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 

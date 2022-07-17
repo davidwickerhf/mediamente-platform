@@ -14,7 +14,7 @@
         justify-content: space-between;
         display: flex;
         flex-wrap: wrap;
-        --multiplier: calc(calc(370px * 3) - 100%);
+        --multiplier: calc(calc(310px * 3) - 100%);
         gap: $border-width;
         overflow: hidden;
     }
@@ -28,6 +28,11 @@
         background-color: white;
     }
 
+    &__section--no-growth {
+        flex-grow: 0;
+        min-width: 25%;
+    }
+
     .section {
         &__head {
             display: grid;
@@ -38,6 +43,7 @@
 
         &__head--manual-wide {
             height: 36px;
+            
         }
     }
 }

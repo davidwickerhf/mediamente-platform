@@ -36,7 +36,7 @@ function renderDropdown(string $title, string $controller, string $method, strin
             <?= $title  ?>
         </div>
         <div class="dropdown__icon-wrapper">
-            <i class="fa fa-solid fa-angle-down dropdown__icon"></i>
+            <i class="bx bx-chevron-down"></i>
         </div>
     </div>
     <div class="dropdown__content">
@@ -50,6 +50,15 @@ function renderDropdown(string $title, string $controller, string $method, strin
     </div>
 </div>
 <script>
+// Make content the same width as the button
+$(document).ready(function() {
+    $('#<?= $action ?>').find('.dropdown__content').css({
+        'width': ($('#<?= $action ?>').width() + 'px')
+    });
+});
+
+
+// Click reader
 $('#<?= $action ?>').find('.dropdown__item').click(function() {
     // Get chosen component state
     var state = $(this).text().toLowerCase().replace(/\s+/g, '');
@@ -65,6 +74,7 @@ $('#<?= $action ?>').find('.dropdown__item').click(function() {
     updateComponent("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $action ?>", state, token, data);
     // remove focus from component
     $(this).blur();
+
 });
 </script>
 <?php
