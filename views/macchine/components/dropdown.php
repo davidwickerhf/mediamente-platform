@@ -53,39 +53,15 @@ function renderDropdown(string $title, string $controller, string $method, strin
 $('#<?= $action ?>').find('.dropdown__item').click(function() {
     var state = $(this).text().toLowerCase().replace(/\s+/g, '');
 
-    // Ajax function, handled in the controller specified by $method
-    <?php
-            $csrfToken = sha1(SECURITY_SALT . $controller . $action . generateUniqueId());
-            $csrfTokenID = generateUniqueId();
-            $_SESSION['csrfToken-' . $action . $csrfTokenID] = $csrfToken;
-            ?>
-
-    $.ajax("<?= SERV_URL . $controller . '/' . $method ?>", {
-        type: 'POST',
-        data: {
-            'csrfToken': "<?= $csrfToken ?>",
-            'csrfTokenID': "<?= $csrfTokenID ?>",
-            'action': "<?= $action ?>",
-            'state': state,
-            'data': {
-                'items': <?php echo json_encode($items) ?>,
-            }
-        },
-        success: function(data, status, jqxhr) {
-            // Call js function in javascript file for UI update
-            var data = JSON.parse(data);
-
-            data.action = "<?= $action ?>";
-            console.log('SEVER RESPONDED TO ACTION: ' + data.action);
-            console.log(data['state']);
-            window['<?= $action ?>'](data.action, data.state, data.data);
-            return;
-        },
-        error: function(data, status, jqxhr) {
-            alert('Error in ajax request');
-            return;
-        }
-    });
+    // Get csrf token
+    token = <?php
+                    $token = generateDynamicComponentToken($controller, $action);
+                    echo json_encode($token);
+                    ?>;
+    data = {};
+    data.items = <?php echo json_encode($items) ?>;
+    // launch ajax request
+    updateComponent("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $action ?>", state, token, data);
     $(this).blur();
 });
 </script>

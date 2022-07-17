@@ -30,7 +30,6 @@ function renderBanner()
                     renderDropdown('Prossime', 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_PRENOTAZIONI, array('prossime' => 'Prossime', 'incorso' => 'In corso'));
                     ?>
             </div>
-
         </div>
 
 
