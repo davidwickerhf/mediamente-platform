@@ -10,18 +10,20 @@
 
 class CMacchina
 {
-    public int $id;
-    public string $modello;
-    public string $sede;
-    public bool $disponibile;
-    public bool $archiviata;
-    public DateTime $ultima_revisione;
-    public DateTime $ultimo_tagliando;
-    public DateTime $ultimo_cambio_gomme;
-    public DateTime $data_registrazione;
-    public DateTime $data_archivazione;
-    public string $registrata_da;
-    public string $archiviata_da;
+    public $id;
+    public $username;
+    public $marca;
+    public $modello;
+    public $sede;
+    public $data_registrazione;
+    public $data_archivazione;
+    public $ultima_revisione;
+    public $ultimo_tagliando;
+    public $ultimo_cambio_gomme;
+    public $registrata_da;
+    public $archiviata_da;
+    public $disponibile;
+    public $archiviata;
 
     /**
      * Constructor of the class 'Macchina'. The values of the properties are loaded

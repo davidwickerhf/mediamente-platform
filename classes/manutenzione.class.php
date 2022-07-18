@@ -9,13 +9,15 @@
  */
 class CManutenzione
 {
-    public int $id;
-    public int $id_macchina;
-    public int $username;
-    public DateTime $data;
-    public string $tipologia;
-    public string $luogo;
-    public int $chilometri;
+    public $id;
+    public $id_macchina;
+    public $username;
+    public $data;
+    public $created_at;
+    public $tipologia;
+    public $luogo;
+    public $chilometri;
+    public $commento;
 
     /**
      * Constructor of the class 'Manutenzione'. The values of the properties are loaded

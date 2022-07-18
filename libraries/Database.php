@@ -19,7 +19,7 @@ class Database
   private $dbname = DB_NAME;
 
   private $dbh;
-  private $stmt;
+  private PDOStatement $stmt;
   private $error;
 
   public function __construct()

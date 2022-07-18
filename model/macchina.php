@@ -1,28 +1,6 @@
 <?php
-// include "../app.config.php";
-// include "../commonfunctions.php";
-// include "../helpers/ez_sql_core.php";
-// include "../helpers/ez_sql_mysqli.php";
-// require_once "../acl.php";
 
-// //ini_set("display_errors",1);
-// $ACL = new ACL();
-// $db = null;
-// startup();
-
-// require_once CLASS_PATH . 'log.class.php';
-
-// if ($_POST['csrfToken'] != $_SESSION['csrfToken' . $_POST['csrfTokenID']])
-//     exitWithError("U02", "CSRF Attack - Sessione scaduta, aggiorna la pagina");
-
-// $log = new Log(array("controller" => "team", "action" => $_POST['action']));
-
-
-// switch ($_POST['action']) {
-//     case "rimuoviUtente":
-//         break;
-// }
-
+declare(strict_types=1);
 require_once ROOT_PATH . 'classes/macchina.class.php';
 require_once ROOT_PATH . 'classes/prenotazione.class.php';
 require_once ROOT_PATH . 'classes/manutenzione.class.php';
@@ -46,83 +24,133 @@ class Macchina
         $this->db = new Database;
     }
 
-    // SECTION: Methods relative to the management of cars
-    public function register(): CMacchina
+    // SECTION: UTILITIES
+
+    /**
+     * Generate unique id for the database.
+     * 
+     * @return string UUID.
+     */
+    private function generateUUID()
     {
-        throw new Exception('Not implemented');
+        $this->db->query('SELECT UUID_SHORT()');
+        $result = $this->db->single();
+        return json_decode(json_encode($result), true)['UUID_SHORT()'];
     }
 
-    public function archive(): CMacchina
+    /**
+     * Convert data returned from DB into the according class
+     * 
+     * @param string class Class Name to convert the oject to.
+     * @param mixed object Object returned from DB.
+     * @return mixed Class Object.
+     */
+    private function convert(string $class, stdClass $object)
     {
-        throw new Exception('Not implemented');
-    }
-
-    public function unarchive(): CMacchina
-    {
-        throw new Exception('Not implemented');
-    }
-
-    public function delete(): bool
-    {
-        throw new Exception('Not implemented');
-    }
-
-    // SECTION: Methods relative to the reservation of cars
-    public function reserve(): CPrenotazione
-    {
-        throw new Exception('Not implemented');
-    }
-
-    public function editReservation(): CPrenotazione
-    {
-        throw new Exception('Not implemented');
-    }
-
-    public function cancelReservation(): bool
-    {
-        throw new Exception('Not implemented');
-    }
-
-    // SECTION: Methods relative to car maintenance
-    public function newMaintenance(): CManutenzione
-    {
-        throw new Exception('Not implemented');
-    }
-
-    public function editMaintenance(): CManutenzione
-    {
-        throw new Exception('Not implemented');
-    }
-
-    public function deleteMaintenance(): bool
-    {
-        throw new Exception('Not implemented');
+        return new $class(json_decode(json_encode($object), true));
     }
 
     // SECTION: Methods relative to database queries, table 'macchine'
+
+    /**
+     * Retrieve a car from the DB by its id.
+     * 
+     * @param string id Id of the car.
+     * @return ?CMacchina Returns null if the row doesn't exist.
+     */
+    public function getCar(string $id): ?CMacchina
+    {
+        // Retrieve row
+        $this->db->query('SELECT * FROM macchine WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $result = $this->db->single();
+
+        // Catch errors
+        if (is_null($result) or $result === false) {
+            return null;
+        }
+
+        // Return query in CMacchina object
+        return $this->convert(CMacchina::class, $result);
+    }
+
+    /**
+     * Retrieve all cars from DB
+     * 
+     * @return array Array of `CMacchina` objects.
+     *  Returns empty array if no cars are found.
+     */
+    public function getAllCars(): array
+    {
+        // Retrieve rows
+        $this->db->query('SELECT * FROM macchine');
+        $result = $this->db->resultSet();
+
+        // Catch errors
+        if (is_null($result) or $result === false) {
+            return null;
+        }
+        // Convert to CMacchina
+        $cars = array();
+        foreach ($result as $object) {
+            array_push($cars, $this->convert(CMacchina::class, $object));
+        }
+        return $cars;
+    }
+
+    /**
+     * Retrieve `count` number of cars.
+     * 
+     * @param int count Number of cars to retrieve.
+     *  Must be greater than 0;
+     * @return array Array of `CMacchina` objects.
+     *  Returns empty array if no cars are found.
+     */
     public function getCars(int $count): array
     {
-        throw new Exception('Not implemented');
+        // Retrieve rows
+        $this->db->query('SELECT * FROM macchine LIMIT :count');
+        $this->db->bind(':count', $count);
+        $result = $this->db->resultSet();
+
+        // Convert to CMacchina
+        $cars = array();
+        foreach ($result as $object) {
+            array_push($cars, $this->convert(CMacchina::class, $object));
+        }
+        return $cars;
     }
 
+    /**
+     * Retrieve cars of a certain location.
+     * 
+     * @param string sede Location to query.
+     * @return array Array of `CMacchina` objects.
+     *  Returns empty array if no cars are found.
+     */
     public function getCarsBySede(string $sede): array
     {
-        throw new Exception('Not implemented');
-    }
-
-    public function getCar(string $id): CMacchina
-    {
-        throw new Exception('Not implemented');
+        // Retrieve rows
+        $this->db->query('SELECT * FROM macchine WHERE sede = :sede');
+        $this->db->bind(':sede', $sede);
+        $result = $this->db->resultSet();
+        // Convert to CMacchina
+        $cars = array();
+        foreach ($result as $object) {
+            array_push($cars, $this->convert(CMacchina::class, $object));
+        }
+        return $cars;
     }
 
     // SECTION: Methods relative to database queries, table 'prenotazioni'
+
     public function getReservations(int $count): array
     {
         throw new Exception('Not implemented');
     }
 
     /**
-     * Render Banner html and javascript
+     * Get a user's reservations.
      * 
      * @param string username state of the prenotazioni dropdown.
      * @param ?int count Number of entries to retrieve. 
@@ -165,4 +193,101 @@ class Macchina
 
 
     // SECTION: Methods relative to database queries, table 'manutenzioni'
+
+    // SECTION: Methods relative to the management of cars
+
+    /**
+     * Register car into db.
+     * 
+     * @param string username Username of the user registering the car.
+     * @param string marca Brand of the car being registered.
+     * @param string modello Model/Name of the car.
+     * @param string sede Location to register the car in. 
+     *  Can be: `torino`, `milano`, `bologna`, `empoli`.
+     * @param ?string commento Any comment, ideally a description of the car.
+     * @return ?CMacchina object representation of the registered car.
+     */
+    public function register(string $username, string $marca, string $modello, string $sede, ?string $commento = null): ?CMacchina
+    {
+        // Generate UUID
+        $uuid = $this->generateUUID();
+
+        // Query statement
+        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, data_registrazione, data_archivazione, ultima_revisione, ultimo_tagliando, ultimo_cambio_gomme, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
+        $this->db->query($stmt);
+
+        // Bind values
+        $this->db->bind(':uuid', $uuid);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':marca', $marca);
+        $this->db->bind(':modello', $modello);
+        $this->db->bind(':sede', $sede);
+        $this->db->bind(':commento', $commento);
+
+        // Execute
+        if ($this->db->execute()) {
+            // Retrieve added row
+            return $this->getCar($uuid);
+        } else {
+            // Adding failed
+            return null;
+        }
+    }
+
+    /**
+     * Archive
+     * 
+     * @param string username Username of the user registering the car.
+     * @param string marca Brand of the car being registered.
+     * @param string modello Model/Name of the car.
+     * @param string sede Location to register the car in. 
+     *  Can be: `torino`, `milano`, `bologna`, `empoli`.
+     * @param ?string commento Any comment, ideally a description of the car.
+     * @return ?CMacchina object representation of the registered car.
+     */
+    public function archive(string $username, string $id): bool
+    {
+    }
+
+    public function unarchive(): ?CMacchina
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function delete(): bool
+    {
+        throw new Exception('Not implemented');
+    }
+
+    // SECTION: Methods relative to the reservation of cars
+    public function reserve(): ?CPrenotazione
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function editReservation(): ?CPrenotazione
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function cancelReservation(): bool
+    {
+        throw new Exception('Not implemented');
+    }
+
+    // SECTION: Methods relative to car maintenance
+    public function newMaintenance(): CManutenzione
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function editMaintenance(): CManutenzione
+    {
+        throw new Exception('Not implemented');
+    }
+
+    public function deleteMaintenance(): bool
+    {
+        throw new Exception('Not implemented');
+    }
 }

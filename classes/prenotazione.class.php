@@ -9,14 +9,15 @@
  */
 class CPrenotazione
 {
-    public int $id;
-    public int $id_macchina;
-    public string $username;
-    public DateTime $from_date;
-    public DateTime $to_date;
-    public string $sede;
-    public string $motivazione;
-    public string $note;
+    public $id;
+    public $id_macchina;
+    public $username;
+    public $from_date;
+    public $to_date;
+    public $sede;
+    public $motivazione;
+    public $note;
+    public $commmento;
 
     /**
      * Constructor of the class 'Prenotazione'. The values of the properties are loaded
