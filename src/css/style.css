@@ -77,6 +77,11 @@ body .page .text {
   }
 }
 
+.cheader {
+  display: flex;
+  justify-content: space-between;
+}
+
 .cnavbar {
   transition: all 0.5s ease;
 }
@@ -545,6 +550,7 @@ body .page .text {
 }
 
 .banner {
+  margin-top: 7px;
   transform: translate(0, 0);
 }
 .banner__wrapper {

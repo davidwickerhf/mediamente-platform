@@ -11,12 +11,14 @@
 require_once ROOT_PATH . 'controller/macchine.php';
 
 /**
- * Generate banner html
+ * Render Banner html and javascript
+ * 
+ * @param string prenotazioniState state of the prenotazioni dropdown.
+ * @param string statisticheState state of the statistiche dropdown.
  */
-function renderBanner()
+function renderBanner($prenotazioniState, $statisticheState)
 
 {
-    require_once ROOT_PATH . 'views/macchine/components/dropdown.php';
 ?>
 <div class="banner">
     <!-- Section Prossime Prenotazioni -->
@@ -27,7 +29,8 @@ function renderBanner()
                     Le tue prenotazioni
                 </h2>
                 <?php
-                    renderDropdown('Prossime', 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_PRENOTAZIONI, array('prossime' => 'Prossime', 'incorso' => 'In corso'));
+                    $items = array('prossime' => 'Prossime', 'incorso' => 'In corso');
+                    renderDropdown($items[$prenotazioniState], 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_PRENOTAZIONI, $items);
                     ?>
             </div>
         </div>
@@ -40,7 +43,8 @@ function renderBanner()
                     <h2 class="section-heading">Prenotazioni</h2>
 
                     <?php
-                        renderDropdown('Mensilmente', 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_STATISTICHE, array('mensilmente' => 'Mensilmente', 'annualmente' => 'Annualmente'));
+                        $items = array('mensilmente' => 'Mensilmente', 'annualmente' => 'Annualmente');
+                        renderDropdown($items[$statisticheState], 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_STATISTICHE, $items);
                         ?>
                 </div>
             </div>

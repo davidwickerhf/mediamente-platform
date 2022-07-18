@@ -8,8 +8,20 @@
  * @see /controller/macchine.php Containes the names of the functions below.
  */
 
-// Import reused functions from elements.js
-//import { updateDropdownState } from "./elements.js";
+/**
+ * Function called when updating dropdown button selection of the
+ *  header component in macchine/index.php
+ * @param {string} action The name of the called function, for debug purposes
+ * @param  {string} state Selected item of the dropdown list.
+ * @param  {array} data Valye-Key Array of the stats(s) to show in the UI.
+ *  Must contain `items`.
+ * @return {null}
+ */
+function indexUpdateSede(action, state, data) {
+  console.log("UI Function: ", action);
+  // Update Button Title
+  updateDropdownState(action, state, data.items);
+}
 
 /**
  * Function called when updating dropdown button selection of the

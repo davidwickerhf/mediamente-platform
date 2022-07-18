@@ -36,7 +36,7 @@ function renderDropdown(string $title, string $controller, string $method, strin
             <?= $title  ?>
         </div>
         <div class="dropdown__icon-wrapper">
-            <i class="bx bx-chevron-down"></i>
+            <i class="bx bx-chevron-down dropdown__icon"></i>
         </div>
     </div>
     <div class="dropdown__content">

@@ -28,12 +28,12 @@ function updateComponent(url, action, state, token, data = {}) {
     },
     success: function (data, status, jqxhr) {
       // Call js function in javascript file for UI update
+      console.log(data);
       var data = JSON.parse(data);
 
-      data.action = action;
       console.log("SEVER RESPONDED TO ACTION: " + action);
       console.log(data["state"]);
-      window[action](data.action, data.state, data.data);
+      window[action](action, data.state, data.data);
       return;
     },
     error: function (data, status, jqxhr) {

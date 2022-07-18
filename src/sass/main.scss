@@ -4,6 +4,9 @@
 @use "abstracts/variables" as *;
 @use 'base/base' as *;
 
+// Load Layout
+@use 'layout/macchine' as *;
+
 // Load Components
 @use 'components/navbar' as *;
 @use 'components/sidebar' as *;

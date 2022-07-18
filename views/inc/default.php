@@ -82,7 +82,11 @@ global $CONTROLLER;
         <?php
         printFlash();
         ?>
-        <?php include_once $view; ?>
+        <?php include_once $view;
+        if (function_exists('renderView')) {
+            call_user_func('renderView', $var_in_view);
+        }
+        ?>
     </div>
 
     <?php /*if(isset($var_in_view['printDebugQuery']))

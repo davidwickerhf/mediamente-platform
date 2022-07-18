@@ -26,6 +26,7 @@
 require_once ROOT_PATH . 'classes/macchina.class.php';
 require_once ROOT_PATH . 'classes/prenotazione.class.php';
 require_once ROOT_PATH . 'classes/manutenzione.class.php';
+require_once ROOT_PATH . 'libraries/Database.php';
 
 
 /**
@@ -38,13 +39,11 @@ require_once ROOT_PATH . 'classes/manutenzione.class.php';
  */
 class Macchina
 {
-    private ezSQL_mysqli $db;
+    private Database $db;
 
     public function __construct()
     {
-        global $db;
-        startup();
-        $this->db = $db;
+        $this->db = new Database;
     }
 
     // SECTION: Methods relative to the management of cars
@@ -122,9 +121,39 @@ class Macchina
         throw new Exception('Not implemented');
     }
 
-    public function getReservationsByUser(int $count): array
+    /**
+     * Render Banner html and javascript
+     * 
+     * @param string username state of the prenotazioni dropdown.
+     * @param ?int count Number of entries to retrieve. 
+     *  Defaults to `0`, which will retrieve all entries.
+     * @return array array containing `Prenotazione` objects
+     * @see /classes/prenotazione.class.php
+     */
+    public function getReservationsByUser(string $username, ?int $count = 0): array
     {
-        throw new Exception('Not implemented');
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE username = :username 
+            ORDER BY prenotazioni.created_at DESC';
+        if ($count > 0) {
+            $stmt = $stmt
+                . ' LIMIT :count';
+        }
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        if ($count > 0) {
+            $this->db->bind(':count', $count);
+        };
+        // Get results
+        $results = $this->db->resultSet();
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, new CPrenotazione($temp));
+        }
+        return $prenotazioni;
     }
 
     public function getOngoingReservetionByUser(string $username): CPrenotazione
