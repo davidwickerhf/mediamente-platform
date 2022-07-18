@@ -144,11 +144,13 @@ class Macchina
 
     // SECTION: Methods relative to database queries, table 'prenotazioni'
 
+    // TODO: implement getReservations method
     public function getReservations(int $count): array
     {
         throw new Exception('Not implemented');
     }
 
+    // TODO: fix getUserReservations method
     /**
      * Get a user's reservations.
      * 
@@ -184,7 +186,8 @@ class Macchina
         return $prenotazioni;
     }
 
-    public function getOngoingReservetionByUser(string $username): CPrenotazione
+    // TODO: implement getUserOngoingReservations method
+    public function getUserOngoingReservations(string $username): CPrenotazione
     {
         //$this->db->query();
         //$this->db->
@@ -194,8 +197,15 @@ class Macchina
 
     // SECTION: Methods relative to database queries, table 'manutenzioni'
 
+    // TODO: implement getManutenzione method
+
+    // TODO: implement getCarManutenzioni method
+
+    // TODO: implement getCarLastManutenzione method
+
     // SECTION: Methods relative to the management of cars
 
+    // TODO: fix register method
     /**
      * Register car into db.
      * 
@@ -234,6 +244,7 @@ class Macchina
         }
     }
 
+    // TODO: implement archive method
     /**
      * Archive
      * 
@@ -247,46 +258,55 @@ class Macchina
      */
     public function archive(string $username, string $id): bool
     {
+        throw new Exception('Not implemented');
     }
 
+    // TODO: implement unarchive method
     public function unarchive(): ?CMacchina
     {
         throw new Exception('Not implemented');
     }
 
+    // TODO: implement delete method
     public function delete(): bool
     {
         throw new Exception('Not implemented');
     }
 
     // SECTION: Methods relative to the reservation of cars
+    // TODO: implement reserve method
     public function reserve(): ?CPrenotazione
     {
         throw new Exception('Not implemented');
     }
 
+    // TODO: implement editReservation method
     public function editReservation(): ?CPrenotazione
     {
         throw new Exception('Not implemented');
     }
 
+    // TODO: implement cancelReservation method
     public function cancelReservation(): bool
     {
         throw new Exception('Not implemented');
     }
 
     // SECTION: Methods relative to car maintenance
-    public function newMaintenance(): CManutenzione
+    // TODO: implement manutenzione method
+    public function manutenzione(): CManutenzione
     {
         throw new Exception('Not implemented');
     }
 
-    public function editMaintenance(): CManutenzione
+    // TODO: implement editManutenzione method
+    public function editManutenzione(): CManutenzione
     {
         throw new Exception('Not implemented');
     }
 
-    public function deleteMaintenance(): bool
+    // TODO: implement deleteManutenzione method
+    public function deleteManutenzione(): bool
     {
         throw new Exception('Not implemented');
     }
