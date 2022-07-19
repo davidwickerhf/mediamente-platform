@@ -5,6 +5,7 @@ require_once ROOT_PATH . 'classes/macchina.class.php';
 require_once ROOT_PATH . 'classes/prenotazione.class.php';
 require_once ROOT_PATH . 'classes/manutenzione.class.php';
 require_once ROOT_PATH . 'libraries/Database.php';
+require_once ROOT_PATH . 'classes/log.class.php';
 
 
 /**
@@ -18,10 +19,12 @@ require_once ROOT_PATH . 'libraries/Database.php';
 class Macchina
 {
     private Database $db;
+    private Log $logger;
 
     public function __construct()
     {
         $this->db = new Database;
+        $this->logger = new Log(array("controller" => "macchina", "action" => 'database'), $this->db);
     }
 
     // SECTION: UTILITIES
@@ -43,11 +46,14 @@ class Macchina
      * 
      * @param string class Class Name to convert the oject to.
      * @param mixed object Object returned from DB.
-     * @return mixed Class Object.
+     * @return object Class Object.
+     * @throws PDOException if binding values to parameters fails.
      */
-    private function convert(string $class, stdClass $object)
+    private function convert(string $class, $object): object
     {
-        return new $class(json_decode(json_encode($object), true));
+        $parameters = json_decode(json_encode($object), true);
+        $object = new $class($parameters);
+        return $object;
     }
 
     // SECTION: Methods relative to database queries, table 'macchine'
@@ -57,6 +63,7 @@ class Macchina
      * 
      * @param string id Id of the car.
      * @return ?CMacchina Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getCar(string $id): ?CMacchina
     {
@@ -66,7 +73,7 @@ class Macchina
         $result = $this->db->single();
 
         // Catch errors
-        if (is_null($result) or $result === false) {
+        if (is_null($result)) {
             return null;
         }
 
@@ -77,17 +84,19 @@ class Macchina
     /**
      * Retrieve all cars from DB
      * 
-     * @return array Array of `CMacchina` objects.
+     * @return ?array Array of `CMacchina` objects.
      *  Returns empty array if no cars are found.
+     *  Null is returned if the query fails.
+     * @throws PDOException if binding values to parameters fails.
      */
-    public function getAllCars(): array
+    public function getAllCars(): ?array
     {
         // Retrieve rows
         $this->db->query('SELECT * FROM macchine');
         $result = $this->db->resultSet();
 
         // Catch errors
-        if (is_null($result) or $result === false) {
+        if (is_null($result)) {
             return null;
         }
         // Convert to CMacchina
@@ -103,15 +112,22 @@ class Macchina
      * 
      * @param int count Number of cars to retrieve.
      *  Must be greater than 0;
-     * @return array Array of `CMacchina` objects.
+     * @return ?array Array of `CMacchina` objects.
      *  Returns empty array if no cars are found.
+     *  Null is returned if the query fails.
+     * @throws PDOException if binding values to parameters fails.
      */
-    public function getCars(int $count): array
+    public function getCars(int $count): ?array
     {
         // Retrieve rows
         $this->db->query('SELECT * FROM macchine LIMIT :count');
         $this->db->bind(':count', $count);
         $result = $this->db->resultSet();
+
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
 
         // Convert to CMacchina
         $cars = array();
@@ -125,15 +141,23 @@ class Macchina
      * Retrieve cars of a certain location.
      * 
      * @param string sede Location to query.
-     * @return array Array of `CMacchina` objects.
+     * @return ?array Array of `CMacchina` objects.
      *  Returns empty array if no cars are found.
+     *  Null is returned if the query fails.
+     * @throws PDOException if binding values to parameters fails.
      */
-    public function getCarsBySede(string $sede): array
+    public function getCarsBySede(string $sede): ?array
     {
         // Retrieve rows
         $this->db->query('SELECT * FROM macchine WHERE sede = :sede');
         $this->db->bind(':sede', $sede);
         $result = $this->db->resultSet();
+
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
+
         // Convert to CMacchina
         $cars = array();
         foreach ($result as $object) {
@@ -145,9 +169,20 @@ class Macchina
     // SECTION: Methods relative to database queries, table 'prenotazioni'
 
     // TODO: implement getReservations method
-    public function getReservations(int $count): array
+    public function getReservations(int $count): ?array
     {
-        throw new Exception('Not implemented');
+        // Retrieve row
+        $this->db->query('SELECT * FROM macchine WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $result = $this->db->single();
+
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
+
+        // Return query in CMacchina object
+        return $this->convert(CMacchina::class, $result);
     }
 
     // TODO: fix getUserReservations method
@@ -160,7 +195,7 @@ class Macchina
      * @return array array containing `Prenotazione` objects
      * @see /classes/prenotazione.class.php
      */
-    public function getReservationsByUser(string $username, ?int $count = 0): array
+    public function getReservationsByUser(string $username, ?int $count = 0): ?array
     {
         // Prepare statement
         $stmt = 'SELECT * 
@@ -178,6 +213,10 @@ class Macchina
         };
         // Get results
         $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
         // Map results to array of Prenotazioni objects
         $prenotazioni = array();
         foreach ($results as $temp) {
@@ -205,7 +244,6 @@ class Macchina
 
     // SECTION: Methods relative to the management of cars
 
-    // TODO: fix register method
     /**
      * Register car into db.
      * 
@@ -216,6 +254,7 @@ class Macchina
      *  Can be: `torino`, `milano`, `bologna`, `empoli`.
      * @param ?string commento Any comment, ideally a description of the car.
      * @return ?CMacchina object representation of the registered car.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function register(string $username, string $marca, string $modello, string $sede, ?string $commento = null): ?CMacchina
     {
@@ -223,7 +262,7 @@ class Macchina
         $uuid = $this->generateUUID();
 
         // Query statement
-        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, data_registrazione, data_archivazione, ultima_revisione, ultimo_tagliando, ultimo_cambio_gomme, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
+        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, created_at, data_archivazione, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
         $this->db->query($stmt);
 
         // Bind values
@@ -246,34 +285,88 @@ class Macchina
 
     // TODO: implement archive method
     /**
-     * Archive
+     * Archive a car
      * 
-     * @param string username Username of the user registering the car.
-     * @param string marca Brand of the car being registered.
-     * @param string modello Model/Name of the car.
-     * @param string sede Location to register the car in. 
-     *  Can be: `torino`, `milano`, `bologna`, `empoli`.
-     * @param ?string commento Any comment, ideally a description of the car.
-     * @return ?CMacchina object representation of the registered car.
+     * @param string username User registering the car.
+     * @param string id UUID of the car to archive.
+     * @return ?CMacchina object representation of the updated car.
+     *  Null is returned if function failed.
+     * @throws PDOException if binding values to parameters fails.
      */
-    public function archive(string $username, string $id): bool
+    public function archive(string $username, string $id): ?CMacchina
     {
-        throw new Exception('Not implemented');
+        // Create Statement
+        $stmt = 'UPDATE macchine 
+                    SET archiviata = 1, archiviata_da = :username
+                    WHERE id = :id';
+        // Run query
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':id', $id);
+        // Catch error
+        if (!$this->db->execute()) {
+            return null;
+        }
+        // Return updated car
+        return $this->getCar($id);
     }
 
     // TODO: implement unarchive method
-    public function unarchive(): ?CMacchina
+    /**
+     * Archive a car
+     * 
+     * @param string username User registering the car.
+     * @param string id UUID of the car to archive.
+     * @return ?CMacchina object representation of the updated car.
+     *  Null is returned if function failed
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function unarchive(string $id): ?CMacchina
     {
-        throw new Exception('Not implemented');
+        // Create Statement
+        $stmt = 'UPDATE macchine 
+                    SET archiviata = 0, archiviata_da = DEFAULT
+                    WHERE id = :id';
+        // Run query
+        $this->db->query($stmt);
+        $this->db->bind(':id', $id);
+        // Catch error
+        if (!$this->db->execute()) {
+            return null;
+        }
+        // Return updated car
+        return $this->getCar($id);
     }
 
     // TODO: implement delete method
-    public function delete(): bool
+    /**
+     * Delete a car
+     * 
+     * @param string id UUID of the car to archive.
+     * @return bool Status of the request.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function delete(string $id): bool
     {
-        throw new Exception('Not implemented');
+        // Create Statement
+        $stmt = 'DELETE FROM macchine WHERE id = :id';
+        // Run query
+        $this->db->query($stmt);
+        $this->db->bind(':id', $id);
+        // Catch error
+        if (!$this->db->execute()) {
+            return false;
+        }
+
+
+        if ($this->db->rowCount() > 0) {
+            return true;
+        }
+        return false;
     }
 
     // SECTION: Methods relative to the reservation of cars
+
     // TODO: implement reserve method
     public function reserve(): ?CPrenotazione
     {
