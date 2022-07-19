@@ -23,15 +23,26 @@ require_once ROOT_PATH . 'model/macchina.php';
  */
 final class PrenotazioniDBTest extends TestCase
 {
-    public function testReserve(): void
-    {
-    }
+    // MANAGEMENT
+    // public function testGetReservations()
+    // {
+    // }
 
-    public function testEditReservation(): void
-    {
-    }
+    // public function testGetUserReservations() {}
 
-    public function testCancelReservation(): void
-    {
-    }
+    // public function testGetUserOngoingReservation() {}
+
+    // public function testGetReservationsBySede() {}
+    // QUERIES
+    // public function testReserve(): void
+    // {
+    // }
+
+    // public function testEditReservation(): void
+    // {
+    // }
+
+    // public function testCancelReservation(): void
+    // {
+    // }
 }

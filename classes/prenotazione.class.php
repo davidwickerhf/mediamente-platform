@@ -9,15 +9,15 @@
  */
 class CPrenotazione
 {
-    public $id;
-    public $id_macchina;
-    public $username;
-    public $from_date;
-    public $to_date;
-    public $sede;
-    public $motivazione;
-    public $note;
-    public $commmento;
+    public string $id;
+    public string $id_macchina;
+    public string $username;
+    public DateTime $from_date;
+    public DateTime $to_date;
+    public DateTime $created_at;
+    public string $sede;
+    public string $motivazione;
+    public ?string $commmento;
 
     /**
      * Constructor of the class 'Prenotazione'. The values of the properties are loaded
@@ -28,9 +28,17 @@ class CPrenotazione
      */
     public function __construct(array $properties = array())
     {
-        foreach ($properties as $key => $value) {
-            $this->{$key} = $value;
-        }
+        // Parse Strings
+        $this->id = $properties['id'];
+        $this->id_macchina = $properties['id_macchina'];
+        $this->username = $properties['username'];
+        $this->sede = $properties['sede'];
+        $this->motivazione = $properties['motivazione'];
+        $this->commento = $properties['commento'];
+        // Parse Date Objects
+        $this->from_date = new DateTime($properties['from_date']);
+        $this->to_date = new DateTime($properties['to_date']);
+        $this->created_at = new DateTime($properties['created_at']);
     }
 
     // Class Getter

@@ -67,20 +67,57 @@ final class MacchineDBTest extends TestCase
     }
 
 
-    // // MANAGEMENT
-    // public function testRegister(): void
-    // {
-    // }
+    // MANAGEMENT
+    public function testRegister(): void
+    {
+        $model = new Macchina;
+        $car = $model->register('davidwickerhf', 'Fiat', '500', 'torino', 'Test registerCar');
+        $this->assertInstanceOf(CMacchina::class, $car);
+        $this->assertEquals('torino', $car->sede);
 
-    // public function testArchive(): void
-    // {
-    // }
+        // Test with invalid username
+        $car = $model->register('adsdadsd', 'Fiat', '500', 'torino', 'Test registerCar');
+        $this->assertNull($car);
+    }
 
-    // public function testUnarchive(): void
-    // {
-    // }
+    public function testArchive(): void
+    {
+        $model = new Macchina;
+        // Test with valid ID
+        $car = $model->archive('davidwickerhf', '99860421573345291');
+        $this->assertInstanceOf(CMacchina::class, $car);
+        $this->assertTrue($car->archiviata);
 
-    // public function testDelete(): void
-    // {
-    // }
+        // Test with invalid ID
+        $result = $model->archive('davidwickerhf', '29193913292093');
+        $this->assertNull($result);
+    }
+
+    public function testUnarchive(): void
+    {
+        $model = new Macchina;
+        // Test with valid ID
+        $car = $model->unarchive('99860421573345291');
+        $this->assertInstanceOf(CMacchina::class, $car);
+        $this->assertFalse($car->archiviata);
+
+        // Test with invalid ID
+        $result = $model->unarchive('davidwickerhf', '29193913292093');
+        $this->assertNull($result);
+    }
+
+    public function testDelete(): void
+    {
+        $model = new Macchina;
+        // Create Test Car
+        $car = $model->register('davidwickerhf', 'Fiat', 'ToDelete', 'torino', 'Test car for delete function');
+
+        // Test with valid ID
+        $result = $model->delete($car->id);
+        $this->assertTrue($result);
+
+        // Test with invalid ID
+        $result = $model->delete('29193913292093');
+        $this->assertFalse($result);
+    }
 }

@@ -9,15 +9,15 @@
  */
 class CManutenzione
 {
-    public $id;
-    public $id_macchina;
-    public $username;
-    public $data;
-    public $created_at;
-    public $tipologia;
-    public $luogo;
-    public $chilometri;
-    public $commento;
+    public string $id;
+    public string $id_macchina;
+    public string $username;
+    public DateTime $data;
+    public DateTime $created_at;
+    public string $tipologia;
+    public string $luogo;
+    public string $chilometri;
+    public ?string $commento;
 
     /**
      * Constructor of the class 'Manutenzione'. The values of the properties are loaded
@@ -28,9 +28,18 @@ class CManutenzione
      */
     public function __construct(array $properties = array())
     {
-        foreach ($properties as $key => $value) {
-            $this->{$key} = $value;
-        }
+        // Parse Strings
+        $this->id = $properties['id'];
+        $this->id_macchina = $properties['id_macchina'];
+        $this->username = $properties['username'];
+        $this->tipologia = $properties['tipologia'];
+        $this->luogo = $properties['luogo'];
+        $this->chilometri = $properties['chilometri'];
+        $this->commento = $properties['commento'];
+        // Parse Date Objects
+        $this->data = new DateTime($properties['data']);
+        $this->created_at = new DateTime($properties['created_at']);
+        $this->chilometri = intval($properties['chilometri']);
     }
 
     // Class Getter

@@ -1,5 +1,7 @@
 <?php 
 
+// TODO : move to root folder and refactor everything
+
 class ACL
 {
 	
@@ -25,6 +27,3 @@ class ACL
 	}
 	
 }
-
-
-?>

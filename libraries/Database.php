@@ -11,6 +11,11 @@
  * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
+
+if (!class_exists('Log')) {
+  require_once ROOT_PATH . 'classes/log.class.php';
+}
+
 class Database
 {
   private $host = DB_HOST;
@@ -21,6 +26,7 @@ class Database
   private $dbh;
   private PDOStatement $stmt;
   private $error;
+  private ?Log $logger = null;
 
   public function __construct()
   {
@@ -40,13 +46,38 @@ class Database
     }
   }
 
-  // Prepare statement with query
-  public function query($sql)
+  /**
+   * Log message onto database
+   * 
+   * @param string what message to log
+   */
+  private function log(string $what)
+  {
+    if (is_null($this->logger)) {
+      $this->logger =
+        new Log(array('controller' => 'Database', 'action' => 'PDOException', $this));
+    }
+    $this->logger->log($what);
+  }
+
+  /**
+   * Prepare statement with query.
+   * 
+   * @param string sql MySQL prepared statement.
+   */
+  public function query(string $sql): void
   {
     $this->stmt = $this->dbh->prepare($sql);
   }
 
-  // Bind values
+  /**
+   * Bind values to prepared statement.
+   * 
+   * @param mixed param Parameter name to bind.
+   * @param mixed value Value to bind to parameter.
+   * @param mixed type Type of the parameter to bind.
+   * @throws PDOException if binding fails.
+   */
   public function bind($param, $value, $type = null)
   {
     if (is_null($type)) {
@@ -68,29 +99,90 @@ class Database
     $this->stmt->bindValue($param, $value, $type);
   }
 
-  // Execute the prepared statement
-  public function execute()
+  /**
+   * Execute prepared statement.
+   * 
+   * @return bool Success status.
+   *  Exceptions are handled and
+   *  saved in `log` table of the database.
+   */
+  public function execute(): bool
   {
-    return $this->stmt->execute();
+    try {
+      return $this->stmt->execute();
+    } catch (PDOException $e) {
+      $this->error = $e->getMessage();
+      $this->log($e->getMessage());
+      return false;
+    }
   }
 
-  // Get result set as array of objects
-  public function resultSet()
+  /**
+   * Get multiple rows that match the prepared statment.
+   * 
+   * @return ?array Returns array of stdClass objects
+   *  Exceptions are handled and recorded in 
+   *  `log` table of the database.
+   *  Null is returnd if fails.c
+   */
+  public function resultSet(): ?array
   {
-    $this->execute();
-    return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+    try {
+      if ($this->execute()) {
+        $result = $this->stmt->fetchAll(PDO::FETCH_OBJ);
+        if (!is_array($result)) {
+          return array($result);
+        }
+        return $result;
+      }
+    } catch (PDOException $e) {
+      $this->error = $e->getMessage();
+      $this->log($e->getMessage());
+      return null;
+    }
   }
 
-  // Get single record as object
-  public function single()
+  /**
+   * Get multiple rows that match the prepared statment.
+   * 
+   * @return ?stdClass Returns array of stdClass objects
+   *  Exceptions are handled and recorded in 
+   *  `log` table of the database.
+   *  Null is returned if fails.
+   */
+  public function single(): ?stdClass
   {
-    $this->execute();
-    return $this->stmt->fetch(PDO::FETCH_OBJ);
+    try {
+      if ($this->execute()) {
+        $result =  $this->stmt->fetch(PDO::FETCH_OBJ);
+        if (is_bool($result)) {
+          return null;
+        }
+        return $result;
+      }
+    } catch (PDOException $e) {
+      $this->error = $e->getMessage();
+      $this->log($e->getMessage());
+      return null;
+    }
   }
 
-  // Get row count
-  public function rowCount()
+  /**
+   * Get count of updated/inserted/deleted rows.
+   * 
+   * @return int Row count.
+   *  Defaults to `0` if the query fails.
+   *  Exceptions are handled and
+   *  saved in `log` table of the database.
+   */
+  public function rowCount(): int
   {
-    return $this->stmt->rowCount();
+    try {
+      return $this->stmt->rowCount();
+    } catch (PDOException $e) {
+      $this->error = $e->getMessage();
+      $this->log($e->getMessage());
+      return false;
+    }
   }
 }

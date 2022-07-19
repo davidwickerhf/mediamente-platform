@@ -1,4 +1,6 @@
 <?php
+
+// TODO : move to root folder and refactor everything
 require ROOT_PATH . "libraries/emailfunctions.php";
 
 function throw_error($text)

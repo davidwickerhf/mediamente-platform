@@ -31,6 +31,7 @@ global $CONTROLLER;
     }
     </style>
     <link rel="stylesheet" type="text/css" href="<?= SERV_URL ?>dist/css/flaticon/flaticon.css?v=<?= VERSION ?>">
+
     <!-- Custom Fonts  -->
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap');
