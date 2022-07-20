@@ -120,6 +120,39 @@ final class PrenotazioniDBTest extends MemoryTestCase
         $this->assertNull($invalid);
     }
 
+    public function testGetReservationsByCar()
+    {
+        // Valid User ID
+        $result = $this->model->getReservationsByCar('99860421573345290', 2);
+        $this->assertIsArray($result);
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+        }
+
+        // Invalid count
+        $invalid = $this->model->getReservationsByCar('99878292345061418', -1);
+        $this->assertNull($invalid);
+
+        // Invalid User ID
+        $invalid = $this->model->getReservationsByCar('aisjasidahd', 2);
+        $this->assertNull($invalid);
+    }
+
+    public function testGetAllReservationsByCar()
+    {
+
+        // Valid User ID
+        $result = $this->model->getAllReservationsByCar('99878292345061400');
+        $this->assertIsArray($result);
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+        }
+
+        // Invalid User ID
+        $invalid = $this->model->getAllReservationsBySede('aisjasidahd');
+        $this->assertNull($invalid);
+    }
+
     public function testGetReservations()
     {
 

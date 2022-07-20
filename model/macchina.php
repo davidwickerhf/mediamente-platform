@@ -168,7 +168,6 @@ class Macchina
 
     // TODO SECTION: Methods relative to database queries, table 'prenotazioni'
 
-    // TODO: getReservations method
     /**
      * Retrieve a reservation from the DB by its id.
      * 
@@ -192,7 +191,6 @@ class Macchina
         return $this->convert(CPrenotazione::class, $result);
     }
 
-    // TODO: fix getUserReservations method
     /**
      * Get a user's reservations.
      * 
@@ -224,7 +222,6 @@ class Macchina
         return $prenotazioni;
     }
 
-    // TODO: getUserReservations
     /**
      * Get a user's reservations.
      * 
@@ -260,8 +257,6 @@ class Macchina
         return $prenotazioni;
     }
 
-
-    // TODO: getUserOngoingReservations method
     /**
      * Get a user's ongoing reservation.
      * 
@@ -289,7 +284,6 @@ class Macchina
         return $prenotazione;
     }
 
-    // TODO: getReservationsBySede method
     /**
      * Get a reservations of a specific location.
      * 
@@ -323,7 +317,6 @@ class Macchina
         return $prenotazioni;
     }
 
-    // TODO: getAllReservationsBySede method
     /**
      * Get all reservations of a specific location.
      * 
@@ -354,7 +347,68 @@ class Macchina
         return $prenotazioni;
     }
 
-    // TODO: getReservations method
+    /**
+     * Get a reservations of a specific car.
+     * 
+     * @param int count Number of results to return.
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getReservationsByCar(string $id_macchina, int $count): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE id_macchina = :id_macchina
+            LIMIT :count';
+
+        $this->db->query($stmt);
+        $this->db->bind(':id_macchina', $id_macchina);
+        $this->db->bind(':count', $count);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    /**
+     * Get all reservations of a specific car.
+     * 
+     * @param string id_macchina Car to query.
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getAllReservationsByCar(string $id_macchina): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE id_macchina = :id_macchina';
+
+        $this->db->query($stmt);
+        $this->db->bind(':id_macchina', $id_macchina);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
     /**
      * Get a number of reservations.
      * 
@@ -386,7 +440,6 @@ class Macchina
         return $prenotazioni;
     }
 
-    // TODO: getAllReservations method
     /**
      * Get all reservations
      * 
@@ -412,6 +465,8 @@ class Macchina
         if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
+
+
 
     // SECTION: Methods relative to database queries, table 'manutenzioni'
 
