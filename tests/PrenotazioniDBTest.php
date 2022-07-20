@@ -29,7 +29,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
     {
 
         //Valid ID
-        $result = $this->model->getReservation('99878292345061418');
+        $result = $this->model->getReservation($this::ID_PRENOTAZIONE);
         $this->assertInstanceOf(CPrenotazione::class, $result);
 
         //Get reservation invalid ID
@@ -41,9 +41,8 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetAllUserReservations()
     {
-
         // Valid User ID
-        $result = $this->model->getAllUserReservations('davidwickerhf');
+        $result = $this->model->getAllUserReservations($this::USERNAME_UTENTE);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
@@ -56,16 +55,15 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetUserReservations(): void
     {
-
         // Valid User ID
-        $result = $this->model->getUserReservations('davidwickerhf', 2);
+        $result = $this->model->getUserReservations($this::USERNAME_UTENTE, 2);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
         }
 
         // Invalid count
-        $invalid = $this->model->getUserReservations('davidwickerhf', -1);
+        $invalid = $this->model->getUserReservations($this::USERNAME_UTENTE, -1);
 
         $this->assertNull($invalid);
 
@@ -78,7 +76,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
     {
 
         // Valid User ID
-        $result = $this->model->getUserOngoingReservations('davidwickerhf');
+        $result = $this->model->getUserOngoingReservations($this::USERNAME_UTENTE);
         $this->assertInstanceOf(CPrenotazione::class, $result);
 
         // Invalid User ID
@@ -88,7 +86,6 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetReservationsBySede()
     {
-
         // Valid User ID
         $result = $this->model->getReservationsBySede('torino', 2);
         $this->assertIsArray($result);
@@ -107,7 +104,6 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetAllReservationsBySede()
     {
-
         // Valid User ID
         $result = $this->model->getAllReservationsBySede('torino');
         $this->assertIsArray($result);
@@ -123,7 +119,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
     public function testGetReservationsByCar()
     {
         // Valid User ID
-        $result = $this->model->getReservationsByCar('99860421573345290', 2);
+        $result = $this->model->getReservationsByCar($this::ID_MACCHINA, 2);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
@@ -142,7 +138,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
     {
 
         // Valid User ID
-        $result = $this->model->getAllReservationsByCar('99878292345061400');
+        $result = $this->model->getAllReservationsByCar($this::ID_MACCHINA);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
@@ -155,7 +151,6 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetReservations()
     {
-
         // Valid Count
         $result = $this->model->getReservations(4);
         $this->assertIsArray($result);
@@ -170,7 +165,6 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetAllReservations()
     {
-
         // Valid Count
         $result = $this->model->getAllReservations();
         $this->assertIsArray($result);
@@ -179,18 +173,74 @@ final class PrenotazioniDBTest extends MemoryTestCase
         }
     }
 
+    public function testGetFutureReservations()
+    {
+        // Valid Count
+        $result = $this->model->getFutureReservations();
+        // Get Now
+        $now = new DateTime(date('Y-m-d', time()));
+        // Assertions
+        $this->assertIsArray($result);
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+            $this->assertGreaterThan($prenotazione->from_date, $now);
+        }
+    }
 
+    public function testGetOngoingReservations()
+    {
+        // Valid Count
+        $result = $this->model->getOngoingReservations();
+        $this->assertIsArray($result);
+        // get now
+        $now = new DateTime(date('Y-m-d', time()));
+        // Assertionss
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+            $this->assertGreaterThanOrEqual($prenotazione->from_date, $now);
+
+            $this->assertLessThanOrEqual($prenotazione->to_date, $now);
+        }
+    }
+
+    public function testGetPastReservations()
+    {
+        // Valid Count
+        $now = new DateTime(date('Y-m-d', time()));
+        $result = $this->model->getPastReservations();
+        $this->assertIsArray($result);
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+            $this->assertLessThan($prenotazione->to_date, $now);
+        }
+    }
 
     // MANAGEMENT
-    // public function testReserve(): void
-    // {
-    // }
+    public function testReserve(): void
+    {
+        // Valid Parameters
+        $this->model->reserve($this->)
 
-    // public function testEditReservation(): void
-    // {
-    // }
+        // Invalid Username
+    }
 
-    // public function testCancelReservation(): void
-    // {
-    // }
+    public function testEditReservation(): void
+    {
+        // Valid parameters
+
+        // Invalid Username
+
+        // Invalid Parameter
+
+        // Disallowed parameter
+    }
+
+    public function testCancelReservation(): void
+    {
+        // Create reservation
+
+        // Valid ID
+
+        // Invalid ID
+    }
 }
