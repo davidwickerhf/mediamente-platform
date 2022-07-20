@@ -665,7 +665,7 @@ class Macchina
         $uuid = $this->generateUUID();
 
         // Query statement
-        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, parcheggio, created_at, data_archivazione, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, :parcheggio, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
+        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, parcheggio, created_at, data_archivazione, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, :parcheggio, DEFAULT, DEFAULT, DEFAULT)';
         $this->db->query($stmt);
 
         // Bind values
@@ -733,34 +733,6 @@ class Macchina
         //Return updated car
         return $this->getCar($id);
     }
-
-    /**
-     * Edit a car's availability in the DB.
-     * 
-     * @param string id ID of the car to edit.
-     * @param bool disponibile Availability of the car
-     * @return ?CMacchina object representation of the updated car.
-     *  Null is returned if the query fails.
-     *  Returns original car if no allowed property has been edited.
-     * @throws PDOException if binding values to parameters fails.
-     */
-    public function setAvailability($id, bool $disponibile): ?CMacchina
-    {
-        // Create Statement
-        $stmt = 'UPDATE macchine SET disponibile = :disponibile WHERE id = :id';
-        $this->db->query($stmt);
-
-        // Bind Values
-        $this->db->bind(':disponibile', $disponibile);
-        $this->db->bind(':id', $id);
-
-        // Execute and check for errors
-        if (!$this->db->execute()) {
-            return null;
-        }
-        return $this->getCar($id);
-    }
-
 
     /**
      * Archive a car

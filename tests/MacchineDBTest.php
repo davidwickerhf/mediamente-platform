@@ -107,24 +107,6 @@ final class MacchineDBTest extends MemoryTestCase
         $this->assertEquals('Freemont', $updated5->modello);
     }
 
-    public function testSetAvailability(): void
-    {
-
-        $car = $this->model->register($this::USERNAME_UTENTE, 'Fiat', 'Test Disponibilita', 'torino', 'Test funzione disponibilita');
-
-        // Test with valid ID
-        $updated = $this->model->setAvailability($car->id, false);
-        $this->assertFalse($updated->disponibile);
-
-        // Test with invalid ID
-        $invalid = $this->model->setAvailability('19348204820482', false);
-        $this->assertNull($invalid);
-
-        // Test with invalid disponibilita
-        $updated = $this->model->setAvailability($car->id, true);
-        $this->assertTrue($updated->disponibile);
-    }
-
     public function testArchive(): void
     {
 
