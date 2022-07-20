@@ -53,9 +53,9 @@ class Database
    */
   private function log(string $what)
   {
-    if (is_null($this->logger)) {
+    if (!isset($this->logger) or is_null($this->logger)) {
       $this->logger =
-        new Log(array('controller' => 'Database', 'action' => 'PDOException', $this));
+        new Log(array('controller' => 'Database', 'action' => 'PDOException', $this), null, true);
     }
     $this->logger->log($what);
   }
@@ -112,7 +112,7 @@ class Database
       return $this->stmt->execute();
     } catch (PDOException $e) {
       $this->error = $e->getMessage();
-      $this->log($e->getMessage());
+      $this->log($this->error);
       return false;
     }
   }
@@ -135,6 +135,7 @@ class Database
         }
         return $result;
       }
+      return null;
     } catch (PDOException $e) {
       $this->error = $e->getMessage();
       $this->log($e->getMessage());

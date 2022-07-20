@@ -98,10 +98,10 @@ class Macchine extends Controller
                         if ($state == "prossime") {
                             // UPCOMING RESERVATIONS
                             //Load Contents from Model
-                            $reservations = $this->macchineModel->getReservationsByUser(getMyUsername(), 2);
+                            $reservations = $this->macchineModel->getUserReservations(getMyUsername(), 2);
                         } else {
                             // ONGOING RESERVATIONS
-                            $reservations = $this->macchineModel->getReservationsByUser(getMyUsername(), 2);
+                            $reservations = $this->macchineModel->getUserOngoingReservations(getMyUsername(), 2);
                         }
                         // Prepare data
 

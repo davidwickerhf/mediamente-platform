@@ -2,15 +2,9 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-
-use function PHPUnit\Framework\assertEquals;
-use function PHPUnit\Framework\assertNull;
-
 require_once './app.config.php';
+require_once ROOT_PATH . 'tests/MemoryTestCase.php';
 require_once ROOT_PATH . 'classes/macchina.class.php';
-require_once ROOT_PATH . 'classes/prenotazione.class.php';
-require_once ROOT_PATH . 'classes/manutenzione.class.php';
 require_once ROOT_PATH . 'model/macchina.php';
 
 /**
@@ -24,43 +18,46 @@ require_once ROOT_PATH . 'model/macchina.php';
  * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-final class MacchineDBTest extends TestCase
+final class MacchineDBTest extends MemoryTestCase
 {
     // QUERIES
     public function testGetCar(): void
     {
-        $model = new Macchina;
-        $this->assertInstanceOf(CMacchina::class, $model->getCar('99860421573345288'), 'Get car by ID returns a car object');
-        assertNull($model->getCar('99060418373345288'), 'Get car by false ID returns null');
+
+        // Valid ID
+        $this->assertInstanceOf(CMacchina::class, $this->model->getCar('99860421573345290'), 'Get car by ID returns a car object');
+
+        // Invalid ID
+        $this->assertNull($this->model->getCar('99060418373345288'), 'Get car by false ID returns null');
     }
 
     public function testGetAllCars(): void
     {
-        $model = new Macchina;
-        $cars = $model->getAllCars();
-        $this->assertIsArray($cars, 'getAllCars returns an array.');
-        foreach ($cars as $car) {
+
+        $result = $this->model->getAllCars();
+        $this->assertIsArray($result, 'getAllCars returns an array.');
+        foreach ($result as $car) {
             $this->assertInstanceOf(CMacchina::class, $car, 'getAllCars item is a car object');
         }
     }
 
     public function testGetCars(): void
     {
-        $model = new Macchina;
-        $cars = $model->getCars(3);
-        $this->assertIsArray($cars, 'getCars returns an array.');
-        foreach ($cars as $car) {
+
+        $result = $this->model->getCars(2);
+        $this->assertIsArray($result, 'getCars returns an array.');
+        foreach ($result as $car) {
             $this->assertInstanceOf(CMacchina::class, $car, 'getCars item is a car object');
         }
-        assertEquals(3, count($cars), 'getCars returns correct amount of cars.');
+        $this->assertEquals(2, count($result), 'getCars returns correct amount of cars.');
     }
 
     public function testGetCarsBySede(): void
     {
-        $model = new Macchina;
-        $cars = $model->getCarsBySede('torino');
-        $this->assertIsArray($cars, 'getCarsBySede returns an array.');
-        foreach ($cars as $car) {
+
+        $result = $this->model->getCarsBySede('torino');
+        $this->assertIsArray($result, 'getCarsBySede returns an array.');
+        foreach ($result as $car) {
             $this->assertInstanceOf(CMacchina::class, $car, 'getCarsBySede item is a car object');
             $this->assertEquals('torino', $car->sede, 'getCarsBySede returns correct location');
         }
@@ -70,54 +67,102 @@ final class MacchineDBTest extends TestCase
     // MANAGEMENT
     public function testRegister(): void
     {
-        $model = new Macchina;
-        $car = $model->register('davidwickerhf', 'Fiat', '500', 'torino', 'Test registerCar');
-        $this->assertInstanceOf(CMacchina::class, $car);
-        $this->assertEquals('torino', $car->sede);
+
+        $result = $this->model->register('davidwickerhf', 'Fiat', '500', 'torino', 'Test registerCar');
+        $this->assertInstanceOf(CMacchina::class, $result);
+        $this->assertEquals('torino', $result->sede);
 
         // Test with invalid username
-        $car = $model->register('adsdadsd', 'Fiat', '500', 'torino', 'Test registerCar');
-        $this->assertNull($car);
+        $result = $this->model->register('adsdadsd', 'Fiat', '500', 'torino', 'Test registerCar');
+        $this->assertNull($result);
+    }
+
+    public function testEdit(): void
+    {
+
+        $car = $this->model->register('davidwickerhf', 'OLAOLA', 'Test', 'torino', 'Test Car for EDIT function Test');
+
+        // Test with valid ID and Args
+        $updated = $this->model->edit($car->id, array('modello' => 'Panda'));
+        $this->assertInstanceOf(CMacchina::class, $updated);
+        $this->assertEquals('Panda', $updated->modello);
+
+        //Test with invalid ID
+        $updated2 = $this->model->edit('12141231214241231', array('modello' => 'Panda'));
+        $this->assertNull($updated2);
+
+        // Test with invalid property
+        $updated3 = $this->model->edit($car->id, array('mmodello' => 'Panda'));
+        $this->assertInstanceOf(CMacchina::class, $updated3);
+        $this->assertObjectNotHasAttribute('mmodello', $updated3);
+
+        // Test with disallowed property
+        $updated4 = $this->model->edit($car->id, array('id' => '12319823981'));
+        $this->assertInstanceOf(CMacchina::class, $updated4);
+        $this->assertEquals($car->id, $updated4->id);
+
+        // Test with valid, invalid and disallowed property
+        $updated5 = $this->model->edit($car->id, array('modello' => 'Freemont', 'id' => '12319823981', 'asdasd' => 'adsadds'));
+        $this->assertInstanceOf(CMacchina::class, $updated5);
+        $this->assertEquals('Freemont', $updated5->modello);
+    }
+
+    public function testSetAvailability(): void
+    {
+
+        $car = $this->model->register('davidwickerhf', 'Fiat', 'Test Disponibilita', 'torino', 'Test funzione disponibilita');
+
+        // Test with valid ID
+        $updated = $this->model->setAvailability($car->id, false);
+        $this->assertFalse($updated->disponibile);
+
+        // Test with invalid ID
+        $invalid = $this->model->setAvailability('19348204820482', false);
+        $this->assertNull($invalid);
+
+        // Test with invalid disponibilita
+        $updated = $this->model->setAvailability($car->id, true);
+        $this->assertTrue($updated->disponibile);
     }
 
     public function testArchive(): void
     {
-        $model = new Macchina;
+
         // Test with valid ID
-        $car = $model->archive('davidwickerhf', '99860421573345291');
+        $car = $this->model->archive('davidwickerhf', '99860421573345290');
         $this->assertInstanceOf(CMacchina::class, $car);
         $this->assertTrue($car->archiviata);
 
         // Test with invalid ID
-        $result = $model->archive('davidwickerhf', '29193913292093');
+        $result = $this->model->archive('davidwickerhf', '29193913292093');
         $this->assertNull($result);
     }
 
     public function testUnarchive(): void
     {
-        $model = new Macchina;
+
         // Test with valid ID
-        $car = $model->unarchive('99860421573345291');
+        $car = $this->model->unarchive('99860421573345291');
         $this->assertInstanceOf(CMacchina::class, $car);
         $this->assertFalse($car->archiviata);
 
         // Test with invalid ID
-        $result = $model->unarchive('davidwickerhf', '29193913292093');
+        $result = $this->model->unarchive('davidwickerhf', '29193913292093');
         $this->assertNull($result);
     }
 
     public function testDelete(): void
     {
-        $model = new Macchina;
+
         // Create Test Car
-        $car = $model->register('davidwickerhf', 'Fiat', 'ToDelete', 'torino', 'Test car for delete function');
+        $car = $this->model->register('davidwickerhf', 'Fiat', 'ToDelete', 'torino', 'Test car for delete function');
 
         // Test with valid ID
-        $result = $model->delete($car->id);
+        $result = $this->model->delete($car->id);
         $this->assertTrue($result);
 
         // Test with invalid ID
-        $result = $model->delete('29193913292093');
+        $result = $this->model->delete('29193913292093');
         $this->assertFalse($result);
     }
 }

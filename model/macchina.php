@@ -24,7 +24,7 @@ class Macchina
     public function __construct()
     {
         $this->db = new Database;
-        $this->logger = new Log(array("controller" => "macchina", "action" => 'database'), $this->db);
+        $this->logger = new Log(array("controller" => "macchina", "action" => 'database'));
     }
 
     // SECTION: UTILITIES
@@ -166,13 +166,20 @@ class Macchina
         return $cars;
     }
 
-    // SECTION: Methods relative to database queries, table 'prenotazioni'
+    // TODO SECTION: Methods relative to database queries, table 'prenotazioni'
 
-    // TODO: implement getReservations method
-    public function getReservations(int $count): ?array
+    // TODO: getReservations method
+    /**
+     * Retrieve a reservation from the DB by its id.
+     * 
+     * @param string id Id of the reservation.
+     * @return ?CPrenotazione Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getReservation(string $id): ?CPrenotazione
     {
         // Retrieve row
-        $this->db->query('SELECT * FROM macchine WHERE id = :id');
+        $this->db->query('SELECT * FROM prenotazioni WHERE id = :id');
         $this->db->bind(':id', $id);
         $result = $this->db->single();
 
@@ -181,36 +188,27 @@ class Macchina
             return null;
         }
 
-        // Return query in CMacchina object
-        return $this->convert(CMacchina::class, $result);
+        // Return query in CPrenotazione object
+        return $this->convert(CPrenotazione::class, $result);
     }
 
     // TODO: fix getUserReservations method
     /**
      * Get a user's reservations.
      * 
-     * @param string username state of the prenotazioni dropdown.
-     * @param ?int count Number of entries to retrieve. 
-     *  Defaults to `0`, which will retrieve all entries.
-     * @return array array containing `Prenotazione` objects
-     * @see /classes/prenotazione.class.php
+     * @param string User to query.
+     * @return ?array array containing `Prenotazione` objects
      */
-    public function getReservationsByUser(string $username, ?int $count = 0): ?array
+    public function getAllUserReservations(string $username): ?array
     {
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
             WHERE username = :username 
-            ORDER BY prenotazioni.created_at DESC';
-        if ($count > 0) {
-            $stmt = $stmt
-                . ' LIMIT :count';
-        }
+            ORDER BY prenotazioni.from_date DESC';
+
         $this->db->query($stmt);
         $this->db->bind(':username', $username);
-        if ($count > 0) {
-            $this->db->bind(':count', $count);
-        };
         // Get results
         $results = $this->db->resultSet();
         // Handle error
@@ -220,27 +218,208 @@ class Macchina
         // Map results to array of Prenotazioni objects
         $prenotazioni = array();
         foreach ($results as $temp) {
-            array_push($prenotazioni, new CPrenotazione($temp));
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
+        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
-    // TODO: implement getUserOngoingReservations method
-    public function getUserOngoingReservations(string $username): CPrenotazione
+    // TODO: getUserReservations
+    /**
+     * Get a user's reservations.
+     * 
+     * @param string User to query.
+     * @param int count Number of entries to retrieve. 
+     *  `count` must be greater than 0.
+     * @return ?array array containing `Prenotazione` objects
+     */
+    public function getUserReservations(string $username, int $count): ?array
     {
-        //$this->db->query();
-        //$this->db->
-        return new CPrenotazione();
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE username = :username 
+            ORDER BY prenotazioni.from_date DESC
+            LIMIT :count';
+
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':count', $count);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
     }
 
 
+    // TODO: getUserOngoingReservations method
+    /**
+     * Get a user's ongoing reservation.
+     * 
+     * @param string User to query.
+     * @return ?array array containing `Prenotazione` objects
+     */
+    public function getUserOngoingReservations(string $username): ?CPrenotazione
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE username = :username
+                AND CAST(NOW() AS DATE) between from_date and to_date';
+
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        // Get results
+        $result = $this->db->single();
+        // Handle error
+        if (is_null($result)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazione = $this->convert(CPrenotazione::class, $result);
+        return $prenotazione;
+    }
+
+    // TODO: getReservationsBySede method
+    /**
+     * Get a reservations of a specific location.
+     * 
+     * @param string sede Location to query.
+     * @param int count Number of results to return.
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getReservationsBySede(string $sede, int $count): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE sede = :sede
+            LIMIT :count';
+
+        $this->db->query($stmt);
+        $this->db->bind(':sede', $sede);
+        $this->db->bind(':count', $count);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    // TODO: getAllReservationsBySede method
+    /**
+     * Get all reservations of a specific location.
+     * 
+     * @param string sede Location to query.
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getAllReservationsBySede(string $sede): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE sede = :sede';
+
+        $this->db->query($stmt);
+        $this->db->bind(':sede', $sede);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    // TODO: getReservations method
+    /**
+     * Get a number of reservations.
+     * 
+     * @param string sede Location to query.
+     * @param int count Number of results to return.
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getReservations(int $count): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            LIMIT :count';
+
+        $this->db->query($stmt);
+        $this->db->bind(':count', $count);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    // TODO: getAllReservations method
+    /**
+     * Get all reservations
+     * 
+     * @return ?array array containing `CPrenotazione` objects.
+     */
+    public function getAllReservations(): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni';
+
+        $this->db->query($stmt);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
     // SECTION: Methods relative to database queries, table 'manutenzioni'
 
-    // TODO: implement getManutenzione method
+    // TODO: getManutenzione method
 
-    // TODO: implement getCarManutenzioni method
+    // TODO: getCarManutenzioni method
 
-    // TODO: implement getCarLastManutenzione method
+    // TODO: getCarLastManutenzione method
 
     // SECTION: Methods relative to the management of cars
 
@@ -253,16 +432,17 @@ class Macchina
      * @param string sede Location to register the car in. 
      *  Can be: `torino`, `milano`, `bologna`, `empoli`.
      * @param ?string commento Any comment, ideally a description of the car.
+     * @param ?string parcheggio Parking information of the car
      * @return ?CMacchina object representation of the registered car.
      * @throws PDOException if binding values to parameters fails.
      */
-    public function register(string $username, string $marca, string $modello, string $sede, ?string $commento = null): ?CMacchina
+    public function register(string $username, string $marca, string $modello, string $sede, ?string $commento = null, ?string $parcheggio = null): ?CMacchina
     {
         // Generate UUID
         $uuid = $this->generateUUID();
 
         // Query statement
-        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, created_at, data_archivazione, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
+        $stmt = 'INSERT INTO macchine (id, username, marca, modello, sede, commento, parcheggio, created_at, data_archivazione, disponibile, archiviata) VALUES (:uuid, :username, :marca, :modello, :sede, :commento, :parcheggio, DEFAULT, DEFAULT, DEFAULT, DEFAULT)';
         $this->db->query($stmt);
 
         // Bind values
@@ -272,6 +452,7 @@ class Macchina
         $this->db->bind(':modello', $modello);
         $this->db->bind(':sede', $sede);
         $this->db->bind(':commento', $commento);
+        $this->db->bind(':parcheggio', $parcheggio);
 
         // Execute
         if ($this->db->execute()) {
@@ -283,7 +464,81 @@ class Macchina
         }
     }
 
-    // TODO: implement archive method
+    /**
+     * Edit a car in the DB.
+     * 
+     * @param string id ID of the car to edit.
+     * @param array args Associative array where the names of the 
+     *  properties match the columns of the database.
+     *  Allowed properties are: `marca`, `modello`, `sede`, `commento`, `parcheggio`.
+     * @param string modello Model/Name of the car.
+     * @return ?CMacchina object representation of the updated car.
+     *  Null is returned if the query fails.
+     *  Returns original car if no allowed property has been edited.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function edit(string $id, array $args): ?CMacchina
+    {
+        //Clean array from disallowed properties
+        $properties = array();
+        foreach ($args as $property => $value) {
+            if (in_array($property, array('marca', 'modello', 'sede', 'commento', 'parcheggio'))) {
+                $properties[$property] = $value;
+            }
+        }
+
+        if (count($properties) > 0) {
+            // Create statement
+            $stmt = 'UPDATE macchine SET ';
+            foreach ($properties as $property => $value) {
+                $stmt = $stmt . $property . ' = :' . $property . ', ';
+            }
+            $stmt = rtrim($stmt, ", \t\n") . ' WHERE id = :id';
+            $this->db->query($stmt);
+
+            // Bind Values
+            foreach ($properties as $property => $value) {
+                $this->db->bind(':' . $property, $value);
+            }
+            $this->db->bind(':id', $id);
+
+            // Execute and check for errors
+            if (!$this->db->execute()) {
+                return null;
+            }
+        }
+        //Return updated car
+        return $this->getCar($id);
+    }
+
+    /**
+     * Edit a car's availability in the DB.
+     * 
+     * @param string id ID of the car to edit.
+     * @param bool disponibile Availability of the car
+     * @return ?CMacchina object representation of the updated car.
+     *  Null is returned if the query fails.
+     *  Returns original car if no allowed property has been edited.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function setAvailability($id, bool $disponibile): ?CMacchina
+    {
+        // Create Statement
+        $stmt = 'UPDATE macchine SET disponibile = :disponibile WHERE id = :id';
+        $this->db->query($stmt);
+
+        // Bind Values
+        $this->db->bind(':disponibile', $disponibile);
+        $this->db->bind(':id', $id);
+
+        // Execute and check for errors
+        if (!$this->db->execute()) {
+            return null;
+        }
+        return $this->getCar($id);
+    }
+
+
     /**
      * Archive a car
      * 
@@ -297,7 +552,7 @@ class Macchina
     {
         // Create Statement
         $stmt = 'UPDATE macchine 
-                    SET archiviata = 1, archiviata_da = :username
+                    SET archiviata = 1, archiviata_da = :username, data_archivazione = CURRENT_TIMESTAMP()
                     WHERE id = :id';
         // Run query
         $this->db->query($stmt);
@@ -311,7 +566,6 @@ class Macchina
         return $this->getCar($id);
     }
 
-    // TODO: implement unarchive method
     /**
      * Archive a car
      * 
@@ -325,7 +579,7 @@ class Macchina
     {
         // Create Statement
         $stmt = 'UPDATE macchine 
-                    SET archiviata = 0, archiviata_da = DEFAULT
+                    SET archiviata = 0, archiviata_da = DEFAULT, data_archivazione = DEFAULT
                     WHERE id = :id';
         // Run query
         $this->db->query($stmt);
@@ -338,7 +592,6 @@ class Macchina
         return $this->getCar($id);
     }
 
-    // TODO: implement delete method
     /**
      * Delete a car
      * 
@@ -367,38 +620,38 @@ class Macchina
 
     // SECTION: Methods relative to the reservation of cars
 
-    // TODO: implement reserve method
+    // TODO: reserve method
     public function reserve(): ?CPrenotazione
     {
         throw new Exception('Not implemented');
     }
 
-    // TODO: implement editReservation method
+    // TODO: editReservation method
     public function editReservation(): ?CPrenotazione
     {
         throw new Exception('Not implemented');
     }
 
-    // TODO: implement cancelReservation method
+    // TODO: cancelReservation method
     public function cancelReservation(): bool
     {
         throw new Exception('Not implemented');
     }
 
     // SECTION: Methods relative to car maintenance
-    // TODO: implement manutenzione method
+    // TODO: manutenzione method
     public function manutenzione(): CManutenzione
     {
         throw new Exception('Not implemented');
     }
 
-    // TODO: implement editManutenzione method
+    // TODO: editManutenzione method
     public function editManutenzione(): CManutenzione
     {
         throw new Exception('Not implemented');
     }
 
-    // TODO: implement deleteManutenzione method
+    // TODO: deleteManutenzione method
     public function deleteManutenzione(): bool
     {
         throw new Exception('Not implemented');

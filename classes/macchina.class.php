@@ -18,11 +18,13 @@ class CMacchina
     public string $modello;
     public string $sede;
     public ?string $commento;
+    public ?string $parcheggio;
     public DateTime $created_at;
     public ?DateTime $data_archivazione;
     public ?string $archiviata_da;
     public bool $disponibile;
     public bool $archiviata;
+
     /**
      * Constructor of the class 'Macchina'. The values of the properties are loaded
      *  from the array.
@@ -40,30 +42,13 @@ class CMacchina
         $this->sede = $properties['sede'];
         $this->commento = $properties['commento'];
         $this->commento = $properties['archiviata_da'];
+        $this->parcheggio = $properties['parcheggio'];
         // Parse Date Objects
         $this->created_at = new DateTime($properties['created_at']);
         $this->data_archivazione = new DateTime($properties['data_archivazione']);
         // Parse Bool
         $this->disponibile = filter_var($properties['disponibile'], FILTER_VALIDATE_BOOLEAN);
         $this->archiviata = filter_var($properties['archiviata'], FILTER_VALIDATE_BOOLEAN);
-    }
-
-    // Class Getter
-    public function __get($property)
-    {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
-    }
-
-    // Class Setter
-    public function __set($property, $value)
-    {
-        if (property_exists($this, $property)) {
-            $this->$property = $value;
-        }
-
-        return $this;
     }
 
     public function toArray()
