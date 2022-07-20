@@ -123,7 +123,7 @@ class Database
    * @return ?array Returns array of stdClass objects
    *  Exceptions are handled and recorded in 
    *  `log` table of the database.
-   *  Null is returnd if fails.c
+   *  Null is returned if fails.
    */
   public function resultSet(): ?array
   {
@@ -161,6 +161,7 @@ class Database
         }
         return $result;
       }
+      return null;
     } catch (PDOException $e) {
       $this->error = $e->getMessage();
       $this->log($e->getMessage());

@@ -166,7 +166,7 @@ class Macchina
         return $cars;
     }
 
-    // TODO SECTION: Methods relative to database queries, table 'prenotazioni'
+    // SECTION: Methods relative to database queries, table 'prenotazioni'
 
     /**
      * Retrieve a reservation from the DB by its id.
@@ -196,6 +196,7 @@ class Macchina
      * 
      * @param string User to query.
      * @return ?array array containing `Prenotazione` objects
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getAllUserReservations(string $username): ?array
     {
@@ -229,6 +230,7 @@ class Macchina
      * @param int count Number of entries to retrieve. 
      *  `count` must be greater than 0.
      * @return ?array array containing `Prenotazione` objects
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getUserReservations(string $username, int $count): ?array
     {
@@ -262,6 +264,7 @@ class Macchina
      * 
      * @param string User to query.
      * @return ?array array containing `Prenotazione` objects
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getUserOngoingReservations(string $username): ?CPrenotazione
     {
@@ -290,13 +293,15 @@ class Macchina
      * @param string sede Location to query.
      * @param int count Number of results to return.
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getReservationsBySede(string $sede, int $count): ?array
     {
         // Prepare statement
         $stmt = 'SELECT * 
-            FROM prenotazioni
-            WHERE sede = :sede
+            FROM prenotazioni p
+            JOIN macchine m ON p.id_macchine = m.id
+            WHERE m.sede = :sede
             LIMIT :count';
 
         $this->db->query($stmt);
@@ -322,13 +327,15 @@ class Macchina
      * 
      * @param string sede Location to query.
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getAllReservationsBySede(string $sede): ?array
     {
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
-            WHERE sede = :sede';
+            JOIN macchine m ON p.id_macchine = m.id
+            WHERE m.sede = :sede';
 
         $this->db->query($stmt);
         $this->db->bind(':sede', $sede);
@@ -352,6 +359,7 @@ class Macchina
      * 
      * @param int count Number of results to return.
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getReservationsByCar(string $id_macchina, int $count): ?array
     {
@@ -384,6 +392,7 @@ class Macchina
      * 
      * @param string id_macchina Car to query.
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getAllReservationsByCar(string $id_macchina): ?array
     {
@@ -415,6 +424,7 @@ class Macchina
      * @param string sede Location to query.
      * @param int count Number of results to return.
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getReservations(int $count): ?array
     {
@@ -444,6 +454,7 @@ class Macchina
      * Get all reservations
      * 
      * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
      */
     public function getAllReservations(): ?array
     {
@@ -466,15 +477,172 @@ class Macchina
         return $prenotazioni;
     }
 
+    /**
+     * Get all past reservations
+     * 
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getPastReservations(): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni WHERE CAST(NOW() AS DATE) after to_date';
 
+        $this->db->query($stmt);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    /**
+     * Get all ongoing reservations
+     * 
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getOngoingReservations(): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni WHERE CAST(NOW() AS DATE) between from_date and to_date';
+
+        $this->db->query($stmt);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
+
+    /**
+     * Get all future reservations
+     * 
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getFutureReservations(): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni WHERE CAST(NOW() AS DATE) before from_date';
+
+        $this->db->query($stmt);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        if (empty($prenotazioni)) return null;
+        return $prenotazioni;
+    }
 
     // SECTION: Methods relative to database queries, table 'manutenzioni'
 
-    // TODO: getManutenzione method
+    /**
+     * Retrieve a maintenance from the DB by its id.
+     * 
+     * @param string id Id of the maintenance.
+     * @return ?CManutenzione Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getManutenzione(string $id): ?CManutenzione
+    {
+        // Retrieve row
+        $this->db->query('SELECT * FROM manutenzioni WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $result = $this->db->single();
 
-    // TODO: getCarManutenzioni method
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
 
-    // TODO: getCarLastManutenzione method
+        // Return query in CManutenzione object
+        return $this->convert(CManutenzione::class, $result);
+    }
+
+    /**
+     * Retrieve a car's maintenances
+     * 
+     * @param string id_macchina Car to query
+     * @return ?array Returns null if the query fails
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getCarManutenzioni(string $id_macchina): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM manutenzioni
+            WHERE id_macchina = :id_macchina';
+
+        $this->db->query($stmt);
+        $this->db->bind(':id_macchina', $id_macchina);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Manutenzioni objects
+        $manutenzioni = array();
+        foreach ($results as $temp) {
+            array_push($manutenzioni, $this->convert(CManutenzione::class, $temp));
+        }
+        if (empty($manutenzioni)) return null;
+        return $manutenzioni;
+    }
+
+    /**
+     * Retrieve a car's last maintenance by the type
+     * 
+     * @param string id Id of the maintenance.
+     * @param string tipologia Type of maintenance to query.
+     * @return ?CManutenzione Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getCarLastManutenzione(string $id_macchina, string $tipologia): ?CManutenzione
+    {
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM manutenzioni
+            WHERE id_macchina = :id_macchina AND tipologia = :tipologia 
+            ORDER BY manutenzioni.data DESC 
+            LIMIT 1';
+
+        $this->db->query($stmt);
+        $this->db->bind(':id_macchina', $id_macchina);
+        $this->db->bind(':tipologia', $tipologia);
+        // Get results
+        $result = $this->db->single();
+        // Handle error
+        if (is_null($result)) {
+            return null;
+        }
+        // Map results to array of Manutenzioni objects
+        return $this->convert(CManutenzione::class, $result);
+    }
 
     // SECTION: Methods relative to the management of cars
 
@@ -676,24 +844,127 @@ class Macchina
     // SECTION: Methods relative to the reservation of cars
 
     // TODO: reserve method
-    public function reserve(): ?CPrenotazione
+    /**
+     * Reserve car into db.
+     * 
+     * @param string id_macchina Reserved car.
+     * @param string username Username who books the car.
+     * @param DateTime from_date Start date of the reservation
+     * @param DateTime to_date End date of the reservation.
+     * @param string motivazione Can be either `aziendale` or `personale`.
+     * @param ?string commento Any comment on the reservation.
+     * @return ?CMacchina object representation of the registered car.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function reserve(string $id_macchina, string $username, DateTime $from_date, DateTime $to_date, string $motivazione, ?string $commento = null): ?CPrenotazione
     {
-        throw new Exception('Not implemented');
+        // Generate UUID
+        $uuid = $this->generateUUID();
+
+        // Format dates
+        $from_date = date("Y-m-d", $from_date->getTimestamp());
+        $to_date = date("Y-m-d", $to_date->getTimestamp());
+
+        // Query statement
+        $stmt = 'INSERT INTO prenotazioni (id, id_macchina, username, from_date, to_date, created_at, sede, motivazione, commento) VALUES (:uuid, :id_macchina, :username, :from_date, :to_date, DEFAULT, , :motivazione, :commento)';
+        $this->db->query($stmt);
+
+        // Bind values
+        $this->db->bind(':uuid', $uuid);
+        $this->db->bind(':id_macchina', $id_macchina);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':from_date', $from_date);
+        $this->db->bind(':to_date', $to_date);
+        $this->db->bind(':motivazione', $motivazione);
+        $this->db->bind(':commento', $commento);
+
+        // Execute
+        if ($this->db->execute()) {
+            // Retrieve added row
+            return $this->getReservation($uuid);
+        } else {
+            // Adding failed
+            return null;
+        }
     }
 
     // TODO: editReservation method
-    public function editReservation(): ?CPrenotazione
+    /**
+     * Edit a reservation in the DB.
+     * 
+     * @param string id ID of the reservation to edit.
+     * @param array args Associative array where the names of the 
+     *  properties match the columns of the database.
+     *  Allowed properties are: `from_date`, `to_date`, `motivazione`, `commento`.
+     *  Disallowed or invalid properties will be ignored.
+     * @param string modello Model/Name of the car.
+     * @return ?CPrenotazione object representation of the updated car.
+     *  Null is returned if the query fails.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function editReservation(string $id, array $args): ?CPrenotazione
     {
-        throw new Exception('Not implemented');
+        //Clean array from disallowed properties
+        $properties = array();
+        foreach ($args as $property => $value) {
+            if (in_array($property, array('from_date', 'to_date', 'motivazione', 'commento'))) {
+                $properties[$property] = $value;
+            }
+        }
+
+        if (count($properties) > 0) {
+            // Create statement
+            $stmt = 'UPDATE prenotazioni SET ';
+            foreach ($properties as $property => $value) {
+                $stmt = $stmt . $property . ' = :' . $property . ', ';
+            }
+            $stmt = rtrim($stmt, ", \t\n") . ' WHERE id = :id';
+            $this->db->query($stmt);
+
+            // Bind Values
+            foreach ($properties as $property => $value) {
+                $this->db->bind(':' . $property, $value);
+            }
+            $this->db->bind(':id', $id);
+
+            // Execute and check for errors
+            if (!$this->db->execute()) {
+                return null;
+            }
+        }
+        //Return updated car
+        return $this->getCar($id);
     }
 
     // TODO: cancelReservation method
-    public function cancelReservation(): bool
+    /**
+     * Cancel a reservation
+     * 
+     * @param string id UUID of the reservation to cancel.
+     * @return bool Status of the request.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function cancelReservation(string $id): bool
     {
-        throw new Exception('Not implemented');
+        // Create Statement
+        $stmt = 'DELETE FROM prenotazioni WHERE id = :id';
+        // Run query
+        $this->db->query($stmt);
+        $this->db->bind(':id', $id);
+        // Catch error
+        if (!$this->db->execute()) {
+            return false;
+        }
+
+
+        if ($this->db->rowCount() > 0) {
+            return true;
+        }
+        return false;
     }
 
     // SECTION: Methods relative to car maintenance
+
     // TODO: manutenzione method
     public function manutenzione(): CManutenzione
     {

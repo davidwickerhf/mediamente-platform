@@ -25,7 +25,7 @@ final class MacchineDBTest extends MemoryTestCase
     {
 
         // Valid ID
-        $this->assertInstanceOf(CMacchina::class, $this->model->getCar('99860421573345290'), 'Get car by ID returns a car object');
+        $this->assertInstanceOf(CMacchina::class, $this->model->getCar($this::ID_MACCHINA), 'Get car by ID returns a car object');
 
         // Invalid ID
         $this->assertNull($this->model->getCar('99060418373345288'), 'Get car by false ID returns null');
@@ -68,7 +68,7 @@ final class MacchineDBTest extends MemoryTestCase
     public function testRegister(): void
     {
 
-        $result = $this->model->register('davidwickerhf', 'Fiat', '500', 'torino', 'Test registerCar');
+        $result = $this->model->register($this::USERNAME_UTENTE, 'Fiat', '500', 'torino', 'Test registerCar');
         $this->assertInstanceOf(CMacchina::class, $result);
         $this->assertEquals('torino', $result->sede);
 
@@ -80,7 +80,7 @@ final class MacchineDBTest extends MemoryTestCase
     public function testEdit(): void
     {
 
-        $car = $this->model->register('davidwickerhf', 'OLAOLA', 'Test', 'torino', 'Test Car for EDIT function Test');
+        $car = $this->model->register($this::USERNAME_UTENTE, 'OLAOLA', 'Test', 'torino', 'Test Car for EDIT function Test');
 
         // Test with valid ID and Args
         $updated = $this->model->edit($car->id, array('modello' => 'Panda'));
@@ -110,7 +110,7 @@ final class MacchineDBTest extends MemoryTestCase
     public function testSetAvailability(): void
     {
 
-        $car = $this->model->register('davidwickerhf', 'Fiat', 'Test Disponibilita', 'torino', 'Test funzione disponibilita');
+        $car = $this->model->register($this::USERNAME_UTENTE, 'Fiat', 'Test Disponibilita', 'torino', 'Test funzione disponibilita');
 
         // Test with valid ID
         $updated = $this->model->setAvailability($car->id, false);
@@ -129,12 +129,12 @@ final class MacchineDBTest extends MemoryTestCase
     {
 
         // Test with valid ID
-        $car = $this->model->archive('davidwickerhf', '99860421573345290');
+        $car = $this->model->archive($this::USERNAME_UTENTE, $this::ID_MACCHINA2);
         $this->assertInstanceOf(CMacchina::class, $car);
         $this->assertTrue($car->archiviata);
 
         // Test with invalid ID
-        $result = $this->model->archive('davidwickerhf', '29193913292093');
+        $result = $this->model->archive($this::USERNAME_UTENTE, '29193913292093');
         $this->assertNull($result);
     }
 
@@ -142,12 +142,12 @@ final class MacchineDBTest extends MemoryTestCase
     {
 
         // Test with valid ID
-        $car = $this->model->unarchive('99860421573345291');
+        $car = $this->model->unarchive($this::ID_MACCHINA2);
         $this->assertInstanceOf(CMacchina::class, $car);
         $this->assertFalse($car->archiviata);
 
         // Test with invalid ID
-        $result = $this->model->unarchive('davidwickerhf', '29193913292093');
+        $result = $this->model->unarchive($this::USERNAME_UTENTE, '29193913292093');
         $this->assertNull($result);
     }
 
@@ -155,7 +155,7 @@ final class MacchineDBTest extends MemoryTestCase
     {
 
         // Create Test Car
-        $car = $this->model->register('davidwickerhf', 'Fiat', 'ToDelete', 'torino', 'Test car for delete function');
+        $car = $this->model->register($this::USERNAME_UTENTE, 'Fiat', 'ToDelete', 'torino', 'Test car for delete function');
 
         // Test with valid ID
         $result = $this->model->delete($car->id);

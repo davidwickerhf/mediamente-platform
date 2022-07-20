@@ -15,7 +15,6 @@ class CPrenotazione
     public DateTime $from_date;
     public DateTime $to_date;
     public DateTime $created_at;
-    public string $sede;
     public string $motivazione;
     public ?string $commmento;
 
@@ -32,31 +31,12 @@ class CPrenotazione
         $this->id = $properties['id'];
         $this->id_macchina = $properties['id_macchina'];
         $this->username = $properties['username'];
-        $this->sede = $properties['sede'];
         $this->motivazione = $properties['motivazione'];
         $this->commento = $properties['commento'];
         // Parse Date Objects
         $this->from_date = new DateTime($properties['from_date']);
         $this->to_date = new DateTime($properties['to_date']);
         $this->created_at = new DateTime($properties['created_at']);
-    }
-
-    // Class Getter
-    public function __get($property)
-    {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
-    }
-
-    // Class Setter
-    public function __set($property, $value)
-    {
-        if (property_exists($this, $property)) {
-            $this->$property = $value;
-        }
-
-        return $this;
     }
 
     public function toArray()

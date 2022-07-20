@@ -8,10 +8,16 @@ if (!class_exists('Database')) {
     require_once ROOT_PATH . 'libraries/Database.php';
 }
 
-
+/**
+ * Logger class
+ * PHP Version 7.4.
+ *
+ * @author    Saverio Leoni
+ * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ */
 class Log
 {
-
     private Database $database;
     private bool $testing;
 
