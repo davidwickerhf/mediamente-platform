@@ -56,6 +56,25 @@ class Macchina
         return $object;
     }
 
+    /**
+     * Check if a username exists in the table `utenti`.
+     * 
+     * @param string username User to query.
+     * @return bool Result.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    private function checkUsername(string $username): bool
+    {
+        $stmt = 'SELECT * FROM utenti WHERE username = :username';
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        $result = $this->db->single();
+        if (is_null($result)) {
+            return false;
+        }
+        return true;
+    }
+
     // SECTION: Methods relative to database queries, table 'macchine'
 
     /**
@@ -200,10 +219,16 @@ class Macchina
      */
     public function getAllUserReservations(string $username): ?array
     {
+        // Check utente
+        if (!$this->checkUsername($username)) {
+            return null;
+        }
+
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
-            WHERE username = :username 
+            JOIN utenti ON prenotazioni.username = utenti.username
+            WHERE utenti.username = :username 
             ORDER BY prenotazioni.from_date DESC';
 
         $this->db->query($stmt);
@@ -219,7 +244,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -234,6 +258,11 @@ class Macchina
      */
     public function getUserReservations(string $username, int $count): ?array
     {
+        // Check utente
+        if (!$this->checkUsername($username)) {
+            return null;
+        }
+
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
@@ -255,7 +284,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -268,11 +296,16 @@ class Macchina
      */
     public function getUserOngoingReservations(string $username): ?CPrenotazione
     {
+        // Check utente
+        if (!$this->checkUsername($username)) {
+            return null;
+        }
+
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
             WHERE username = :username
-                AND CAST(NOW() AS DATE) between from_date and to_date';
+                AND from_date <= CAST(NOW() AS DATE) <= to_date';
 
         $this->db->query($stmt);
         $this->db->bind(':username', $username);
@@ -297,11 +330,14 @@ class Macchina
      */
     public function getReservationsBySede(string $sede, int $count): ?array
     {
+        if (!in_array($sede, array('torino', 'milano', 'bologna', 'empoli'))) {
+            return null;
+        }
         // Prepare statement
         $stmt = 'SELECT * 
-            FROM prenotazioni p
-            JOIN macchine m ON p.id_macchine = m.id
-            WHERE m.sede = :sede
+            FROM prenotazioni
+            JOIN macchine ON prenotazioni.id_macchina = macchine.id
+            WHERE macchine.sede = :sede
             LIMIT :count';
 
         $this->db->query($stmt);
@@ -318,7 +354,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -331,11 +366,14 @@ class Macchina
      */
     public function getAllReservationsBySede(string $sede): ?array
     {
+        if (!in_array($sede, array('torino', 'milano', 'bologna', 'empoli'))) {
+            return null;
+        }
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
-            JOIN macchine m ON p.id_macchine = m.id
-            WHERE m.sede = :sede';
+            JOIN macchine ON prenotazioni.id_macchina = macchine.id
+            WHERE macchine.sede = :sede';
 
         $this->db->query($stmt);
         $this->db->bind(':sede', $sede);
@@ -350,7 +388,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -359,10 +396,14 @@ class Macchina
      * 
      * @param int count Number of results to return.
      * @return ?array array containing `CPrenotazione` objects.
+     *  Returns null if the inserted ID is invalid.
      * @throws PDOException if binding values to parameters fails.
      */
     public function getReservationsByCar(string $id_macchina, int $count): ?array
     {
+        if (is_null($this->getCar($id_macchina))) {
+            return null;
+        };
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
@@ -383,7 +424,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -392,10 +432,14 @@ class Macchina
      * 
      * @param string id_macchina Car to query.
      * @return ?array array containing `CPrenotazione` objects.
+     *  Returns null if inserted id is invalid.
      * @throws PDOException if binding values to parameters fails.
      */
     public function getAllReservationsByCar(string $id_macchina): ?array
     {
+        if (is_null($this->getCar($id_macchina))) {
+            return null;
+        }
         // Prepare statement
         $stmt = 'SELECT * 
             FROM prenotazioni
@@ -414,7 +458,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -446,7 +489,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -473,7 +515,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -486,7 +527,7 @@ class Macchina
     public function getPastReservations(): ?array
     {
         // Prepare statement
-        $stmt = 'SELECT * FROM prenotazioni WHERE CAST(NOW() AS DATE) after to_date';
+        $stmt = 'SELECT * FROM prenotazioni WHERE CURDATE() > prenotazioni.to_date';
 
         $this->db->query($stmt);
         // Get results
@@ -500,7 +541,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -527,7 +567,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -540,7 +579,7 @@ class Macchina
     public function getFutureReservations(): ?array
     {
         // Prepare statement
-        $stmt = 'SELECT * FROM prenotazioni WHERE CAST(NOW() AS DATE) before from_date';
+        $stmt = 'SELECT * FROM prenotazioni WHERE CURDATE() < from_date';
 
         $this->db->query($stmt);
         // Get results
@@ -554,7 +593,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
         }
-        if (empty($prenotazioni)) return null;
         return $prenotazioni;
     }
 
@@ -610,7 +648,6 @@ class Macchina
         foreach ($results as $temp) {
             array_push($manutenzioni, $this->convert(CManutenzione::class, $temp));
         }
-        if (empty($manutenzioni)) return null;
         return $manutenzioni;
     }
 
@@ -838,7 +875,7 @@ class Macchina
         $to_date = date("Y-m-d", $to_date->getTimestamp());
 
         // Query statement
-        $stmt = 'INSERT INTO prenotazioni (id, id_macchina, username, from_date, to_date, created_at, sede, motivazione, commento) VALUES (:uuid, :id_macchina, :username, :from_date, :to_date, DEFAULT, , :motivazione, :commento)';
+        $stmt = 'INSERT INTO prenotazioni (id, id_macchina, username, from_date, to_date, created_at, motivazione, commento) VALUES (:uuid, :id_macchina, :username, :from_date, :to_date, DEFAULT, :motivazione, :commento)';
         $this->db->query($stmt);
 
         // Bind values
@@ -879,8 +916,12 @@ class Macchina
         //Clean array from disallowed properties
         $properties = array();
         foreach ($args as $property => $value) {
-            if (in_array($property, array('from_date', 'to_date', 'motivazione', 'commento'))) {
+            if (in_array($property, array('motivazione', 'commento'))) {
                 $properties[$property] = $value;
+            }
+
+            if (in_array($property, array('from_date', 'to_date'))) {
+                $properties[$property] = date("Y-m-d", $value->getTimestamp());
             }
         }
 
@@ -905,7 +946,7 @@ class Macchina
             }
         }
         //Return updated car
-        return $this->getCar($id);
+        return $this->getReservation($id);
     }
 
     // TODO: cancelReservation method

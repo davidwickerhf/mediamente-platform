@@ -130,9 +130,6 @@ class Database
     try {
       if ($this->execute()) {
         $result = $this->stmt->fetchAll(PDO::FETCH_OBJ);
-        if (!is_array($result)) {
-          return array($result);
-        }
         return $result;
       }
       return null;

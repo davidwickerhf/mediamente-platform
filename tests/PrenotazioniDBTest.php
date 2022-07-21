@@ -41,7 +41,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
     public function testGetAllUserReservations()
     {
-        // Valid User ID
+        //Valid User ID
         $result = $this->model->getAllUserReservations($this::USERNAME_UTENTE);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
@@ -87,14 +87,14 @@ final class PrenotazioniDBTest extends MemoryTestCase
     public function testGetReservationsBySede()
     {
         // Valid User ID
-        $result = $this->model->getReservationsBySede('torino', 2);
+        $result = $this->model->getReservationsBySede('milano', 2);
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
         }
 
         // Invalid count
-        $invalid = $this->model->getReservationsBySede('torino', -1);
+        $invalid = $this->model->getReservationsBySede('milano', -1);
         $this->assertNull($invalid);
 
         // Invalid User ID
@@ -145,7 +145,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
         }
 
         // Invalid User ID
-        $invalid = $this->model->getAllReservationsBySede('aisjasidahd');
+        $invalid = $this->model->getAllReservationsByCar('aisjasidahd');
         $this->assertNull($invalid);
     }
 
@@ -183,7 +183,7 @@ final class PrenotazioniDBTest extends MemoryTestCase
         $this->assertIsArray($result);
         foreach ($result as $prenotazione) {
             $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
-            $this->assertGreaterThan($prenotazione->from_date, $now);
+            $this->assertGreaterThan($now, $prenotazione->to_date);
         }
     }
 
@@ -218,29 +218,73 @@ final class PrenotazioniDBTest extends MemoryTestCase
     // MANAGEMENT
     public function testReserve(): void
     {
+        $from_date = new DateTime('2022-07-24');
+        $to_date =  new DateTime('2022-07-25');
         // Valid Parameters
-        $this->model->reserve($this->)
+        $result = $this->model->reserve($this::ID_MACCHINA, $this::USERNAME_UTENTE, $from_date, $to_date, 'aziendale', 'Commento');
+        $this->assertInstanceOf(CPrenotazione::class, $result);
 
         // Invalid Username
+        $result = $this->model->reserve($this::ID_MACCHINA, '1491823187888', $from_date, $to_date, 'aziendale', 'Commento');
+        $this->assertNull($result);
+
+        // Invalid motivazione
+        $result = $this->model->reserve($this::ID_MACCHINA, $this::USERNAME_UTENTE, $from_date, $to_date, 'asdasda', 'Commento');
+        $this->assertNull($result);
     }
 
     public function testEditReservation(): void
     {
+        $from_date = new DateTime('2022-07-24');
+        $to_date =  new DateTime('2022-07-25');
+        // Valid Parameters
+        $reservation = $this->model->reserve($this::ID_MACCHINA, $this::USERNAME_UTENTE, $from_date, $to_date, 'aziendale', 'Commento');
+
         // Valid parameters
+        $from_date = new DateTime('2022-07-25');
+        $to_date =  new DateTime('2022-07-25');
+        $result = $this->model->editReservation($reservation->id, array(
+            'from_date' => $from_date,
+            'to_date' => $to_date,
+            'motivazione' => 'personale',
+            'commento' => 'Questo commento'
+        ));
+        $this->assertInstanceOf(CPrenotazione::class, $result);
+        $this->assertEquals('personale', $result->motivazione);
+        $this->assertEquals($to_date, $result->to_date);
 
-        // Invalid Username
+        // Invalid ID
+        $result = $this->model->editReservation('12341412313', array(
+            'from_date' => $from_date,
+            'to_date' => $to_date,
+            'motivazione' => 'personale',
+            'commento' => 'Questo commento'
+        ));
+        $this->assertNull($result);
 
-        // Invalid Parameter
-
-        // Disallowed parameter
+        // Invalid and Disallowed Parameter
+        $result = $this->model->editReservation($reservation->id, array(
+            'from_date' => $from_date,
+            'to_date' => $to_date,
+            'motivazione' => 'aziendale',
+            'commento' => 'Questo commento',
+            'id' => '1094871982739018723',
+            'adlkadl' => 'asdjl'
+        ));
+        $this->assertInstanceOf(CPrenotazione::class, $result);
+        $this->assertEquals('aziendale', $result->motivazione);
     }
 
     public function testCancelReservation(): void
     {
         // Create reservation
+        $from_date = new DateTime('2022-07-24');
+        $to_date =  new DateTime('2022-07-25');
+        // Valid Parameters
+        $reservation = $this->model->reserve($this::ID_MACCHINA, $this::USERNAME_UTENTE, $from_date, $to_date, 'aziendale', 'Test reservation, must be deleted');
 
         // Valid ID
-
-        // Invalid ID
+        $result = $this->model->cancelReservation($reservation->id);
+        $this->assertTrue($result);
     }
 }

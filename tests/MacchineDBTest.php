@@ -20,7 +20,7 @@ require_once ROOT_PATH . 'model/macchina.php';
  */
 final class MacchineDBTest extends MemoryTestCase
 {
-    // QUERIES
+    // QUERIESx
     public function testGetCar(): void
     {
 
@@ -28,7 +28,7 @@ final class MacchineDBTest extends MemoryTestCase
         $this->assertInstanceOf(CMacchina::class, $this->model->getCar($this::ID_MACCHINA), 'Get car by ID returns a car object');
 
         // Invalid ID
-        $this->assertNull($this->model->getCar('99060418373345288'), 'Get car by false ID returns null');
+        $this->assertNull($this->model->getCar('112312312'), 'Get car by false ID returns null');
     }
 
     public function testGetAllCars(): void

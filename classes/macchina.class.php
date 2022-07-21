@@ -47,7 +47,6 @@ class CMacchina
         $this->created_at = new DateTime($properties['created_at']);
         $this->data_archivazione = new DateTime($properties['data_archivazione']);
         // Parse Bool
-        $this->disponibile = filter_var($properties['disponibile'], FILTER_VALIDATE_BOOLEAN);
         $this->archiviata = filter_var($properties['archiviata'], FILTER_VALIDATE_BOOLEAN);
     }
 
