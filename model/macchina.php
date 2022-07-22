@@ -630,6 +630,9 @@ class Macchina
      */
     public function getCarManutenzioni(string $id_macchina): ?array
     {
+        if (is_null($this->getCar($id_macchina))) {
+            return null;
+        }
         // Prepare statement
         $stmt = 'SELECT * 
             FROM manutenzioni
@@ -661,6 +664,10 @@ class Macchina
      */
     public function getCarLastManutenzione(string $id_macchina, string $tipologia): ?CManutenzione
     {
+        if (is_null($this->getCar($id_macchina))) {
+            return null;
+        }
+
         // Prepare statement
         $stmt = 'SELECT * 
             FROM manutenzioni
@@ -852,7 +859,6 @@ class Macchina
 
     // SECTION: Methods relative to the reservation of cars
 
-    // TODO: reserve method
     /**
      * Reserve car into db.
      * 
@@ -897,7 +903,6 @@ class Macchina
         }
     }
 
-    // TODO: editReservation method
     /**
      * Edit a reservation in the DB.
      * 
@@ -949,7 +954,6 @@ class Macchina
         return $this->getReservation($id);
     }
 
-    // TODO: cancelReservation method
     /**
      * Cancel a reservation
      * 
@@ -979,20 +983,137 @@ class Macchina
     // SECTION: Methods relative to car maintenance
 
     // TODO: manutenzione method
-    public function manutenzione(): CManutenzione
+    /**
+     * Reserve car into db.
+     * 
+     * @param string id_macchina Reserved car.
+     * @param string username Username who books the car.
+     * @param DateTime from_date Start date of the reservation
+     * @param DateTime to_date End date of the reservation.
+     * @param string motivazione Can be either `aziendale` or `personale`.
+     * @param ?string commento Any comment on the reservation.
+     * @return ?CMacchina object representation of the registered car.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function manutenzione($id_macchina, string $username, DateTime $data, string $tipologia, string $luogo, int $chilometri, string $commento): ?CManutenzione
     {
-        throw new Exception('Not implemented');
+        // Check ID Macchina
+        if (is_null($this->getCar($id_macchina))) {
+            return null;
+        }
+
+        // Check Username
+        if (!$this->checkUsername($username)) {
+            return null;
+        }
+
+        // Generate UUID
+        $uuid = $this->generateUUID();
+
+        // Format dates
+        $data = date("Y-m-d", $data->getTimestamp());
+
+        // Query statement
+        $stmt = 'INSERT INTO manutenzioni (id, id_macchina, username, data, created_at, tipologia, luogo, chilometri, commento) VALUES (:uuid, :id_macchina, :username, :data, DEFAULT, :tipologia, :luogo, :chilometri, :commento)';
+        $this->db->query($stmt);
+
+        // Bind values
+        $this->db->bind(':uuid', $uuid);
+        $this->db->bind(':id_macchina', $id_macchina);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':data', $data);
+        $this->db->bind(':tipologia', $tipologia);
+        $this->db->bind(':luogo', $luogo);
+        $this->db->bind(':chilometri', $chilometri);
+        $this->db->bind(':commento', $commento);
+
+        // Execute
+        if ($this->db->execute()) {
+            // Retrieve added row
+            return $this->getManutenzione($uuid);
+        } else {
+            // Adding failed
+            return null;
+        }
     }
 
     // TODO: editManutenzione method
-    public function editManutenzione(): CManutenzione
+    /**
+     * Edit a reservation in the DB.
+     * 
+     * @param string id ID of the reservation to edit.
+     * @param array args Associative array where the names of the 
+     *  properties match the columns of the database.
+     *  Allowed properties are: `data`, `tipologia`, `luogo`, 
+     * `chilometri`, `commento`.
+     *  Disallowed or invalid properties will be ignored.
+     * @param string modello Model/Name of the car.
+     * @return ?CPrenotazione object representation of the updated car.
+     *  Null is returned if the query fails.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function editManutenzione(string $id, array $args): ?CManutenzione
     {
-        throw new Exception('Not implemented');
+        //Clean array from disallowed properties
+        $properties = array();
+        foreach ($args as $property => $value) {
+            if (in_array($property, array('tipologia', 'luogo', 'chilometri', 'commento'))) {
+                $properties[$property] = $value;
+            }
+
+            if (in_array($property, array('data'))) {
+                $properties[$property] = date("Y-m-d", $value->getTimestamp());
+            }
+        }
+
+        if (count($properties) > 0) {
+            // Create statement
+            $stmt = 'UPDATE manutenzioni SET ';
+            foreach ($properties as $property => $value) {
+                $stmt = $stmt . $property . ' = :' . $property . ', ';
+            }
+            $stmt = rtrim($stmt, ", \t\n") . ' WHERE id = :id';
+            $this->db->query($stmt);
+
+            // Bind Values
+            foreach ($properties as $property => $value) {
+                $this->db->bind(':' . $property, $value);
+            }
+            $this->db->bind(':id', $id);
+
+            // Execute and check for errors
+            if (!$this->db->execute()) {
+                return null;
+            }
+        }
+        //Return updated manutenzione
+        return $this->getManutenzione($id);
     }
 
     // TODO: deleteManutenzione method
-    public function deleteManutenzione(): bool
+    /**
+     * Delete a car
+     * 
+     * @param string id UUID of the manutenzione to delete.
+     * @return bool Status of the request.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function deleteManutenzione(string $id): bool
     {
-        throw new Exception('Not implemented');
+        // Create Statement
+        $stmt = 'DELETE FROM manutenzioni WHERE id = :id';
+        // Run query
+        $this->db->query($stmt);
+        $this->db->bind(':id', $id);
+        // Catch error
+        if (!$this->db->execute()) {
+            return false;
+        }
+
+
+        if ($this->db->rowCount() > 0) {
+            return true;
+        }
+        return false;
     }
 }

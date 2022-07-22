@@ -68,4 +68,68 @@ final class ManutenzioniDBTest extends MemoryTestCase
         $invalid = $this->model->getCarLastManutenzione('298491989284', 'revisione');
         $this->assertNull($invalid);
     }
+
+    public function testManutenzione()
+    {
+        $data =  new DateTime('2022-07-25');
+        // Valid Parameters
+        $result = $this->model->manutenzione($this::ID_MACCHINA, $this::USERNAME_UTENTE, $data, 'revisione', 'Benzinaio', 1000, 'Me dovete da il rimborso');
+        $this->assertInstanceOf(CManutenzione::class, $result);
+
+        // Invalid Username
+        $result = $this->model->manutenzione($this::ID_MACCHINA, 'giuseppe', $data, 'revisione', 'Benzinaio', 1000, 'Me dovete da il rimborso');
+        $this->assertNull($result);
+
+        // Invalid motivazione
+        $result = $this->model->manutenzione($this::ID_MACCHINA, $this::USERNAME_UTENTE, $data, 'afasjdoajdsoij', 'Benzinaio', 1000, 'Me dovete da il rimborso');
+        $this->assertNull($result);
+    }
+
+    public function testEditManutenzione()
+    {
+        $data =  new DateTime('2022-07-25');
+        // Valid Parameters
+        $reservation = $this->model->manutenzione($this::ID_MACCHINA, $this::USERNAME_UTENTE, $data, 'revisione', 'Benzinaio', 1000, 'Test Edit Manutenzione');
+
+        // Valid parameters
+        $newdate =  new DateTime('2022-07-29');
+        $result = $this->model->editManutenzione($reservation->id, array(
+            'data' => $newdate,
+            'tipologia' => 'cambiogomme',
+            'commento' => 'Modificato con successo'
+        ));
+        $this->assertInstanceOf(CManutenzione::class, $result);
+        $this->assertEquals('cambiogomme', $result->tipologia);
+        $this->assertEquals($newdate, $result->data);
+
+        // Invalid ID
+        $result = $this->model->editManutenzione('12341412313', array(
+            'data' => $newdate,
+            'tipologia' => 'cambiogomme',
+            'commento' => 'Modificato con successo'
+        ));
+        $this->assertNull($result);
+
+        // Invalid and Disallowed Parameter
+        $result = $this->model->editManutenzione($reservation->id, array(
+            'data' => $newdate,
+            'tipologia' => 'tagliando',
+            'commento' => 'Modificato con successo',
+            'id' => 'aisjdijiajd'
+        ));
+        $this->assertInstanceOf(CManutenzione::class, $result);
+        $this->assertEquals('tagliando', $result->tipologia);
+    }
+
+    public function testDeleteManutenzione()
+    {
+        // Create reservation
+        $data =  new DateTime('2022-07-25');
+        // Valid Parameters
+        $manutenzione = $this->model->manutenzione($this::ID_MACCHINA, $this::USERNAME_UTENTE, $data, 'revisione', 'Benzinaio', 1000, 'Test Delete');
+
+        // Valid ID
+        $result = $this->model->deleteManutenzione($manutenzione->id);
+        $this->assertTrue($result);
+    }
 }
