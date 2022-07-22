@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('getMyUsername')) {
-    require_once ROOT_PATH . 'libraries/commonfunctions.php';
+    require_once ROOT_PATH . 'commonfunctions.php';
 }
 
 if (!class_exists('Database')) {

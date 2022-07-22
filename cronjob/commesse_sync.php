@@ -2,7 +2,7 @@
 
 set_time_limit(60);
 include "/var/www/vhosts/apps.mmonline.it/app.config.php";
-include "/var/www/vhosts/apps.mmonline.it/libraries/commonfunctions.php";
+include "/var/www/vhosts/apps.mmonline.it/commonfunctions.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_core.php";
 include "/var/www/vhosts/apps.mmonline.it/helpers/ez_sql_mysqli.php";
 

@@ -1,7 +1,6 @@
 <?php
 
-// TODO : move to root folder and refactor everything
-require ROOT_PATH . "libraries/emailfunctions.php";
+require ROOT_PATH . "emailfunctions.php";
 
 function throw_error($text)
 {
@@ -180,7 +179,7 @@ function getMyRole()
 
 function ACLhasAccess($controller, $action)
 {
-	require_once "libraries/acl.php";
+	require_once "acl.php";
 	$ACL = new ACL();
 	return $ACL->hasAccess($controller, $action);
 }

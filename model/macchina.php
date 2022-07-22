@@ -982,7 +982,6 @@ class Macchina
 
     // SECTION: Methods relative to car maintenance
 
-    // TODO: manutenzione method
     /**
      * Reserve car into db.
      * 
@@ -1037,7 +1036,6 @@ class Macchina
         }
     }
 
-    // TODO: editManutenzione method
     /**
      * Edit a reservation in the DB.
      * 
@@ -1090,7 +1088,6 @@ class Macchina
         return $this->getManutenzione($id);
     }
 
-    // TODO: deleteManutenzione method
     /**
      * Delete a car
      * 

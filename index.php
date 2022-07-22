@@ -1,6 +1,6 @@
 <?php
 include "app.config.php";
-include "libraries/commonfunctions.php";
+include "commonfunctions.php";
 include "helpers/ez_sql_core.php";
 include "helpers/ez_sql_mysqli.php";
 

@@ -1,9 +1,9 @@
 <?php
 include "../app.config.php";
-include "../libraries/commonfunctions.php";
+include "../commonfunctions.php";
 include "../helpers/ez_sql_core.php";
 include "../helpers/ez_sql_mysqli.php";
-require_once "../libraries/acl.php";
+require_once "../acl.php";
 
 $ACL = new ACL();
 $db = null;
