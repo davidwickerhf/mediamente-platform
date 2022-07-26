@@ -1,3 +1,6 @@
+/// <reference path="../../dist/js/jquery-3.3.1.min.js" />
+/// <reference path="elements.js" />
+/// <reference path="macchine-index.js" />
 /**
  * Utility functions for dynamic components
  *
@@ -16,7 +19,7 @@
  * @param {object} token Value-key array with the csrf token and csrf token ID.
  * @return {null}
  */
-function updateComponent(url, action, state, token, data = {}) {
+function componentAjaxPost(url, action, state, token, args = {}) {
   $.ajax(url, {
     type: "POST",
     data: {
@@ -24,16 +27,43 @@ function updateComponent(url, action, state, token, data = {}) {
       csrfTokenID: token.csrfTokenID,
       action: action,
       state: state,
-      data: data,
+      args: args,
     },
     success: function (data, status, jqxhr) {
       // Call js function in javascript file for UI update
-      console.log(data);
       var data = JSON.parse(data);
 
       console.log("SEVER RESPONDED TO ACTION: " + action);
-      console.log(data["state"]);
-      window[action](action, data.state, data.data);
+      window[action](data.contents);
+      return;
+    },
+    error: function (data, status, jqxhr) {
+      alert("Error in ajax request");
+      return;
+    },
+  });
+}
+
+/**
+ * Utility function to start a ajax request to update a dynamic component.
+ * @param {string} url URL to which the ajax request will be sent to.
+ * @param {object} token Value-key array with the csrf token and csrf token ID.
+ * @return {null}
+ */
+function componentAjaxGet(url, action, token) {
+  $.ajax(url, {
+    type: "GET",
+    data: {
+      csrfToken: token.csrfToken,
+      csrfTokenID: token.csrfTokenID,
+      action: action,
+    },
+    success: function (data) {
+      // Call js function in javascript file for UI update
+      var data = JSON.parse(data);
+
+      console.log("SEVER RESPONDED TO ACTION: " + action);
+      window[action](data.contents);
       return;
     },
     error: function (data, status, jqxhr) {

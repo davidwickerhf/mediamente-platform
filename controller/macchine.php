@@ -1,15 +1,55 @@
 <?php
 require_once(INCLUDE_PATH . 'libraries/Controller.php');
 
+if (!function_exists('renderBannerReservation')) {
+    require_once ROOT_PATH . 'src/components/bannerReservation.php';
+}
+
 /**
  * Controller for Macchine pages
  * PHP Version 7.4.
+ * 
+ * Class wide variables should only define function names.
+ * State variables should be defined at the start of each controller action.
+ *  These merely define the state of the layout, NOT the content.
+ * Content loaded from database is NOT passed through the $data variable, 
+ *  but loaded through ajax requests. These requests may include in 
+ *  their response HTML to inject through jquery.
+ * 
+ * POST Request Schema:
+ *  data: {action: '', state: '', args: {}}
+ * 
+ * POST Request Response Schema:
+ *  data: {contents: { html: '' }, vars: {}}
+ * 
+ * GET Request Schema:
+ *  data: { action: ''}
+ * 
+ * GET Request Response Schema:
+ *  data: { contents: { html: '' }, vars: {}}
  *
  * @author    David Henry Francis Wicker (https://github.com/davidwickerhf) <davidwickerhf@gmail.com>
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 class Macchine extends Controller
 {
+
+    // STATE OPTIONS
+    const SEDE_STATES = array(
+        'torino' => 'Torino',
+        'milano' => 'Milano',
+        'empoli' => 'Empoli',
+        'bologna' => 'Bologna',
+        'tuttelesedi' => 'Tutte le sedi'
+    );
+    // Index Page
+    const INDEX_PRENOTAZIONI_STATES = array('prossima' => 'Prossima', 'incorso' => 'In corso');
+    const INDEX_STATISTICHE_STATES = array('mensilmente' => 'Mensilmente', 'annualmente' => 'Annualmente');
+    const INDEX_DISPONIBILITA_STATES = array('oggi' => 'Oggi', 'domani' => 'Domani', 'dopodomani' => 'Dopodomani');
+
+    // Macchine Page
+    // Statistiche Page
+    // Prenotazioni page
 
     // CONTROLLERS
     const INDEX = 'index';
@@ -19,23 +59,124 @@ class Macchine extends Controller
     const PRENOTA = 'prenota';
 
     // METHODS for AJAX
+    const RESERVE = 'reserve';
     // Index Page
     const INDEX_LOAD_DATA = 'indexLoadData';
     const INDEX_UPDATE_SEDE = 'indexUpdateSede';
     const INDEX_UPDATE_PRENOTAZIONI = 'indexUpdatePrenotazioni';
     const INDEX_UPDATE_STATISTICHE = 'indexUpdateStatistiche';
+    const INDEX_UPDATE_DISPONIBILITA = 'indexUpdateDisponibilita';
+
     // Macchine Page
     // Statistiche Page
     // Prenotazioni Page
-    // Side Panel 
+    // Side Panel
+
+    // GLOBAL PAGE VARIABLES
 
 
     // Database model
     private Macchina $macchineModel;
+    private Log $logger;
 
     public function __construct()
     {
         $this->macchineModel = $this->model('macchina');
+        $this->logger = new Log(array('controller' => 'macchine', 'action' => 'Controller Exception', $this), null, true);
+    }
+
+    // UTILITY FUNCTIONS
+    /**
+     * Load contents for Disponibilita component of the Banner
+     *  in the index page.
+     * 
+     * @param string state State of the component.
+     * @param array data Page state data.
+     * @return array Contents
+     * @throws PDOException if binding values to parameters fails.
+     */
+    private function loadIndexDisponibilita(array $data): array
+    {
+        $state = $data['indexDisponibilitaState'];
+        $contents = array();
+        if ($state == "oggi") {
+            // UPCOMING RESERVATIONS
+            //Load Contents from Model
+            $disponibili = $this->macchineModel->getAvailableCars(new DateTime(date('Y-m-d', time())));
+            $prenotate = $this->macchineModel->getReservedCars(new DateTime(date('Y-m-d', time())));
+        } elseif ($state == 'domani') {
+            // ONGOING RESERVATIONS
+            // Load contents from Model
+            $disponibili = $this->macchineModel->getAvailableCars(new DateTime('tomorrow'));
+            $prenotate = $this->macchineModel->getReservedCars(new DateTime('tomorrow'));
+        } else {
+            // ONGOING RESERVATIONS
+            // Load contents from Model
+            $disponibili = $this->macchineModel->getAvailableCars(new DateTime('tomorrow + 1day'));
+            $prenotate = $this->macchineModel->getReservedCars(new DateTime('tomorrow + 1day'));
+        }
+
+        if (!($data['indexSedeState'] == 'tuttelesedi')) {
+            $temp = array();
+            foreach ($disponibili as $macchina) {
+                if ($macchina->sede == $data['indexSedeState'])
+                    array_push($temp, $macchina);
+            }
+            $disponibili = $temp;
+
+            $temp = array();
+            foreach ($prenotate as $macchina) {
+                if ($macchina->sede == $data['indexSedeState'])
+                    array_push($temp, $macchina);
+            }
+            $prenotate = $temp;
+        }
+        $contents['disponibili'] = count($disponibili);
+        $contents['prenotate'] = count($prenotate);
+        return $contents;
+    }
+
+    /**
+     * Load contents for Prenotazioni component of the Banner
+     *  in the index page.
+     * 
+     * @param string state State of the component.
+     * @param array data Page state data.
+     * @return array Contents
+     * @throws PDOException if binding values to parameters fails.
+     */
+    private function loadIndexPrenotazioni(array $data): array
+    {
+        $contents = array();
+        $state = $data['indexPrenotazioniState'];
+        $html = '';
+        if ($state == 'incorso') {
+            $reservation = $this->macchineModel->getUserOngoingReservation(getMyUsername());
+            if (is_null($reservation)) {
+                $html =  '<p>Nessuna prenotazione in corso</p>';
+            } else {
+                $car = $this->macchineModel->getCar($reservation->id_macchina);
+                $html = renderBannerReservation($reservation, $car);
+            }
+        } else {
+            $username = getMyUsername();
+            $reservations = $this->macchineModel->getUserFutureReservations($username, 1);
+            $temp = array();
+            foreach ($reservations as $reservation) {
+                if ($reservation->from_date > new DateTime('today'))
+                    array_push($temp, $reservation);
+            }
+            if (empty($temp)) {
+                $html =  '<p>Nessuna prenotazione futura</p>';
+            } else {
+                foreach ($temp as $prenotazione) {
+                    $car = $this->macchineModel->getCar($reservation->id_macchina);
+                    $html .= renderBannerReservation($prenotazione, $car);
+                }
+            }
+        }
+        $contents['html'] = '<div id="bannerPrenotazioni">' . $html . '</div>';
+        return $contents;
     }
 
     public function index()
@@ -45,13 +186,16 @@ class Macchine extends Controller
         // VIEW VARIABLES (Retrieve from SESSION)
         $data['pageTitle'] = 'Macchine';
 
+        // Global Page Variables
+        $data['indexSedeState'] = (isset($_SESSION['indexSedeState']) && !empty($_SESSION['indexSedeState'])) ? $_SESSION['indexSedeState'] : 'tuttelesedi';
+
+
         // Banner variables
-        $data['indexPrenotazioniState'] = (isset($_SESSION['indexPrenotazioniState']) && !empty($_SESSION['indexPrenotazioniState'])) ? $_SESSION['indexPrenotazioniState'] : 'prossime';
+        $data['indexPrenotazioniState'] = (isset($_SESSION['indexPrenotazioniState']) && !empty($_SESSION['indexPrenotazioniState'])) ? $_SESSION['indexPrenotazioniState'] : 'prossima';
 
         $data['indexStatisticheState'] = (isset($_SESSION['indexStatisticheState']) && !empty($_SESSION['indexStatisticheState'])) ? $_SESSION['indexStatisticheState'] : 'mensilmente';
 
-        // Global Page Variables
-        $data['indexSedeState'] = (isset($_SESSION['indexSedeState']) && !empty($_SESSION['indexSedeState'])) ? $_SESSION['indexSedeState'] : 'tuttelesedi';
+        $data['indexDisponibilitaState'] = (isset($_SESSION['indexDisponibilitaState']) && !empty($_SESSION['indexDisponibilitaState'])) ? $_SESSION['indexDisponibilitaState'] : 'oggi';
 
         // Calendario
         $data['indexConsulenteState'] = (isset($_SESSION['indexConsulenteState']) && !empty($_SESSION['indexConsulenteState'])) ? $_SESSION['indexConsulenteState'] : 'tutti';
@@ -75,69 +219,58 @@ class Macchine extends Controller
                  *  In order to actualize changes directly, return the values
                  *  through the POST response.
                  */
+                $contents = array();
                 switch ($_POST['action']) {
                     case Macchine::INDEX_UPDATE_SEDE:
                         // SEDE DROPDOWN BUTTON PRESSED
                         // Persist staste change
                         $state = $_POST['state'];
                         $_SESSION['indexSedeState'] = $state;
-
-                        $tempdata = $_POST['data'];
-                        // Load Data
-
-
-                        die(json_encode(array('state' => $state, 'data' => $tempdata)));
+                        $data['indexSedeState'] = $state;
                         break;
                     case Macchine::INDEX_UPDATE_PRENOTAZIONI:
                         // PRENOTAZIONI DROPDOWN BUTTON PRESSED
                         // Persist staste change
                         $state = $_POST['state'];
                         $_SESSION['indexPrenotazioniState'] = $state;
+                        $data['indexPrenotazioniState'] = $state;
 
-                        $tempdata = $_POST['data'];
-                        if ($state == "prossime") {
-                            // UPCOMING RESERVATIONS
-                            //Load Contents from Model
-                            $reservations = $this->macchineModel->getUserReservations(getMyUsername(), 2);
-                        } else {
-                            // ONGOING RESERVATIONS
-                            $reservations = $this->macchineModel->getUserOngoingReservations(getMyUsername(), 2);
-                        }
-                        // Prepare data
-
-                        $contents = array();
-                        foreach ($reservations as $reservation) {
-                            array_push($contents, $reservation->toArray());
-                        }
-                        $tempdata['contents'] = $contents;
-                        die(json_encode(array('state' => $state, 'data' => $tempdata)));
+                        $contents = $this->loadIndexPrenotazioni($data);
                         break;
 
                     case Macchine::INDEX_UPDATE_STATISTICHE:
                         // PRENOTAZIONI DROPDOWN BUTTON PRESSED
                         $state = $_POST['state'];
                         $_SESSION['indexStatisticheState'] = $state;
-                        $tempdata = $_POST['data'];
+                        $data['indexStatisticheState'] = $state;
+
                         if ($state == "mensilmente") {
                             // UPCOMING RESERVATIONS
                             //Load Contents from Model
-                            $tempdata['contents'] = array();
                             //$this->macchina->getOngoingReservationsByUser();
 
                             // Persist data changes
 
                             // Return data
-                            die(json_encode(array('state' => $state, 'data' => $tempdata)));
                         } else {
                             // ONGOING RESERVATIONS
                             // Load contents from Model
-                            $tempdata['contents'] = array();
 
                             // Persist data changes
 
                             // Return data
-                            die(json_encode(array('state' => $state, 'data' => $tempdata)));
                         }
+                        break;
+
+                    case Macchine::INDEX_UPDATE_DISPONIBILITA:
+                        // PRENOTAZIONI DROPDOWN BUTTON PRESSED
+                        $state = $_POST['state'];
+
+                        // Persist data changes
+                        $_SESSION['indexDisponibilitaState'] = $state;
+                        $data['indexDisponibilitaState'] = $state;
+
+                        $contents = $this->loadIndexDisponibilita($data);
                         break;
 
                     default:
@@ -146,25 +279,36 @@ class Macchine extends Controller
                 }
 
                 // Return response
-                die(json_encode(array()));
+                die(json_encode(array('contents' => $contents, 'vars' => $data)));
             } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
+                if ($_GET['action'] != "login" && $_GET['csrfToken'] != $_SESSION['csrfToken-' . $_GET['action'] . $_GET['csrfTokenID']]) {
+                    exitWithError("U02", "CSRF Attack - Sessione scaduta, aggiorna la pagina");
+                }
+
+                $contents = array();
                 switch ($_GET['action']) {
                     case Macchine::INDEX_LOAD_DATA:
-                        // LOAD USER PRENOTAZIONI
 
+                        // TODO LOAD USER PRENOTAZIONI
+                        $temp = $this->loadIndexPrenotazioni($data);
+                        $contents[Macchine::INDEX_UPDATE_PRENOTAZIONI] = $temp;
 
-                        // LOAD STATES
+                        // TODO LOAD STATS
 
                         // LOAD CAR AVAILABILITY
+                        $temp = $this->loadIndexDisponibilita($data);
+                        $contents[Macchine::INDEX_UPDATE_DISPONIBILITA] = $temp;
 
-                        // LOAD PRENOTAZIONI 
+                        // TODO LOAD CALENDAR                         
                         break;
-
                     default:
                         # code...
                         break;
                 }
+                die(json_encode(array('contents' => $contents, 'vars' => $data)));
+            } else {
+                // What
             }
         }
 
@@ -177,7 +321,9 @@ class Macchine extends Controller
         requireLogin();
         // VIEW VARIABLES (Retrieve from SESSION)
         $data['pageTitle'] = 'Macchine';
-        // variables
+
+        // Global Page Variables
+        $data['indexSedeState'] = (isset($_SESSION['indexSedeState']) && !empty($_SESSION['indexSedeState'])) ? $_SESSION['indexSedeState'] : 'tuttelesedi';
 
         // Check incoming ajax
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -198,17 +344,27 @@ class Macchine extends Controller
 
     public function prenotazioni()
     {
-        throw new Exception('Not implemented');
+        requireLogin();
+        // VIEW VARIABLES (Retrieve from SESSION)
+        $data['pageTitle'] = 'Macchine';
+
+        // Global Page Variables
+        $data['indexSedeState'] = (isset($_SESSION['indexSedeState']) && !empty($_SESSION['indexSedeState'])) ? $_SESSION['indexSedeState'] : 'tuttelesedi';
+
+        // Create View
+        $this->view('macchine/prenotazioni', $data);
     }
 
     public function statistiche()
     {
-        throw new Exception('Not implemented');
-    }
+        requireLogin();
+        // VIEW VARIABLES (Retrieve from SESSION)
+        $data['pageTitle'] = 'Macchine';
 
-    // CONTROLLER WIDE REQUESTS
-    public function panel()
-    {
-        throw new Exception('Not implemented');
+        // Global Page Variables
+        $data['indexSedeState'] = (isset($_SESSION['indexSedeState']) && !empty($_SESSION['indexSedeState'])) ? $_SESSION['indexSedeState'] : 'tuttelesedi';
+
+        // Create View
+        $this->view('macchine/statistiche', $data);
     }
 }

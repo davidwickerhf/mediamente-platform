@@ -1,0 +1,24 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.textbutton {
+    display: flex;
+    align-items: center;
+    // font 
+    color: $primary-blue;
+    font-size: $button-fsize;
+    font-family: $body-font;
+    font-weight: $semibold;
+
+    &__icon {
+        padding-left: 11px;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+    }
+
+    &:hover, &:active, &:focus {
+        color: black;
+        text-decoration: none;
+    }
+}

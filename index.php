@@ -5,6 +5,7 @@ include "helpers/ez_sql_core.php";
 include "helpers/ez_sql_mysqli.php";
 
 date_default_timezone_set('Europe/Rome');
+ini_set('intl.default_locale', 'fr_FR');
 startup(); //in commonfunctions.php
 
 
@@ -12,7 +13,9 @@ startup(); //in commonfunctions.php
 
 // INIZIALIZZAZIONE URL REWRITE
 $urlRequested = $_SERVER['REQUEST_URI']; // Carico l'URL richiesto
-$urlRequested = explode("/", $urlRequested); // Explode in base alla barra
+$urlRequested = explode('?', $urlRequested);
+$urlRequested = explode("/", $urlRequested[0]); // Explode in base alla barra
+
 array_shift($urlRequested);
 
 if (URL_BASE_PATH != "/")

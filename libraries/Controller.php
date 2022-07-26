@@ -24,7 +24,7 @@ class Controller
     // Check for view file
     if (file_exists(ROOT_PATH . 'views/' . $view . '.php')) {
       $var_in_view = $data;
-      $view = ROOT_PATH . 'views/macchine/index.php';
+      $view = ROOT_PATH . 'views/' . $view . '.php';
       require_once ROOT_PATH . 'views/inc/default.php';
     } else {
       // View does not exist

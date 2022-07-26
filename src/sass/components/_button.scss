@@ -1,0 +1,75 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.cbutton {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    font-family: $body-font;
+    font-weight: $semibold;
+    color: $primary-blue-transparent;
+    font-size: $button-fsize;
+    text-decoration: none;
+    border-radius: 7px;
+    background-color: white;
+    padding: 6px 14px;
+
+    border-style: solid;
+    border-width: $border-width;
+    border-color: $super-light-grey;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+        color: $primary-blue;
+        text-decoration: none;
+    }
+
+    &:hover {
+        color: $primary-blue;
+        text-decoration: none;
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        font-size: $button-fsize-m;
+        height: fit-content;
+        padding-left: $button-padding;
+    }
+
+    &--large {
+        padding: 10px 18px;
+        justify-content: start;
+
+        .cbutton__icon {
+            font-size: 18px;
+            padding-right: $padding;
+            padding-left: 0;
+        }
+    }
+
+    &--blue {
+        background: $primary-blue;
+        color: white;
+        border-color: $primary-blue;
+
+        &:hover {
+            color: white;
+            background-color: $accent-flamingo-transparent;
+            border-color: $accent-flamingo-transparent;
+        }
+    }
+
+    &--grey {
+        background: $super-light-grey;
+        color: $primary-blue;
+        border-color: $super-light-grey;
+
+        &:hover {
+            color: black;
+        }
+    }
+}

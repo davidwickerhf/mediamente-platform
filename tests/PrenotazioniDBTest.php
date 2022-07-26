@@ -64,7 +64,6 @@ final class PrenotazioniDBTest extends MemoryTestCase
 
         // Invalid count
         $invalid = $this->model->getUserReservations($this::USERNAME_UTENTE, -1);
-
         $this->assertNull($invalid);
 
         // Invalid User ID
@@ -76,11 +75,11 @@ final class PrenotazioniDBTest extends MemoryTestCase
     {
 
         // Valid User ID
-        $result = $this->model->getUserOngoingReservations($this::USERNAME_UTENTE);
+        $result = $this->model->getUserOngoingReservation($this::USERNAME_UTENTE);
         $this->assertInstanceOf(CPrenotazione::class, $result);
 
         // Invalid User ID
-        $invalid = $this->model->getUserOngoingReservations('aisjasidahd');
+        $invalid = $this->model->getUserOngoingReservation('aisjasidahd');
         $this->assertNull($invalid);
     }
 
@@ -218,8 +217,8 @@ final class PrenotazioniDBTest extends MemoryTestCase
     // MANAGEMENT
     public function testReserve(): void
     {
-        $from_date = new DateTime('2022-07-24');
-        $to_date =  new DateTime('2022-07-25');
+        $from_date = new DateTime('2022-07-28');
+        $to_date =  new DateTime('2022-07-30');
         // Valid Parameters
         $result = $this->model->reserve($this::ID_MACCHINA, $this::USERNAME_UTENTE, $from_date, $to_date, 'aziendale', 'Commento');
         $this->assertInstanceOf(CPrenotazione::class, $result);

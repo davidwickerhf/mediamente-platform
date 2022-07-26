@@ -25,41 +25,43 @@ require_once "./app.config.php";
  *  {$state => $name}. The title is the title of 
  *  the menu item; the callback is the argument that will be passed
  *  to the ajax function when called
- * @param callback name of the javascript callback function that will
- *  be called in order to update the UI
+ * @param bool global If true, this dropdown affects the entire page and 
+ *  the content of the entire page will be refreshed.
  */
-function renderDropdown(string $title, string $controller, string $method, string $action, array $items)
-{ ?>
-<div class="dropdown" id="<?= $action ?>">
-    <div tabindex="0" class="dropdown__button">
-        <div class="dropdown__title">
+function renderDropdown(string $title, string $controller, string $method, string $action, array $items, bool $global = false): string
+{
+    ob_start(); ?>
+<div class="cdropdown" id="<?= $action ?>">
+    <div tabindex="0" class="cdropdown__button">
+        <div class="cdropdown__title">
             <?= $title  ?>
         </div>
-        <div class="dropdown__icon-wrapper">
-            <i class="bx bx-chevron-down dropdown__icon"></i>
+        <div class="cdropdown__icon-wrapper">
+            <i class="bx bx-chevron-down cdropdown__icon"></i>
         </div>
     </div>
-    <div class="dropdown__content">
+    <div class="cdropdown__content">
         <?php
             foreach ($items as $state => $name) {
             ?>
-        <a class="dropdown__item">
+        <a class="cdropdown__item">
             <?= $name  ?>
         </a><?php
                 } ?>
     </div>
+
 </div>
 <script>
 // Make content the same width as the button
 $(document).ready(function() {
-    $('#<?= $action ?>').find('.dropdown__content').css({
+    $('#<?= $action ?>').find('.cdropdown__content').css({
         'width': ($('#<?= $action ?>').width() + 'px')
     });
 });
 
 
 // Click reader
-$('#<?= $action ?>').find('.dropdown__item').click(function() {
+$('#<?= $action ?>').find('.cdropdown__item').click(function() {
     // Get chosen component state
     var state = $(this).text().toLowerCase().replace(/\s+/g, '');
     // Get csrf token
@@ -67,15 +69,31 @@ $('#<?= $action ?>').find('.dropdown__item').click(function() {
                     $token = generateDynamicComponentToken($controller, $action);
                     echo json_encode($token);
                     ?>;
+
     // load data
-    data = {};
-    data.items = <?php echo json_encode($items) ?>;
-    // launch ajax request
-    updateComponent("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $action ?>", state, token, data);
-    // remove focus from component
-    $(this).blur();
+    var items = <?php echo json_encode($items) ?>;
+
+    // Update Dropdown Component
+    updateDropdownState("<?= $action ?>", state, items);
+    $(this).blur(); // Remove focus (closes dropdown)
+
+    // Launch POST Ajax Request
+    componentAjaxPost("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $action ?>", state, token);
+
+    // PAGFE REFRESH
+    <?php if ($global == true) : ?>
+    // Get csrf token
+    token = <?php
+                        $token = generateDynamicComponentToken($controller, $method . 'LoadData');
+                        echo json_encode($token);
+                        ?>;
+
+    // Launch GET Ajax Request
+    componentAjaxGet("<?= SERV_URL . $controller . '/' . $method ?>", "<?= $method . 'LoadData' ?>", token);
+    <?php endif;  ?>
 
 });
 </script>
 <?php
+    return ob_get_clean();
 } ?>

@@ -1,4 +1,4 @@
-// sass --watch src/sass/main.sc ss src/css/style.css
+// sass --watch src/sass/main.scss src/css/style.css
 
 // Load Base
 @use "abstracts/variables" as *;
@@ -8,10 +8,15 @@
 @use 'layout/macchine' as *;
 
 // Load Components
+@use 'components/spinner' as *;
 @use 'components/navbar' as *;
 @use 'components/sidebar' as *;
+@use 'components/header' as *;
 @use 'components/dropdown' as *;
 @use 'components/banner' as *;
+@use 'components/button' as *;
+@use 'components/textbutton' as *;
+@use 'components/bannerReservation' as *;
 
 // Load Pages
 @use 'pages/macchine_index' as *;

@@ -13,10 +13,11 @@
  * Generate banner html
  */
 function renderCalendar()
-{ ?>
+{
+    ob_start(); ?>
 <div class="calendar">
 
 </div>
 <?php
-    throw new Exception('Not implemented');
+    return ob_get_clean();
 } ?>

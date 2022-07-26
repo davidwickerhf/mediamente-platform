@@ -19,7 +19,7 @@ switch ($_POST['action']) {
 
 
 	case "login":
-		doUserLogin('davidwickehf', 'david');
+		doUserLogin('davidwickerhf', 'password');
 		// if(isset($_POST['recaptchaResponse']) && !empty($_POST['recaptchaResponse'])) {
 		//     //get verify response data
 		//     $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.RECAPTCHA_SECRET_KEY.'&response='.$_POST['recaptchaResponse']);

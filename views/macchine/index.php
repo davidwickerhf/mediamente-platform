@@ -9,41 +9,38 @@
  */
 
 // Load Components Libraries
-foreach (glob("views/macchine/components/*.php") as $filename) {
+foreach (glob("src/components/*.php") as $filename) {
     require_once $filename;
 }
 
-// Load Scripts
-foreach (glob('views/macchine/scripts/*.php') as $filename) {
-    require_once $filename;
-}
 ?>
 <!-- Page Content: Macchine / Calendario  -->
 <div class="macchine-calendario">
 
     <!-- Page Heading  -->
-    <div class="cheader">
-        <h1 class="page-heading">
-            Macchine Aziendali
-        </h1>
-        <div class="cheader__buttons">
-            <?php
-            $items = array(
-                'torino' => 'Torino',
-                'milano' => 'Milano',
-                'empoli' => 'Empoli',
-                'bologna' => 'Bologna',
-                'tuttelesedi' => 'Tutte le sedi'
-            );
-            renderDropdown($items[$data['indexSedeState']], 'macchine', Macchine::INDEX, Macchine::INDEX_UPDATE_SEDE, $items); ?>
-
-        </div>
-    </div>
-
+    <?php echo renderHeader('Macchine Aziendali', $data, array(
+        'title' => 'Prenota',
+        'controller' => 'macchine',
+        'method' => 'header',
+        'action' => Macchine::RESERVE,
+    )); ?>
 
     <!-- Banner -->
-    <?php renderBanner($data['indexPrenotazioniState'], $data['indexStatisticheState']) ?>
+    <?php echo renderBanner($data['indexPrenotazioniState'], $data['indexStatisticheState'], $data['indexDisponibilitaState']) ?>
 
     <!-- Banner -->
-    <?php renderCalendar() ?>
+    <?php echo renderCalendar() ?>
 </div>
+<script>
+// INITIAL PAGE LOAD (indexLoadData)
+$(document).ready(function() {
+    // Get csrf token
+    token = <?php
+                $token = generateDynamicComponentToken('macchine', 'indexLoadData');
+                echo json_encode($token);
+                ?>;
+
+    // Launch GET Ajax Request
+    componentAjaxGet("<?= SERV_URL . 'macchine/index' ?>", "indexLoadData", token);
+});
+</script>

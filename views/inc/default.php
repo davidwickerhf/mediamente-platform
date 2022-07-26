@@ -1,8 +1,9 @@
 <?php
 global $CONTROLLER;
+$oldLocale = setlocale(LC_TIME, 'it_IT');
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="utf-8">
@@ -71,12 +72,12 @@ global $CONTROLLER;
     <!-- Navbar -->
     <?php
     require_once ROOT_PATH . 'views/inc/navbar.php';
-    renderNavbar($CONTROLLER);
+    echo renderNavbar($CONTROLLER);
     ?>
     <!-- Sidebar  -->
     <?php
     require_once ROOT_PATH . 'views/inc/sidebar.php';
-    renderSidebar($CONTROLLER);
+    echo renderSidebar($CONTROLLER);
     ?>
     <!-- Page Content -->
     <div class="page">

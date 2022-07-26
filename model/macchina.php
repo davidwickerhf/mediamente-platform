@@ -291,10 +291,10 @@ class Macchina
      * Get a user's ongoing reservation.
      * 
      * @param string User to query.
-     * @return ?array array containing `Prenotazione` objects
+     * @return ?CPrenotazione array containing `Prenotazione` objects
      * @throws PDOException if binding values to parameters fails.
      */
-    public function getUserOngoingReservations(string $username): ?CPrenotazione
+    public function getUserOngoingReservation(string $username): ?CPrenotazione
     {
         // Check utente
         if (!$this->checkUsername($username)) {
@@ -305,7 +305,7 @@ class Macchina
         $stmt = 'SELECT * 
             FROM prenotazioni
             WHERE username = :username
-                AND from_date <= CAST(NOW() AS DATE) <= to_date';
+                AND CURDATE() between from_date and to_date';
 
         $this->db->query($stmt);
         $this->db->bind(':username', $username);
@@ -319,6 +319,48 @@ class Macchina
         $prenotazione = $this->convert(CPrenotazione::class, $result);
         return $prenotazione;
     }
+
+    /**
+     * Get a user's future reservations.
+     * 
+     * @param string User to query.
+     * @param int count Number of entries to retrieve. 
+     *  `count` must be greater than 0.
+     * @return ?array array containing `Prenotazione` objects
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getUserFutureReservations(string $username, int $count): ?array
+    {
+        // Check utente
+        if (!$this->checkUsername($username)) {
+            return null;
+        }
+
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE username = :username 
+                AND CURDATE() < prenotazioni.from_date
+            ORDER BY prenotazioni.from_date ASC
+            LIMIT :count';
+
+        $this->db->query($stmt);
+        $this->db->bind(':username', $username);
+        $this->db->bind(':count', $count);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        return $prenotazioni;
+    }
+
 
     /**
      * Get a reservations of a specific location.
@@ -1112,5 +1154,57 @@ class Macchina
             return true;
         }
         return false;
+    }
+
+    // SECTION: MVC UTILITY FUNCTIONS
+
+    /**
+     * MVC Function: Get number of available cars on a specific date.
+     * 
+     * @param DateTime date Date to query.
+     * @return ?array Number of available cars.
+     *  Returns null if query failed
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getAvailableCars(DateTime $date): ?array
+    {
+        // Format dates
+        $date = date("Y-m-d", $date->getTimestamp());
+        $stmt = 'SELECT * FROM macchine WHERE id NOT IN (SELECT id_macchina FROM prenotazioni WHERE :date between from_date and to_date)';
+
+        $this->db->query($stmt);
+        $this->db->bind(':date', $date);
+
+        if (!$this->db->execute()) {
+            return null;
+        }
+
+        $reservations = $this->db->resultSet();
+        return $reservations;
+    }
+
+    /**
+     * MVC Function: Get number of reserved cars on a specific date.
+     * 
+     * @param DateTime date Date to query.
+     * @return ?array Number of available cars.
+     *  Returns null if query failed
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getReservedCars(DateTime $date): ?array
+    {
+        // Format dates
+        $date = date("Y-m-d", $date->getTimestamp());
+        $stmt = 'SELECT * FROM macchine WHERE id IN (SELECT id_macchina FROM prenotazioni WHERE :date between from_date and to_date)';
+
+        $this->db->query($stmt);
+        $this->db->bind(':date', $date);
+
+        if (!$this->db->execute()) {
+            return null;
+        }
+
+        $reservations = $this->db->resultSet();
+        return $reservations;
     }
 }

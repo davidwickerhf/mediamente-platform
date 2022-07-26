@@ -1,3 +1,4 @@
+/// <reference path="../../dist/js/jquery-3.3.1.min.js" />
 /**
  * Functions needed to dynamically update specific components.
  *
@@ -12,7 +13,7 @@
 /**
  * Updates a dropdown button's title
  * @param {string} action The name of the called function, for debug purposes
- * @param  {string} state Updated of the button
+ * @param  {string} state Updated state of the button
  * @param  {array} items Valye-Key Array of the dropdown list.
  * @return {null}
  */

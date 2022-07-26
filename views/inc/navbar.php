@@ -11,9 +11,11 @@
 
 /**
  * Generate banner html
+ * @return string html
  */
 function renderNavbar(string $controller, string $name = null, $surname = null, string $email = null)
-{ ?>
+{
+    ob_start(); ?>
 <div class="cnavbar">
     <div class="cnavbar__bar">
         <img src="<?php ROOT_PATH ?>dist/images/logo_rosso.svg" alt="Logo" class="cnavbar__logo" id="websiteLink">
@@ -128,4 +130,5 @@ function navMenuBtnChange() {
 }
 </script>
 <?php
+    return ob_get_clean();
 } ?>

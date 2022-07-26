@@ -1,0 +1,153 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+#bannerPrenotazioni {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+
+    p {
+        font-family: $body-font;
+        font-size: $content-fsize;
+        color: $primary-blue-transparent;
+        font-weight: $normal;
+    }
+}
+
+// Single reservation 
+.sreservation {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    background: transparent;
+    border-radius: 11px;
+    padding: 0px 33px;
+    display: block;
+    overflow: clip;
+    cursor: pointer;
+    top: 0;
+    transition: ease 0.3s;
+
+    &:hover {
+        top: -7px;
+    }
+
+    // Style top portion
+    &__top {
+        position: relative;
+        z-index: 2;
+        padding: 22px 0px;
+    }
+
+    &__date {
+        font-family: $number-font;
+        font-size: $subtitle-fsize;
+        font-weight: $bold;
+        color: black;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__line {
+        margin: 0px 11px;
+        flex-grow: 1;
+        height: 1px;
+        background: $medium-grey;
+    }
+
+    &__details {
+        margin-top: 7px;
+        display: flex;
+        justify-content: space-between;
+        font-family: $body-font;
+        color: $dark-grey;
+    }
+
+    &__duration {
+        font-family: $body-font;
+        font-weight: $normal;
+        color: $dark-grey;
+        font-size: 12px;
+    }
+
+    // Style clipping
+    .clip {
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden;
+
+        .clip__circle {
+            z-index: 1;
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            
+            border-radius: 100%;
+            outline: 100vh solid $super-light-grey;
+            top: 60%;
+            }
+
+        &--left {
+            left: 0;
+
+            .clip__circle {
+                transform: translate(-50%, -50%);
+                left: 0;
+            }
+        }
+
+        &--right {
+            right: 0;
+
+            .clip__circle {
+                transform: translate(50%, -50%);
+                right: 0;
+            }
+        }
+    }
+
+    &__dotted {
+        z-index: 2;
+        height: 0;
+        border-top: 1px dashed $medium-grey;
+        width: calc(100% - 34px);
+        position: absolute;
+        top: 60%;
+        left: 17px;
+    }
+
+
+    // Style bottom portion
+    &__bottom{
+        position: relative;
+        z-index: 2;
+        padding: 18px 0px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__carinfo {
+        display: flex;
+    }
+
+    &__car {
+        font-family: $body-font;
+        font-size: $subtitle-fsize;
+        font-weight: $bold;
+        color: $primary-blue;
+    }
+
+    &__brand {
+        padding-left: 11px;
+        font-family: $body-font;
+        font-size: $subtitle-fsize;
+        font-weight: $normal;
+        color: $medium-grey;
+    }
+}

@@ -2,9 +2,8 @@
 @use "../abstracts/mixins" as *;
 
 .banner {
-    margin-top: 7px;
-    transform: translate(0, 0);
-
+    margin-top: 22px;
+    position: relative;
 
     &__wrapper {
         border-style: solid;
@@ -15,26 +14,33 @@
         justify-content: space-between;
         display: flex;
         flex-wrap: wrap;
-        --multiplier: calc(calc(310px * 3) - 100%);
+        --multiplier: calc(calc(350px * 3) - 100%);
         gap: $border-width;
         overflow: hidden;
     }
 
     &__section {
-        min-width: 33%;
+        min-width: 350px;
         max-width: 100%;
         padding: calc($padding-m - 2px) $padding-m;
-        flex-grow: 1;
-        flex-basis: calc(var(--multiplier) * 999);
+        flex-grow: 4;
+        //flex-basis: calc(var(--multiplier) * 999);
+        flex-basis: 400px;
         background-color: white;
     }
 
     &__section--no-growth {
-        flex-grow: 0;
-        min-width: 25%;
+        flex-grow: 1;
+        flex-basis: 320px;
+        // min-width: 320px;
+        // max-width: 320px;
     }
 
     .section {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+
         &__head {
             display: grid;
             grid-template-columns: auto auto;
@@ -46,5 +52,36 @@
             height: 36px;
             
         }
+
+        &__content {
+            align-items: center;
+            margin-top: $padding;
+            display: flex;
+        }
+
+        &__content-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &--buttons {
+                flex-wrap: wrap;
+                gap: 7px;
+            }
+        }
+
+        &__bottom {
+            width: 100%;
+            display: flex;
+            margin-top: $padding;
+            justify-content: flex-end;
+        }
+    }
+
+    &__button-wrapper {
+        min-width: 230px;
+        max-width: 100%;
+        flex-grow: 1;
     }
 }

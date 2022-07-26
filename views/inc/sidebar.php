@@ -13,7 +13,8 @@
  * Generate banner html
  */
 function renderSidebar(string $controller, string $name = null, string $email = null)
-{ ?>
+{
+    ob_start(); ?>
 <div class="sidebar">
     <div class="logo-details">
         <img src="<?php ROOT_PATH ?>dist/images/logo_rosso.svg" alt="Logo" class="icon" id="websiteLink">
@@ -29,35 +30,35 @@ function renderSidebar(string $controller, string $name = null, string $email = 
                 <i class='bx bx-grid-alt'></i>
                 <span class="links_name">Panoramica</span>
             </a>
-            <span class="tooltip">Panoramica</span>
+            <span class="ctooltip">Panoramica</span>
         </li>
         <li>
             <a <?= $controller == "rapportinator" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>rapportinator">
                 <i class='bx bx-bar-chart-alt'></i>
                 <span class="links_name">Rapportinator</span>
             </a>
-            <span class="tooltip">Rapportinator</span>
+            <span class="ctooltip">Rapportinator</span>
         </li>
         <li>
             <a <?= $controller == "calendario" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>calendario">
                 <i class='bx bx-calendar'></i>
                 <span class="links_name">Calendario</span>
             </a>
-            <span class="tooltip">Calendario</span>
+            <span class="ctooltip">Calendario</span>
         </li>
         <li>
             <a <?= $controller == "progetto" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>progetto">
                 <i class='bx bx-task'></i>
                 <span class="links_name">Progetti</span>
             </a>
-            <span class="tooltip">Progetti</span>
+            <span class="ctooltip">Progetti</span>
         </li>
         <li>
             <a <?= $controller == "team" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>team">
                 <i class='bx bx-group'></i>
                 <span class="links_name">Team</span>
             </a>
-            <span class="tooltip">Team</span>
+            <span class="ctooltip">Team</span>
         </li>
         <?php if (getMyUsername() == "dchiarello" or getMyUsername() == "mbrianda" or getMyUsername() == "sleoni") { ?>
         <li>
@@ -65,7 +66,7 @@ function renderSidebar(string $controller, string $name = null, string $email = 
                 <i class='bx bx-file'></i>
                 <span class="links_name">Turni</span>
             </a>
-            <span class="tooltip">Turni</span>
+            <span class="ctooltip">Turni</span>
         </li>
         <?php } ?>
         <li>
@@ -73,14 +74,14 @@ function renderSidebar(string $controller, string $name = null, string $email = 
                 <i class='bx bx-devices'></i>
                 <span class="links_name">Dotazioni</span>
             </a>
-            <span class="tooltip">Dotazioni</span>
+            <span class="ctooltip">Dotazioni</span>
         </li>
         <li>
             <a <?= $controller == "macchine" ? 'class="a--active"' : '' ?> href="<?= SERV_URL ?>macchine">
                 <i class='bx bx-car'></i>
                 <span class="links_name">Macchine</span>
             </a>
-            <span class="tooltip">Macchine</span>
+            <span class="ctooltip">Macchine</span>
         </li>
         <li class="profile">
             <div class="profile-details">
@@ -142,4 +143,5 @@ function menuBtnChange() {
 }
 </script>
 <?php
+    return ob_get_clean();
 } ?>

@@ -6,11 +6,6 @@
     box-sizing: border-box;
 }
 
-html {
-    overflow: scroll;
-    overflow-x: hidden;
-}
-
 ::-webkit-scrollbar {
     width: 0;
     /* Remove scrollbar space */
@@ -26,7 +21,9 @@ html {
 }
 
 body{
-    padding-top: 0;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
 
     .page-heading, h1, .page-header{
         font-size: $heading-fsize-m;
@@ -55,16 +52,21 @@ body{
     }
 
     .page {
+        position: fixed;
+        height: calc(100vh - $sidebar-width);
+        //height: 100vh;
+        scrollbar-width: none;
+        overflow-y: auto;
         position: relative;
         background: white;
-        min-height: 100vh;
-        top: 0;
+        top: $sidebar-width;
         left: 0;
         width: 100%;
+        //.top: $sidebar-width;
+        bottom: 0;
         transition: all 0.5s ease;
         z-index: 2;
         padding: $padding-m;
-        margin-top: $sidebar-width;
 
         .text {
             display: inline-block;
@@ -75,10 +77,12 @@ body{
         }
 
         @include medium-up {
-            padding: 24px $padding $padding $padding ;
+            padding: $padding;
             left: $sidebar-width;
             width: calc(100% - $sidebar-width);
-            margin-top: 0;
+            height: 100vh;
+            top: 0;
+            margin-bottom: 0;
         }
     }
 }
