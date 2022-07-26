@@ -60,7 +60,6 @@ function componentAjaxGet(url, action, token) {
     },
     success: function (data) {
       // Call js function in javascript file for UI update
-      console.log(data);
       var data = JSON.parse(data);
 
       console.log("SEVER RESPONDED TO ACTION: " + action);

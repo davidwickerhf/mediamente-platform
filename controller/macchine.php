@@ -200,7 +200,7 @@ class Macchine extends Controller
         foreach (range(6, 0) as $index) {
             $reservations = array();
 
-
+            // Load reservations
             if ($state == 'mensilmente') {
                 $date = new DateTime('today -' . $index .  ' month');
                 $month = $date->format('n');
@@ -219,6 +219,18 @@ class Macchine extends Controller
                 $year = $date->format('Y');
                 $reservations = $this->macchineModel->getYearReservation($year);
             }
+
+            // Filter reservations by locations
+            if ($data['indexSedeState'] != 'tuttelesedi') {
+                $temp = array();
+                foreach ($reservations as $reservation) {
+                    $car = $this->macchineModel->getCar($reservation->id_macchina);
+                    if ($car->sede == $data['indexSedeState'])
+                        array_push($temp, $reservation);
+                }
+                $reservations = $temp;
+            }
+
             $column = array(
                 'value' => count($reservations),
                 'name' => $name
