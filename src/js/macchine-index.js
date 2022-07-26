@@ -47,9 +47,8 @@ function indexUpdatePrenotazioni(contents) {
  */
 function indexUpdateStatistiche(contents) {
   console.log("UI Function: ", "indexUpdateStatistiche");
-  if (state == "prossime") {
-  } else {
-  }
+  // Find and replace graph
+  $("#bannerGraph").replaceWith(contents.html);
 }
 
 /**
@@ -91,6 +90,7 @@ function indexLoadData(contents) {
   // UPDATE STATISTICHE
   if (contents.indexUpdateStatistiche !== undefined) {
     var tcontents = contents.indexUpdateStatistiche;
+    indexUpdateStatistiche(tcontents);
   }
 
   // UPDATE DISPONIBILITA

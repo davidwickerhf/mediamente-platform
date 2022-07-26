@@ -561,6 +561,71 @@ class Macchina
     }
 
     /**
+     * Get reservations in a month
+     * 
+     * @param string month Month to query, format: `1`.
+     * @param string year Month to query, format: `2022`.
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getMonthReservation(string $month, string $year): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni 
+            WHERE (MONTH(prenotazioni.from_date) = :month AND YEAR(prenotazioni.from_date) = :year)
+            OR (MONTH(prenotazioni.to_date) = :month AND YEAR(prenotazioni.to_date) = :year )';
+
+        $this->db->query($stmt);
+        $this->db->bind(':month', $month);
+        $this->db->bind(':year', $year);
+        $this->db->bind(':month', $month);
+        $this->db->bind(':year', $year);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        return $prenotazioni;
+    }
+
+    /**
+     * Get reservations in a year
+     * 
+     * @param string year Year to query, format: `2022`.
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getYearReservation(string $year): ?array
+    {
+        // Prepare statement
+        $stmt = 'SELECT * FROM prenotazioni 
+            WHERE YEAR(prenotazioni.from_date) = :year 
+            OR YEAR(prenotazioni.to_date) = :year';
+
+        $this->db->query($stmt);
+        $this->db->bind(':year', $year);
+        $this->db->bind(':year', $year);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        return $prenotazioni;
+    }
+
+    /**
      * Get all past reservations
      * 
      * @return ?array array containing `CPrenotazione` objects.

@@ -5,6 +5,10 @@ if (!function_exists('renderBannerReservation')) {
     require_once ROOT_PATH . 'src/components/bannerReservation.php';
 }
 
+if (!function_exists('renderBannerGraph')) {
+    require_once ROOT_PATH . 'src/components/bannerGraph.php';
+}
+
 /**
  * Controller for Macchine pages
  * PHP Version 7.4.
@@ -90,9 +94,7 @@ class Macchine extends Controller
      * Load contents for Disponibilita component of the Banner
      *  in the index page.
      * 
-     * @param string state State of the component.
      * @param array data Page state data.
-     * @return array Contents
      * @throws PDOException if binding values to parameters fails.
      */
     private function loadIndexDisponibilita(array $data): array
@@ -140,9 +142,7 @@ class Macchine extends Controller
      * Load contents for Prenotazioni component of the Banner
      *  in the index page.
      * 
-     * @param string state State of the component.
      * @param array data Page state data.
-     * @return array Contents
      * @throws PDOException if binding values to parameters fails.
      */
     private function loadIndexPrenotazioni(array $data): array
@@ -176,6 +176,78 @@ class Macchine extends Controller
             }
         }
         $contents['html'] = '<div id="bannerPrenotazioni">' . $html . '</div>';
+        return $contents;
+    }
+
+    /**
+     * Load contents for Graph component of the Banner
+     *  in the index page.
+     * 
+     * @param string data Page state data.
+     * @return array contents
+     * @throws PDOException if binding values to parameters fails.
+     */
+    private function loadIndexGraph(array $data): array
+    {
+        $state = $data['indexStatisticheState'];
+        $tcontent = array();
+        $rows = array();
+        $columns = array();
+        $today = new DateTime('today');
+
+        // Load Columns
+        $max = 0;
+        foreach (range(6, 0) as $index) {
+            $reservations = array();
+
+
+            if ($state == 'mensilmente') {
+                $date = new DateTime('today -' . $index .  ' month');
+                $month = $date->format('n');
+                $year = $date->format('Y');
+
+                // Format Month
+                $df = new IntlDateFormatter('it_IT', IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
+                $df->setPattern('MMM');
+                $name = ucwords(strtolower($df->format($date)));
+
+                $reservations = $this->macchineModel->getMonthReservation($month, $year);
+                $name = ucwords($name);
+            } else {
+                $date = new DateTime('today -' . $index .  ' year');
+                $name = $date->format('Y');
+                $year = $date->format('Y');
+                $reservations = $this->macchineModel->getYearReservation($year);
+            }
+            $column = array(
+                'value' => count($reservations),
+                'name' => $name
+            );
+            array_push($columns, $column);
+
+            if (count($reservations) > $max) {
+                $max = count($reservations);
+            }
+        }
+
+        // Load Rows
+        $top = (ceil($max) % 5 === 0) ? ceil($max) : round(($max + 5 / 2) / 5) * 5;
+        if ($top < 5) {
+            $rows = array(1, 2, 3, 4, 5);
+        } else {
+            $step = $top / 5;
+            $rows = array(
+                $top,
+                $top - $step,
+                $top - 2 * $step,
+                $top - 3 * $step,
+                $top - 4 * $step
+            );
+        }
+
+        $tcontent['rows'] = $rows;
+        $tcontent['columns'] = $columns;
+        $contents['html'] = renderBannerGraph($tcontent);
         return $contents;
     }
 
@@ -244,22 +316,7 @@ class Macchine extends Controller
                         $_SESSION['indexStatisticheState'] = $state;
                         $data['indexStatisticheState'] = $state;
 
-                        if ($state == "mensilmente") {
-                            // UPCOMING RESERVATIONS
-                            //Load Contents from Model
-                            //$this->macchina->getOngoingReservationsByUser();
-
-                            // Persist data changes
-
-                            // Return data
-                        } else {
-                            // ONGOING RESERVATIONS
-                            // Load contents from Model
-
-                            // Persist data changes
-
-                            // Return data
-                        }
+                        $contents = $this->loadIndexGraph($data);
                         break;
 
                     case Macchine::INDEX_UPDATE_DISPONIBILITA:
@@ -295,6 +352,8 @@ class Macchine extends Controller
                         $contents[Macchine::INDEX_UPDATE_PRENOTAZIONI] = $temp;
 
                         // TODO LOAD STATS
+                        $temp = $this->loadIndexGraph($data);
+                        $contents[Macchine::INDEX_UPDATE_STATISTICHE] = $temp;
 
                         // LOAD CAR AVAILABILITY
                         $temp = $this->loadIndexDisponibilita($data);

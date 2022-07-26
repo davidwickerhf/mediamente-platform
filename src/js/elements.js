@@ -26,13 +26,13 @@ function updateDropdownState(action, state, items) {
   });
 
   $("#".concat(action))
-    .find(".dropdown__button")
-    .find(".dropdown__title")
+    .find(".cdropdown__button")
+    .find(".cdropdown__title")
     .text(title);
 
   // Resize content after width change
   $("#" + action)
-    .find(".dropdown__content")
+    .find(".cdropdown__content")
     .css({
       width: $("#" + action).width() + "px",
     });

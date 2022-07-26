@@ -1,0 +1,106 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.bannergraph {
+    width: 100%;
+    max-width: 425px;
+    padding-top: 0px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    
+    &__ycolumn { 
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+        align-items: end;
+    }
+
+    &__row {
+        font-family: $number-font;
+        font-size: $button-fsize;
+        font-weight: $semibold;
+        color: $medium-grey;
+
+        &--zero {
+            height: 33px;
+        }
+    } 
+
+    // Style columns    
+    &__columns {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        width: 100%;
+        gap: 18px;
+    }
+
+    &__column {
+        height: 100%;
+        flex-grow: 1;
+
+        .ccolumn {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: ease 0.2s;
+
+            &__value {
+                visibility: hidden;
+                position: absolute;
+                top: -20px;
+
+                font-family: $number-font;
+                font-weight: $normal;
+                font-size: $content-fsize;
+                color: $medium-grey;
+            }
+    
+            &__back {
+                flex-grow: 1;
+                width: 100%;
+                background: $super-light-grey;
+                border-radius: 7px;
+                overflow: hidden;
+                height: 150px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: end;
+            }
+    
+            &__front {
+                background: $primary-blue;
+                border-radius: 5px;
+            }
+    
+            &__name {
+                font-family: $number-font;
+                font-size: $button-fsize;
+                font-weight: $semibold;
+                color: $medium-grey;
+                padding-top: 7px;
+            }
+
+            &:hover {
+                transform: translateX(0px) translateY(-2px);
+                .ccolumn__front {
+                    background: $accent-flamingo;
+                }
+
+                .ccolumn__value {
+                    visibility: visible;
+                }
+
+                .ccolumn__name {
+                    color: $primary-blue;
+                }
+            }
+        }
+    }
+}
