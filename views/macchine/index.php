@@ -14,8 +14,10 @@ foreach (glob("src/components/*.php") as $filename) {
 }
 
 ?>
+<!-- Side Panel -->
+<?php echo renderSidePanel() ?>
 <!-- Page Content: Macchine / Calendario  -->
-<div class="macchine-calendario">
+<div class="macchine">
 
     <!-- Page Heading  -->
     <?php echo renderHeader('Macchine Aziendali', $data, array(

@@ -1,0 +1,46 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.cpanel {
+    height: 100vh;
+    width: $panel-width;
+    border-left: $border-width solid $super-light-grey;
+    right: -$panel-width;
+    transition: all ease 0.3s;
+    position: fixed;
+    top: 0;
+    background: white;
+    z-index: 6;
+    padding: $padding;
+
+    &--open {
+        right: 0;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__heading {
+        font-family: $body-font;
+        font-size: $heading-fsize;
+        font-weight: $bold;
+        color: $primary-blue;
+    }
+
+    &__close {
+        padding-left: 22px;
+    }
+}
+
+.cpanel.cpanel--open~.macchine {
+    width: calc(100% - $panel-width);
+}
+
+@media (max-width: 815px) {
+   .cpanel {
+    width: calc(100% - $sidebar-width);
+   }
+}

@@ -54,7 +54,6 @@ body{
     .page {
         position: fixed;
         height: calc(100vh - $sidebar-width);
-        //height: 100vh;
         scrollbar-width: none;
         overflow-y: auto;
         position: relative;
@@ -62,7 +61,6 @@ body{
         top: $sidebar-width;
         left: 0;
         width: 100%;
-        //.top: $sidebar-width;
         bottom: 0;
         transition: all 0.5s ease;
         z-index: 2;

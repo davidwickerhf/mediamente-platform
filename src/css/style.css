@@ -79,6 +79,11 @@ body .page .text {
   }
 }
 
+.macchine {
+  position: relative;
+  width: 100%;
+}
+
 .cloader {
   position: relative;
   display: inline-block;
@@ -977,6 +982,46 @@ body .page .text {
 }
 .bannergraph__column .ccolumn:hover .ccolumn__name {
   color: rgb(51, 65, 81);
+}
+
+.cpanel {
+  height: 100vh;
+  width: 300px;
+  border-left: 2px solid rgb(245, 245, 245);
+  right: -300px;
+  transition: all ease 0.3s;
+  position: fixed;
+  top: 0;
+  background: white;
+  z-index: 6;
+  padding: 22px;
+}
+.cpanel--open {
+  right: 0;
+}
+.cpanel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cpanel__heading {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(51, 65, 81);
+}
+.cpanel__close {
+  padding-left: 22px;
+}
+
+.cpanel.cpanel--open ~ .macchine {
+  width: calc(100% - 300px);
+}
+
+@media (max-width: 815px) {
+  .cpanel {
+    width: calc(100% - 78px);
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
