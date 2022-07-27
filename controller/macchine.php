@@ -9,6 +9,11 @@ if (!function_exists('renderBannerGraph')) {
     require_once ROOT_PATH . 'src/components/bannerGraph.php';
 }
 
+if (!function_exists('renderCalendar')) {
+    require_once ROOT_PATH . 'src/components/calendar.php';
+}
+
+
 /**
  * Controller for Macchine pages
  * PHP Version 7.4.
@@ -70,6 +75,7 @@ class Macchine extends Controller
     const INDEX_UPDATE_PRENOTAZIONI = 'indexUpdatePrenotazioni';
     const INDEX_UPDATE_STATISTICHE = 'indexUpdateStatistiche';
     const INDEX_UPDATE_DISPONIBILITA = 'indexUpdateDisponibilita';
+    const INDEX_UPDATE_CALENDARIO = 'indexUpdateCalendario';
 
     // Macchine Page
     // Statistiche Page
@@ -263,6 +269,30 @@ class Macchine extends Controller
         return $contents;
     }
 
+    /**
+     * Load contents for Calendar component of index page.
+     * 
+     * @param string data Page state data.
+     * @return array contents
+     * @throws PDOException if binding values to parameters fails.
+     */
+    private function loadIndexCalendar(array $data): array
+    {
+        $state = $data['indexCalendarioMese'];
+        $content = array();
+
+        // calculate start date
+
+        // loop trough dates and save reservations
+        $tcontent = array();
+        foreach (range(1, 42) as $index) {
+        }
+
+        // render html
+        $content['html'] = renderCalendar($tcontent, $data);
+        return $content;
+    }
+
     public function index()
     {
         requireLogin(); // Richiedo login
@@ -284,9 +314,7 @@ class Macchine extends Controller
         // Calendario
         $data['indexConsulenteState'] = (isset($_SESSION['indexConsulenteState']) && !empty($_SESSION['indexConsulenteState'])) ? $_SESSION['indexConsulenteState'] : 'tutti';
 
-        $data['indexCalendarioMese'] = (isset($_SESSION['indexCalendarioMese']) && !empty($_SESSION['indexCalendarioMese'])) ? $_SESSION['indexCalendarioMese'] : strtolower(date('F', time()));
-
-        $data['indexCalendarioState'] = (isset($_SESSION['indexCalendarioState']) && !empty($_SESSION['indexCalendarioState'])) ? $_SESSION['indexCalendarioState'] : 'calendario';
+        $data['indexCalendarioMese'] = (isset($_SESSION['indexCalendarioMese']) && !empty($_SESSION['indexCalendarioMese'])) ? $_SESSION['indexCalendarioMese'] : strtolower(date('Y-m-d', time()));
 
         // Check incoming ajax  & verify csrfToken
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -342,6 +370,22 @@ class Macchine extends Controller
                         $contents = $this->loadIndexDisponibilita($data);
                         break;
 
+                    case Macchine::INDEX_UPDATE_CALENDARIO:
+                        // PRENOTAZIONI DROPDOWN BUTTON PRESSED
+                        $state = $_POST['state'];
+                        $previous = $data['indexCalendarioMese'];
+                        if ($state == 'left') {
+                            $newdate = new DateTime(substr($previous, 0, -3) . '-01 -1 month');
+                        } else {
+                            $newdate = new DateTime(substr($previous, 0, -3) . '-01 +1 month');
+                        }
+                        $new = $newdate->format('Y-m-d');
+                        $_SESSION['indexCalendarioMese'] = $new;
+                        $data['indexCalendarioMese'] = $new;
+
+                        $contents = $this->loadIndexCalendar($data);
+                        break;
+
                     default:
                         # code...
                         break;
@@ -358,12 +402,11 @@ class Macchine extends Controller
                 $contents = array();
                 switch ($_GET['action']) {
                     case Macchine::INDEX_LOAD_DATA:
-
-                        // TODO LOAD USER PRENOTAZIONI
+                        // LOAD USER PRENOTAZIONI
                         $temp = $this->loadIndexPrenotazioni($data);
                         $contents[Macchine::INDEX_UPDATE_PRENOTAZIONI] = $temp;
 
-                        // TODO LOAD STATS
+                        // LOAD STATS
                         $temp = $this->loadIndexGraph($data);
                         $contents[Macchine::INDEX_UPDATE_STATISTICHE] = $temp;
 
@@ -371,7 +414,9 @@ class Macchine extends Controller
                         $temp = $this->loadIndexDisponibilita($data);
                         $contents[Macchine::INDEX_UPDATE_DISPONIBILITA] = $temp;
 
-                        // TODO LOAD CALENDAR                         
+                        // TODO LOAD CALENDAR       
+                        $temp = $this->loadIndexCalendar($data);
+                        $contents[Macchine::INDEX_UPDATE_CALENDARIO] = $temp;
                         break;
                     default:
                         # code...

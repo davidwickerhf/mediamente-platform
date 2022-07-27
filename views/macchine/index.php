@@ -30,8 +30,11 @@ foreach (glob("src/components/*.php") as $filename) {
     <!-- Banner -->
     <?php echo renderBanner($data['indexPrenotazioniState'], $data['indexStatisticheState'], $data['indexDisponibilitaState']) ?>
 
-    <!-- Banner -->
-    <?php echo renderCalendar() ?>
+    <!-- Calendar -->
+    <?php
+    $mockcalendar = array();
+    echo renderCalendar($mockcalendar, $data);
+    ?>
 </div>
 <script>
 // INITIAL PAGE LOAD (indexLoadData)

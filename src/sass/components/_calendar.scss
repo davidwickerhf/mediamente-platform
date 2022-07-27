@@ -1,0 +1,105 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.ccalendar {
+    margin-top: $padding;
+    width: 100%;
+    border-radius: 11px;
+    border: $border-width solid $super-light-grey;
+    overflow: hidden;
+
+    &__header {
+        padding: $padding;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: $border-width solid $super-light-grey;
+        flex-wrap: wrap;
+    }
+
+    &__title {
+        font-family: $body-font;
+        font-size: $section-heading-fsize;
+        font-weight: $bold;
+        color: $primary-blue;
+    }
+
+    &__month {
+        font-family: $number-font;
+        font-size: $button-fsize;
+        font-weight: $normal;
+        color: $medium-grey;
+    }
+
+    &__buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    &__arrows {
+        display: flex;
+        border-radius: 7px;
+        border: $border-width solid $super-light-grey;
+        background: $super-light-grey;
+        overflow: hidden;
+        gap: $border-width;
+        height: 36px;
+
+        i {
+            padding: 0px 11px;
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        background: white;
+        flex-grow: 1;
+        cursor: pointer;
+
+        &:hover {
+            background: $super-light-grey;
+            color: $primary-blue;
+        }
+    }
+
+    &__scrollable {
+        overflow-x: auto;
+        scrollbar-width: 11px;
+        background: $super-light-grey;
+
+        &:-webkit-scrollbar {
+            width: 7px;
+            /* Remove scrollbar space */
+            background: white;
+            /* Optional: just make scrollbar invisible */
+        }
+    }
+
+    &__content {
+        display: grid;
+        //justify-content: center;
+        grid-template-columns:  repeat(7, minmax(165px, 15%)) ;
+        grid-template-rows: repeat(7, minmax(min-content, max-content));
+        gap: $border-width;
+    }
+
+    &__day {
+        font-family: $body-font;
+        font-size: $button-fsize;
+        font-weight: $semibold;
+        color: $primary-blue-transparent;
+        padding: 4px 0px;
+        margin: auto;
+
+    }
+
+    // Style Calendar Cells  
+    &__cell {
+        min-height: 150px;
+        background: white;
+        width: 100%;
+        display: inline-block;
+        flex-grow: 1;
+    }
+}

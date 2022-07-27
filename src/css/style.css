@@ -1019,9 +1019,95 @@ body .page .text {
 }
 
 @media (max-width: 815px) {
-  .cpanel {
+  .cpanel.cpanel--open {
     width: calc(100% - 78px);
   }
+}
+.ccalendar {
+  margin-top: 22px;
+  width: 100%;
+  border-radius: 11px;
+  border: 2px solid rgb(245, 245, 245);
+  overflow: hidden;
+}
+.ccalendar__header {
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgb(245, 245, 245);
+  flex-wrap: wrap;
+}
+.ccalendar__title {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgb(51, 65, 81);
+}
+.ccalendar__month {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(217, 217, 217);
+}
+.ccalendar__buttons {
+  display: flex;
+  align-items: center;
+}
+.ccalendar__arrows {
+  display: flex;
+  border-radius: 7px;
+  border: 2px solid rgb(245, 245, 245);
+  background: rgb(245, 245, 245);
+  overflow: hidden;
+  gap: 2px;
+  height: 36px;
+}
+.ccalendar__arrows i {
+  padding: 0px 11px;
+}
+.ccalendar__icon {
+  display: flex;
+  align-items: center;
+  background: white;
+  flex-grow: 1;
+  cursor: pointer;
+}
+.ccalendar__icon:hover {
+  background: rgb(245, 245, 245);
+  color: rgb(51, 65, 81);
+}
+.ccalendar__scrollable {
+  overflow-x: auto;
+  scrollbar-width: 11px;
+  background: rgb(245, 245, 245);
+}
+.ccalendar__scrollable:-webkit-scrollbar {
+  width: 7px;
+  /* Remove scrollbar space */
+  background: white;
+  /* Optional: just make scrollbar invisible */
+}
+.ccalendar__content {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(165px, 15%));
+  grid-template-rows: repeat(7, minmax(min-content, max-content));
+  gap: 2px;
+}
+.ccalendar__day {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(51, 65, 81, 0.66);
+  padding: 4px 0px;
+  margin: auto;
+}
+.ccalendar__cell {
+  min-height: 150px;
+  background: white;
+  width: 100%;
+  display: inline-block;
+  flex-grow: 1;
 }
 
 /*# sourceMappingURL=style.css.map */

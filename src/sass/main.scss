@@ -19,6 +19,7 @@
 @use 'components/bannerReservation' as *;
 @use 'components/bannerGraph' as *;
 @use 'components/sidePanel' as *;
+@use 'components/calendar' as *;
 
 // Load Pages
 @use 'pages/macchine_index' as *;

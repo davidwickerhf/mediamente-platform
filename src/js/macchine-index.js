@@ -23,10 +23,7 @@ function indexUpdateSede(contents) {
 /**
  * Function called when updating dropdown button selection of the
  *  Prenotazioni section of the banner in macchine/index.php
- * @param  {string} state Can either be `prossime` or `incorso`;
- *  If the value is `prossime`, the UI will show future reservations
- *  If the value is `incorso`, the UI will show the current open reservation.
- * @param  {array} data Valye-Key Array of the reservation(s) to show in the UI.
+ * @param  {array} contents Valye-Key Array of the reservation(s) to show in the UI.
  *  May contain HTML content to inject
  * @return {null}
  */
@@ -39,10 +36,7 @@ function indexUpdatePrenotazioni(contents) {
 /**
  * Function called when updating dropdown button selection of the
  *  Statistics section of the banner in macchine/index.php
- * @param  {string} state Can either be `mensilmente` or `annualmente`;
- *  If the value is `mensilmente`, the Graph will show data for a period of 7 years
- *  If the value is `annualmente`, the Graph will show data for a period of 7 months
- * @param  {array} data Valye-Key Array of the stats(s) to show in the UI.
+ * @param  {array} contents Valye-Key Array of the stats(s) to show in the UI.
  * @return {null}
  */
 function indexUpdateStatistiche(contents) {
@@ -74,6 +68,18 @@ function indexUpdateDisponibilita(contents) {
 }
 
 /**
+ * Function called when updating dropdown button selection of the
+ *  Statistics section of the banner in macchine/index.php
+ * @param  {array} contents Valye-Key Array of the stats(s) to show in the UI.
+ * @return {null}
+ */
+function indexUpdateCalendario(contents) {
+  console.log("UI Function: ", "indexUpdateCalendario");
+  // Find and replace graph
+  $("#indexCalendar").replaceWith(contents.html);
+}
+
+/**
  * Function called when refreshing macchine/index.php
  * @param  {array} contents Valye-Key Array
  * @return {null}
@@ -102,6 +108,7 @@ function indexLoadData(contents) {
   // UPDATE CALENDARIO
   if (contents.indexUpdateCalendario !== undefined) {
     var tcontents = contents.indexUpdateCalendario;
+    indexUpdateCalendario(tcontents);
   }
 
   return;

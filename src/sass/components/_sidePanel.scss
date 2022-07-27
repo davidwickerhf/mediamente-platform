@@ -40,7 +40,7 @@
 }
 
 @media (max-width: 815px) {
-   .cpanel {
+   .cpanel.cpanel--open {
     width: calc(100% - $sidebar-width);
    }
 }
