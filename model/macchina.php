@@ -75,6 +75,52 @@ class Macchina
         return true;
     }
 
+    /**
+     * Retrieve a user from the DB by its username.
+     * 
+     * @param string username Id of the car.
+     * @return ?stdClass Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getUtente(string $username): ?stdClass
+    {
+        // Retrieve row
+        $this->db->query('SELECT * FROM utenti WHERE username = :username');
+        $this->db->bind(':username', $username);
+        $result = $this->db->single();
+
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
+
+        // Return query in CMacchina object
+        return $result;
+    }
+
+    /**
+     * Retrieve all users from database.
+     * 
+     * @return ?array Returns null if the row doesn't exist.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getUtenti(): ?stdClass
+    {
+        // Retrieve row
+        $this->db->query('SELECT * FROM utenti');
+        $result = $this->db->single();
+
+        // Catch errors
+        if (is_null($result)) {
+            return null;
+        }
+
+        // Return query in CMacchina object
+        return $result;
+    }
+
+
+
     // SECTION: Methods relative to database queries, table 'macchine'
 
     /**
@@ -580,6 +626,39 @@ class Macchina
         $this->db->bind(':year', $year);
         $this->db->bind(':month', $month);
         $this->db->bind(':year', $year);
+        // Get results
+        $results = $this->db->resultSet();
+        // Handle error
+        if (is_null($results)) {
+            return null;
+        }
+        // Map results to array of Prenotazioni objects
+        $prenotazioni = array();
+        foreach ($results as $temp) {
+            array_push($prenotazioni, $this->convert(CPrenotazione::class, $temp));
+        }
+        return $prenotazioni;
+    }
+
+    /**
+     * Get reservations in a month
+     * 
+     * @param DateTime day to query.
+     * @return ?array array containing `CPrenotazione` objects.
+     * @throws PDOException if binding values to parameters fails.
+     */
+    public function getDayReservation(DateTime $day): ?array
+    {
+        // Prepare date
+        $date = $day->format('Y-m-d');
+        // Prepare statement
+        $stmt = 'SELECT * 
+            FROM prenotazioni
+            WHERE :date between from_date and to_date
+            ORDER BY durata DESC';
+
+        $this->db->query($stmt);
+        $this->db->bind(':date', $date);
         // Get results
         $results = $this->db->resultSet();
         // Handle error

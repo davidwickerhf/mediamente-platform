@@ -202,6 +202,23 @@ final class PrenotazioniDBTest extends MemoryTestCase
         }
     }
 
+    public function testGetDayReservations()
+    {
+        // Valid Count
+        $day = new DateTime('now');
+        $result = $this->model->getDayReservation($day);
+        $this->assertIsArray($result);
+        // get now
+        $now = new DateTime(date('Y-m-d', time()));
+        // Assertionss
+        foreach ($result as $prenotazione) {
+            $this->assertInstanceOf(CPrenotazione::class, $prenotazione);
+            $this->assertGreaterThanOrEqual($prenotazione->from_date, $now);
+
+            $this->assertLessThanOrEqual($prenotazione->to_date, $now);
+        }
+    }
+
     public function testGetPastReservations()
     {
         // Valid Count

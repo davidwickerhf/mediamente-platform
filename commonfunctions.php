@@ -306,6 +306,23 @@ function generateUniqueId($maxLength = null)
 
 
 // AJAX FUNCTIONS
+function cleanTokens($controller, $action)
+{
+	foreach ($_SESSION as $key => $value) {
+		$method = '';
+		foreach (str_split($action) as $char) {
+			if (ctype_upper($char)) {
+				break;
+			} else {
+				$method .= $char;
+			}
+		}
+		if (strpos($key, 'csrfToken-' . $method) !== false) {
+			unset($_SESSION[$key]);
+		}
+	}
+}
+
 function generateDynamicComponentToken($controller, $action)
 {
 	$csrfToken = sha1(SECURITY_SALT . $controller . $action . generateUniqueId());

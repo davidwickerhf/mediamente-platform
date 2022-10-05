@@ -12,7 +12,8 @@
 /**
  * Generate calendar html
  * 
- * `content: { { date, {reservation, hasprevious, hasafter} } }
+ * `content: 
+ *    { 'date', 'reservation' => { 'reservation', 'hasprevious', 'hasafter'}, 'wmoth' } `
  */
 function renderCalendar($content, $data)
 {
@@ -63,8 +64,6 @@ function renderCalendar($content, $data)
                 </script>
             </div>
 
-
-
         </div>
     </div>
 
@@ -83,7 +82,7 @@ function renderCalendar($content, $data)
                 foreach (range(2, 7) as $row) {
                     foreach (range(1, 7) as $column) {
                         if (!empty($content))
-                            echo renderCalendarCell($row, $column, $content[$index]);
+                            echo renderCalendarCell($row, $column, $content[$index]['day'], $content[$index]['reservations'], $content[$index]['wmonth']);
                         else
                             echo renderCalendarCell($row, $column);
                         $index += 1;
@@ -106,12 +105,51 @@ function renderCalendar($content, $data)
  *
  * `content: {date: { {reservation, hasprevious, hasafter} } }
  */
-function renderCalendarCell(int $row, int $column, DateTime $date = null, array $reservations = null): string
+function renderCalendarCell(int $row, int $column, DateTime $date = null, array $reservations = null, bool $wmonth = false): string
 {
+    $today = new DateTime('today');
     ob_start(); ?>
 
-<div class="ccalendar__cell" style="<?php echo "grid-row: " . $row . "; grid-column: " . $column . ";" ?>">
+<div class="ccalendar__cell " style="<?php echo "grid-row: " . $row . "; grid-column: " . $column . ";" ?>">
+    <div class="ccell <?php echo ($wmonth == true) ? 'ccell--wmonth' : '' ?> ">
+        <?php if (!is_null($date) and !is_null($reservations)) :
+                $istoday = ($today == $date); ?>
+        <div class="ccell__date <?php echo ($istoday == true) ? 'ccell__date--today' : '' ?>">
+            <?php echo $date->format('d') ?>
+        </div>
 
+        <?php foreach ($reservations as $reservationinfo) :
+                    $cellstyle = '';
+                    $contentstyle = '';
+                    $reservation = $reservationinfo['reservation'];
+                    $car = $reservationinfo['car'];
+                    $utente = $reservationinfo['utente'];
+                    if ($reservationinfo['hasprevious'] == true and $reservationinfo['hasafter'] == true) {
+                        $cellstyle = 'ccell__prenotazione--both';
+                        $contentstyle = 'ccell__pcontent--both';
+                    } elseif ($reservationinfo['hasprevious'] == true) {
+                        $cellstyle = 'ccell__prenotazione--left';
+                        $contentstyle = 'ccell__pcontent--left';
+                    } elseif ($reservationinfo['hasafter'] == true) {
+                        $cellstyle = 'ccell__prenotazione--right';
+                        $contentstyle = 'ccell__pcontent--right';
+                    } ?>
+        <div class="ccell__prenotazione <?= $cellstyle ?>" id="<?php echo $reservation->id ?>">
+
+            <div class="ccell__pcontent <?= $contentstyle ?>">
+                <?php // if ($reservationinfo['hasprevious'] != true) : 
+                            ?>
+                <i class="bx bx<?= ($reservation->motivazione == 'personale') ? '-user-circle' : 's-business' ?>"></i>
+                <span><?php echo $utente->nome . ' ' . $utente->cognome ?></span>
+                <span>(<?php echo $car->modello ?>)</span>
+                <?php // endif; 
+                            ?>
+            </div>
+
+        </div>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </div>
 <?php
     return ob_get_clean();

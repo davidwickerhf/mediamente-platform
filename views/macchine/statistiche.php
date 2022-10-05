@@ -7,6 +7,7 @@
  * @author    David Henry Francis Wicker (github/davidwickerhf) <davidwickerhf@gmail.com>
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
+cleanTokens('macchine', 'statistiche');
 
 // Load Components Libraries
 foreach (glob("src/components/*.php") as $filename) {

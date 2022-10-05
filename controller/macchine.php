@@ -52,7 +52,7 @@ class Macchine extends Controller
         'tuttelesedi' => 'Tutte le sedi'
     );
     // Index Page
-    const INDEX_PRENOTAZIONI_STATES = array('prossima' => 'Prossima', 'incorso' => 'In corso');
+    const INDEX_PRENOTAZIONI_STATES = array('incorso' => 'In corso', 'prossima' => 'Prossima',);
     const INDEX_STATISTICHE_STATES = array('mensilmente' => 'Mensilmente', 'annualmente' => 'Annualmente');
     const INDEX_DISPONIBILITA_STATES = array('oggi' => 'Oggi', 'domani' => 'Domani', 'dopodomani' => 'Dopodomani');
 
@@ -196,10 +196,11 @@ class Macchine extends Controller
     private function loadIndexGraph(array $data): array
     {
         $state = $data['indexStatisticheState'];
+        $today = new DateTime('today');
+        $tmonth = intval($today->format('m'));
         $tcontent = array();
         $rows = array();
         $columns = array();
-        $today = new DateTime('today');
 
         // Load Columns
         $max = 0;
@@ -208,7 +209,8 @@ class Macchine extends Controller
 
             // Load reservations
             if ($state == 'mensilmente') {
-                $date = new DateTime('today -' . $index .  ' month');
+                $date = new DateTime($today->format('Y')  . '-' . ($tmonth - $index) . '-01');
+
                 $month = $date->format('n');
                 $year = $date->format('Y');
 
@@ -279,13 +281,40 @@ class Macchine extends Controller
     private function loadIndexCalendar(array $data): array
     {
         $state = $data['indexCalendarioMese'];
+        $stateDate = new DateTime($state); // Must always be the first of the month
         $content = array();
 
         // calculate start date
+        $dayofweek = $stateDate->format('w');
+        if ($dayofweek != 1) {
+            $firstDay = new DateTime($stateDate->format('Y-m-d') . ' -' . ($dayofweek - 1) . ' days');
+        } else {
+            $firstDay = $stateDate;
+        }
 
         // loop trough dates and save reservations
         $tcontent = array();
+        $day = $firstDay;
         foreach (range(1, 42) as $index) {
+            $reservations = $this->macchineModel->getDayReservation($day);
+            $treservations = array();
+            $temp = array();
+            $wmonth = ($day->format('m') != $stateDate->format('m'));
+            foreach ($reservations as $index => $reservation) {
+                $hasprevious = ($reservation->from_date < $day);
+                $hasafter = ($reservation->to_date > $day);
+                // if ($hasafter == true) {
+                //     $future = $this->macchineModel->getDayReservation($day->modify('+1 day'));
+                //     foreach ($future as $fres => $value) {
+                //         # code...
+                //     }
+                // }
+                $car = $this->macchineModel->getCar($reservation->id_macchina);
+                $utente = $this->macchineModel->getUtente($reservation->username);
+                array_push($treservations, array('reservation' => $reservation, 'hasprevious' => $hasprevious, 'hasafter' => $hasafter, 'car' => $car, 'utente' => $utente));
+            }
+            array_push($tcontent, array('day' => clone $day, 'reservations' => $treservations, 'wmonth' => $wmonth));
+            $day = $day->modify('+1 day');
         }
 
         // render html
@@ -305,7 +334,7 @@ class Macchine extends Controller
 
 
         // Banner variables
-        $data['indexPrenotazioniState'] = (isset($_SESSION['indexPrenotazioniState']) && !empty($_SESSION['indexPrenotazioniState'])) ? $_SESSION['indexPrenotazioniState'] : 'prossima';
+        $data['indexPrenotazioniState'] = (isset($_SESSION['indexPrenotazioniState']) && !empty($_SESSION['indexPrenotazioniState'])) ? $_SESSION['indexPrenotazioniState'] : 'incorso';
 
         $data['indexStatisticheState'] = (isset($_SESSION['indexStatisticheState']) && !empty($_SESSION['indexStatisticheState'])) ? $_SESSION['indexStatisticheState'] : 'mensilmente';
 
@@ -314,7 +343,7 @@ class Macchine extends Controller
         // Calendario
         $data['indexConsulenteState'] = (isset($_SESSION['indexConsulenteState']) && !empty($_SESSION['indexConsulenteState'])) ? $_SESSION['indexConsulenteState'] : 'tutti';
 
-        $data['indexCalendarioMese'] = (isset($_SESSION['indexCalendarioMese']) && !empty($_SESSION['indexCalendarioMese'])) ? $_SESSION['indexCalendarioMese'] : strtolower(date('Y-m-d', time()));
+        $data['indexCalendarioMese'] = (isset($_SESSION['indexCalendarioMese']) && !empty($_SESSION['indexCalendarioMese'])) ? $_SESSION['indexCalendarioMese'] : strtolower(date('Y-m', time())) . '-01';
 
         // Check incoming ajax  & verify csrfToken
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {

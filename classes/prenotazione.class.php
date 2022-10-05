@@ -17,6 +17,7 @@ class CPrenotazione
     public DateTime $created_at;
     public string $motivazione;
     public ?string $commmento;
+    public int $durata;
 
     /**
      * Constructor of the class 'Prenotazione'. The values of the properties are loaded
@@ -37,6 +38,7 @@ class CPrenotazione
         $this->from_date = new DateTime($properties['from_date']);
         $this->to_date = new DateTime($properties['to_date']);
         $this->created_at = new DateTime($properties['created_at']);
+        $this->durata = $properties['durata'];
     }
 
     public function toArray()

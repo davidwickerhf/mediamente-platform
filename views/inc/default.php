@@ -1,5 +1,6 @@
 <?php
 global $CONTROLLER;
+global $ACTION;
 $oldLocale = setlocale(LC_TIME, 'it_IT');
 ?>
 <!DOCTYPE html>

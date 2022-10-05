@@ -8,6 +8,9 @@
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
+// Clean Tokens
+cleanTokens('macchine', 'index');
+
 // Load Components Libraries
 foreach (glob("src/components/*.php") as $filename) {
     require_once $filename;
@@ -16,6 +19,7 @@ foreach (glob("src/components/*.php") as $filename) {
 ?>
 <!-- Side Panel -->
 <?php echo renderSidePanel() ?>
+
 <!-- Page Content: Macchine / Calendario  -->
 <div class="macchine">
 

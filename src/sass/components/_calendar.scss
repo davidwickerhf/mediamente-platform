@@ -102,4 +102,113 @@
         display: inline-block;
         flex-grow: 1;
     }
+
+    .ccell {
+        width: 100%;
+        padding: 11px 0px;
+        display: grid;
+        grid-template-columns: 100%;
+        gap: 4px;
+        justify-items: center;
+        align-items: center;
+
+
+        &__date {
+            font-family: $number-font;
+            font-weight: $semibold;
+            font-size: $button-fsize;
+            color: $primary-blue-transparent;
+            padding: 4px 7px;
+
+            &--today {
+                color: white;
+                background: $accent-flamingo-transparent;
+                border-radius: 7px;
+            }
+        }
+
+        &__prenotazione {
+            width: 100%;
+            padding: 0px 11px;
+
+            // &--right {
+            //     padding-left: 11px;
+            //     padding-right: 0;
+            // }
+
+            // &--left {
+            //     padding-left: 0px;
+            //     padding-right: 11px;
+            // }
+
+            // &--both {
+            //     padding-left: 0px;
+            //     padding-right: 0px;
+            // }
+        }
+
+        &__pcontent {
+            width: 100%;
+            background: white;
+            height: 22px;
+            border: 2px solid $primary-blue-transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+
+            padding-left: 7px;
+            font-family: $body-font;
+            font-weight: $normal;
+            font-size: $content-fsize;
+            color: $primary-blue-transparent;
+
+            i {
+                padding-right: 7px;
+            }
+
+            span {
+                min-width: 0;
+                flex-wrap: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            // &--right {
+            //     z-index: 10;
+            //     border-right: none;
+            //     border-top-right-radius: 0;
+            //     border-bottom-right-radius: 0;
+            //     width: calc(100% + 2px + 100%);
+            // }
+        
+            // &--left {
+            //     border-left: none;
+            //     border-top-left-radius: 0;
+            //     border-bottom-left-radius: 0;
+            //     width: calc(100% + 2px);
+            // }
+        
+            // &--both {
+            //     border-left: none;
+            //     border-right: none;
+            //     border-radius: 0;
+            //     width: calc(100% + 4px);
+            // }
+
+            &:hover {
+                background: $primary-blue-transparent;
+                border-color: transparent;
+                color: white;
+            }
+        }
+
+        &--wmonth {
+            .ccell__date {
+                color: $medium-grey;
+            }
+        }
+    }
 }

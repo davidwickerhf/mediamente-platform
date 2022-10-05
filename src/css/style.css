@@ -1109,5 +1109,64 @@ body .page .text {
   display: inline-block;
   flex-grow: 1;
 }
+.ccalendar .ccell {
+  width: 100%;
+  padding: 11px 0px;
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 4px;
+  justify-items: center;
+  align-items: center;
+}
+.ccalendar .ccell__date {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(51, 65, 81, 0.66);
+  padding: 4px 7px;
+}
+.ccalendar .ccell__date--today {
+  color: white;
+  background: rgba(239, 83, 80, 0.88);
+  border-radius: 7px;
+}
+.ccalendar .ccell__prenotazione {
+  width: 100%;
+  padding: 0px 11px;
+}
+.ccalendar .ccell__pcontent {
+  width: 100%;
+  background: white;
+  height: 22px;
+  border: 2px solid rgba(51, 65, 81, 0.66);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-left: 7px;
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(51, 65, 81, 0.66);
+}
+.ccalendar .ccell__pcontent i {
+  padding-right: 7px;
+}
+.ccalendar .ccell__pcontent span {
+  min-width: 0;
+  flex-wrap: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ccalendar .ccell__pcontent:hover {
+  background: rgba(51, 65, 81, 0.66);
+  border-color: transparent;
+  color: white;
+}
+.ccalendar .ccell--wmonth .ccell__date {
+  color: rgb(217, 217, 217);
+}
 
 /*# sourceMappingURL=style.css.map */
